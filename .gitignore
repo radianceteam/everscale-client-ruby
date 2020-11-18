@@ -1,0 +1,10 @@
+.DS_Store
+/ext/lib
+/notes/personal
+/notes
+tonclient*.dylib
+tonclient*.so
+tonclient*.lib
+tonclient*.dll
+__*
+*.gem
