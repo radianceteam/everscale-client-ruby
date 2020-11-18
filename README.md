@@ -204,7 +204,7 @@ factorize
 
 ## Credits
 
-* [Tonlabs.io](Tonlabs.io)
+* [Tonlabs.io](https://tonlabs.io)
 * [Radiance team](https://github.com/radianceteam)
 * [Alex Maslakov](https://github.com/GildedHonour)
 
