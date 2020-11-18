@@ -63,7 +63,7 @@ TonSdk::Client.version(c_ctx.context) do |res|
 end
 ```
 
-In this case, the method `version` requires only a `context` object. But most others require an additional 2nd argument appropriate for a certain method.
+In this case, the method `version()` requires only a `context` object. But most others require an additional 2nd argument appropriate for a certain method.
 Note that some methods, such some of the `Processing`, `Net`, `Tvm` modules, will continue to run for some time asyncronously delivering a result to a user, for instance, `Processing.process_message(...)` will do it via a callback
 
 ```
@@ -87,7 +87,6 @@ Note that some methods, such some of the `Processing`, `Net`, `Tvm` modules, wil
 ```
 
 while other methods will deliver a result relatively fast, without a callback, and terminate.
-
 
 
 ## Implementation coverage, by modules
@@ -182,7 +181,7 @@ factorize
   * https://stackoverflow.com/questions/60689128/ruby-ffi-callback-return-values
 
 
-## Notes for developers
+## Notes
   * Rspec validators or matchers don't work in a block of a non main thread, therefore in the tests an intermediate variable is used to save a result, a block, and then validate it outside of a block.
 
   * Testing asyncronous code in Ruby is difficult and can incur hacks. Not all asyncronous code should be tested automatically via Rspec or other libraries, some should be instead tested manually once and then left alone thereafter:
@@ -201,6 +200,9 @@ factorize
   ```
 
   * No automatic generator has been used to generate Ruby classes or bindings to the SDK. Why not? Because no appropriate simple and working one has been found.
+
+  * The constant `TonSdk::NATIVE_LIB_VERSION` holds a version of TON SDK native library which the gem supports.
+
 
 ## Credits
 
