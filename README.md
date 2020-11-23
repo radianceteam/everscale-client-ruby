@@ -7,14 +7,14 @@ Ruby gem-client bindings for [TON SDK](https://github.com/tonlabs/TON-SDK) which
 
 Add this to the `Gemfile` of a project:
 
-```
+```ruby
 gem 'ton_sdk_client'
 ```
 and run `bundle install`
 
 Alternatively install it directly
 
-```
+```ruby
 gem install ton_sdk_client
 ```
 
@@ -34,7 +34,8 @@ Also, check out the file `.ruby-version` to see which version has been used to d
 The examples are located in the `examples` directory, and they cover most the modules. 
 
 And here's a simple minimalistic one:
-```
+
+```ruby
 require 'ton_sdk_client'
 
 cfg = TonSdk::ClientConfig.new(
@@ -66,7 +67,7 @@ end
 In this case, the method `version()` requires only a `context` object. But most others require an additional 2nd argument appropriate for a certain method.
 Note that some methods, such some of the `Processing`, `Net`, `Tvm` modules, will continue to run for some time asyncronously delivering a result to a user, for instance, `Processing.process_message(...)` will do it via a callback
 
-```
+```ruby
 
   my_callback = Proc.new do |a|
 
@@ -99,16 +100,6 @@ while other methods will deliver a result relatively fast, without a callback, a
 - ✅ tvm
 - ✅ utils
 
-## Test coverage, by modules
-- ✅ abi
-- ✅ boc
-- ✅ client
-- ✅ crypto
-- ✅ net
-- ✅ processing
-- ✅ tvm
-- ✅ utils
-
 
 ## Documentation
 
@@ -129,7 +120,7 @@ cd ton-client-ruby
 ```
 
 ### Install the dependencies
-```
+```ruby
 gem install ffi
 gem install concurrent-ruby
 ```
@@ -142,14 +133,26 @@ Being dependent on the environment and OS, the gem `ffi` may produce errors duri
 
 [Rspec](https://rspec.info/) is used for the tests, which are located in the `spec` directory. To run all the tests:
 
-```
+```ruby
 rspec
 ```
 
 or run a specific set of the tests:
-```
+
+```ruby
 rspec spec/boc_spec.rb
 ```
+
+## Test coverage, by modules
+- ✅ abi
+- ✅ boc
+- ✅ client
+- ✅ crypto
+- ✅ net
+- ✅ processing
+- ✅ tvm
+- ✅ utils
+
 
 ### Run the examples
 
