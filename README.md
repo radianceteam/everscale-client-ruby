@@ -192,7 +192,7 @@ factorize
 
   * In some of the tests of the gem a "sleep" loop with a timeout are used to wait for an asyncronous operation to deliver a result, and this approach will do, although it can be replaced with a more idiomatic one. Owing to the side effects, at times some tests may fail. When it happens, try to increase a timeout:
 
-  ```
+  ```ruby
   timeout_at = get_timeout_for_async_operation()
 
   # before, 5 seconds by default
