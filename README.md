@@ -14,7 +14,7 @@ and run `bundle install`
 
 Alternatively install it directly
 
-```ruby
+```
 gem install ton_sdk_client
 ```
 
@@ -72,7 +72,6 @@ Note that some methods, such some of the `Processing`, `Net`, `Tvm` modules, wil
   my_callback = Proc.new do |a|
 
     # will be triggered multiple times, asyncronously
-
     puts "callback fired: #{a}"
   end
 
@@ -120,7 +119,7 @@ cd ton-client-ruby
 ```
 
 ### Install the dependencies
-```ruby
+```
 gem install ffi
 gem install concurrent-ruby
 ```
@@ -133,13 +132,13 @@ Being dependent on the environment and OS, the gem `ffi` may produce errors duri
 
 [Rspec](https://rspec.info/) is used for the tests, which are located in the `spec` directory. To run all the tests:
 
-```ruby
+```
 rspec
 ```
 
 or run a specific set of the tests:
 
-```ruby
+```
 rspec spec/boc_spec.rb
 ```
 
