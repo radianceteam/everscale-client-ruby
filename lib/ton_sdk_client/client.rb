@@ -54,6 +54,49 @@ module TonSdk
       end
     end
 
+    class AppRequestResult
+      attr_reader :type_, :text
+
+      # TODO - 2 constructors
+      def initialize(type_:, text:)
+        @type_ = type_
+        @text = text
+      end
+
+      def to_h
+        {
+          type: @type_,
+          text: @text
+        }
+      end
+    end
+
+    class ParamsOfResolveAppRequest
+      attr_reader :app_request_id, :result
+
+      def initialize(app_request_id:, result:)
+        @app_request_id = app_request_id
+        @result = result
+      end
+
+      def to_h
+        {
+          app_request_id: @app_request_id,
+          result: @result.to_h
+        }
+      end
+    end
+
+
+
+
+
+
+
+
+
+
+
 
     #
     # methods
@@ -92,6 +135,27 @@ module TonSdk
               build_number: resp.result["build_number"],
               dependencies: dp_s
             )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+
+
+
+
+
+
+
+    def self.resolve_app_request(ctx, pr_s)
+      pr_json = pr_s.to_h.to_json
+      Interop::request_to_native_lib(ctx, "client.resolve_app_request", pr_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ""
+          )
           )
         else
           yield resp

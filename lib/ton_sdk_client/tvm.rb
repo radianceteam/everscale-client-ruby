@@ -48,7 +48,7 @@ module TonSdk
     class ParamsOfRunExecutor
       attr_reader :message, :account, :execution_options, :abi, :skip_transaction_check
 
-      def initialize(message: , account: , execution_options: nil, abi: nil, skip_transaction_check: nil)
+      def initialize(message:, account:, execution_options: nil, abi: nil, skip_transaction_check: nil)
         @message = message
         @account = account
         @execution_options = execution_options
@@ -172,7 +172,7 @@ module TonSdk
       end
     end
 
-    def self.run_executor(ctx, pr)
+    def self.run_executor(ctx, pr1)
       pr_json = pr1.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
@@ -197,7 +197,7 @@ module TonSdk
       end
     end
 
-    def self.run_tvm(ctx, pr)
+    def self.run_tvm(ctx, pr1)
       pr_json = pr1.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
