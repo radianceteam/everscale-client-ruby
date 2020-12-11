@@ -116,6 +116,14 @@ module TonSdk
       end
     end
 
+    class ResultOfQuery
+      attr_reader :result
+
+      def initialize(a)
+        @result = a
+      end
+    end
+
 
 
     #
@@ -184,6 +192,41 @@ module TonSdk
           yield NativeLibResponsetResult.new(
             result: ResultOfSubscribeCollection.new(resp.result["handle"])
           )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.query(ctx, query, variables = nil)
+      pr_json = pr1.to_h.to_json
+      Interop::request_to_native_lib(ctx, "net.query", variables) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfQuery.new(resp["result"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.suspend(ctx)
+      pr_json = pr1.to_h.to_json
+      Interop::request_to_native_lib(ctx, "net.suspend") do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(result: nil)
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.resume(ctx)
+      pr_json = pr1.to_h.to_json
+      Interop::request_to_native_lib(ctx, "net.resume") do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(result: nil)
         else
           yield resp
         end
