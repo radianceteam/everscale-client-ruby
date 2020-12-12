@@ -54,7 +54,9 @@ TonSdk::Abi::encode_message_body(@graphql_c_ctx, pr_s) do |res|
     end
 
     TonSdk::Processing::process_message(@graphql_c_ctx, pr_s2, cb) do |res2|
-
+      if res2.success?
+        puts res2.result
+      end
     end
 
   end
