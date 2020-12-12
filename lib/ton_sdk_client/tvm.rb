@@ -85,7 +85,7 @@ module TonSdk
     class ParamsOfRunTvm
       attr_reader :message, :account, :execution_options, :abi
 
-      def initialize(message: , account: , execution_options: nil, abi: nil)
+      def initialize(message:, account:, execution_options: nil, abi: nil)
         @message = message
         @account = account
         @execution_options = execution_options
@@ -108,7 +108,7 @@ module TonSdk
     class ResultOfRunTvm
       attr_reader :out_messages, :decoded, :account
 
-      def initialize(out_messages: , decoded: nil, account:)
+      def initialize(out_messages:, decoded: nil, account:)
         @out_messages = out_messages
         @decoded = decoded
         @account = account

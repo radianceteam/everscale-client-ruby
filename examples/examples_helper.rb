@@ -11,3 +11,11 @@ cfg = TonSdk::ClientConfig.new(
 )
 
 @c_ctx = TonSdk::ClientContext.new(cfg.to_h.to_json)
+
+graphql_cfg = TonSdk::ClientConfig.new(
+  network: TonSdk::NetworkConfig.new(
+    server_address: "https://net.ton.dev/graphql"
+  )
+)
+
+@graphql_c_ctx = TonSdk::ClientContext.new(graphql_cfg.to_h.to_json)

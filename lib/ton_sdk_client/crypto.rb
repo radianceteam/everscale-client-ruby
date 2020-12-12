@@ -25,7 +25,7 @@ module TonSdk
     class ParamsOfModularPower
       attr_reader :base, :exponent, :modulus
 
-      def initialize(base: , exponent: , modulus:)
+      def initialize(base:, exponent:, modulus:)
         @base = base
         @exponent = exponent
         @modulus = modulus

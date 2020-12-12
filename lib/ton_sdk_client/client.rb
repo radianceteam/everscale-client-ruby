@@ -55,17 +55,24 @@ module TonSdk
     end
 
     class AppRequestResult
-      attr_reader :type_, :text
+      TYPES = [:ok, :error]
+      attr_reader :type_, :text, :result
 
-      # TODO - 2 constructors
-      def initialize(type_:, text:)
+      def initialize(type_:, result: nil, text: nil)
+        unless TYPES.include?(type_)
+          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
+        end
         @type_ = type_
+        @result = result
         @text = text
       end
 
       def to_h
         {
-          type: @type_,
+          type: Helper.sym_to_capitalized_camel_case_str(@type_),
+
+          # may be either one instead?
+          result: @result,
           text: @text
         }
       end

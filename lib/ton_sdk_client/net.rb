@@ -116,12 +116,10 @@ module TonSdk
       end
     end
 
-
-
     class ParamsOfQuery
       attr_reader :query, :variables
 
-      def initialize(query: , variables: nil)
+      def initialize(query:, variables: nil)
         @query = query
         @variables = variables
       end

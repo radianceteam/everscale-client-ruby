@@ -73,8 +73,16 @@ module TonSdk
     end
 
     class ProcessingEvent
-      TYPES = [:will_fetch_first_block, :fetch_first_block_failed, :will_send, :did_send,
-        :send_failed, :will_fetch_next_block, :fetch_next_block_failed, :message_expired]
+      TYPES = [
+        :will_fetch_first_block,
+        :fetch_first_block_failed,
+        :will_send,
+        :did_send,
+        :send_failed,
+        :will_fetch_next_block,
+        :fetch_next_block_failed,
+        :message_expired
+      ]
 
       attr_reader :type_, :error, :shard_block_id, :message_id, :message
 
