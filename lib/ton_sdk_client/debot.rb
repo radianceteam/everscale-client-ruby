@@ -1,6 +1,10 @@
 module TonSdk
   module Debot
 
+    #
+    # types
+    #
+
     # TODO
 
 
@@ -17,20 +21,28 @@ module TonSdk
     class ParamsOfStart
       attr_reader :address
 
-      def initialize
+      def initialize(a)
+        @address = a
       end
 
       def to_h
+        {
+          address: @address
+        }
       end
     end
 
     class RegisteredDebot
       attr_reader :debot_handle
 
-      def initialize
+      def initialize(a)
+        @debot_handle = a
       end
 
       def to_h
+        {
+          debot_handle: @debot_handle
+        }
       end
     end
 
@@ -80,7 +92,7 @@ module TonSdk
 
 
     #
-    # methods
+    # functions
     #
     def self.start(ctx, pr_s)
       Interop::request_to_native_lib(ctx, "debot.start", pr_s.to_h.to_json) do |resp|

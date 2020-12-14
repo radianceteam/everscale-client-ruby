@@ -1,5 +1,10 @@
 module TonSdk
   module Processing
+
+    #
+    # types
+    #
+
     class ParamsOfSendMessage
       attr_reader :message, :abi, :send_events
 
@@ -170,7 +175,7 @@ module TonSdk
 
 
     #
-    # methods
+    # functions
     #
 
     def self.send_message(ctx, pr1, custom_response_callback = nil)

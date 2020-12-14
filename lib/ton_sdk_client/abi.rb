@@ -1,5 +1,10 @@
 module TonSdk
   module Abi
+
+    #
+    # types
+    #
+
     class Abi
       TYPES = [:contract, :json, :handle, :serialized]
       attr_reader :type_, :value
@@ -766,7 +771,7 @@ module TonSdk
 
 
     #
-    # methods
+    # functions
     #
 
     def self.encode_message_body(ctx, pr1)

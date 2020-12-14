@@ -3,6 +3,11 @@ require_relative './interop.rb'
 
 module TonSdk
   class Client
+
+    #
+    # types
+    #
+
     class ResultOfVersion
       attr_reader :version
 
@@ -106,7 +111,7 @@ module TonSdk
 
 
     #
-    # methods
+    # functions
     #
 
     def self.version(ctx)

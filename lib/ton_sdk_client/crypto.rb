@@ -1,5 +1,10 @@
 module TonSdk
   module Crypto
+
+    #
+    # types
+    #
+
     class ParamsOfFactorize
       attr_reader :composite
 
@@ -682,7 +687,7 @@ module TonSdk
 
 
     #
-    # methods
+    # functions
     #
 
     def self.factorize(ctx, pr1)

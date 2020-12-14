@@ -1,5 +1,10 @@
 module TonSdk
   module Tvm
+
+    #
+    # types
+    #
+
     class ExecutionOptions
       attr_reader :blockchain_config, :block_time, :block_lt, :transaction_lt
 

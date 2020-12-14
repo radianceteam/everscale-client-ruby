@@ -1,5 +1,10 @@
 module TonSdk
   module Net
+
+    #
+    # types
+    #
+
     class SortDirection
       VALUES = [:asc, :desc]
     end
@@ -143,7 +148,7 @@ module TonSdk
 
 
     #
-    # methods
+    # functions
     #
 
     def self.query_collection(ctx, pr1)
