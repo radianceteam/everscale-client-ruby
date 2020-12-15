@@ -14,7 +14,7 @@ cfg = TonSdk::ClientConfig.new(
 
 graphql_cfg = TonSdk::ClientConfig.new(
   network: TonSdk::NetworkConfig.new(
-    server_address: "https://net.ton.dev/graphql"
+    server_address: "net.ton.dev/graphql"
   )
 )
 

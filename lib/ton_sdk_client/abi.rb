@@ -206,7 +206,7 @@ module TonSdk
         :signer, :processing_try_index
 
       def initialize(type_:, message: nil, abi:  nil, address: nil, deploy_set: nil,
-        call_set: nil, signer:  nil, processing_try_index: nil)
+        call_set: nil, signer:  nil, processing_try_index: 0)
         unless TYPES.include?(type_)
           raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
         end
@@ -250,7 +250,7 @@ module TonSdk
     class ParamsOfEncodeMessageBody
       attr_reader :abi, :call_set, :is_internal, :signer, :processing_try_index
 
-      def initialize(abi:, call_set:, is_internal:, signer:, processing_try_index: nil)
+      def initialize(abi:, call_set:, is_internal:, signer:, processing_try_index: 0)
         @abi = abi
         @call_set = call_set
         @is_internal = is_internal
@@ -309,7 +309,7 @@ module TonSdk
     class ParamsOfEncodeMessage
       attr_reader :abi, :address, :deploy_set, :call_set, :signer, :processing_try_index
 
-      def initialize(abi:, address: nil, deploy_set: nil, call_set: nil, signer:, processing_try_index: nil)
+      def initialize(abi:, address: nil, deploy_set: nil, call_set: nil, signer:, processing_try_index: 0)
         @abi = abi
         @address = address
         @deploy_set = deploy_set
@@ -737,30 +737,29 @@ module TonSdk
         fn_s = if j["functions"].nil?
           []
         else
-          j["functions"].compact.map do |x|
-            AbiFunction.from_json(x)
-          end
+          j["functions"].compact.map { |x| AbiFunction.from_json(x) }
         end
 
         ev_s = if j["events"].nil?
           []
         else
-          j["events"].compact.map do |x|
-            AbiEvent.from_json(x)
-          end
+          j["events"].compact.map { |x| AbiEvent.from_json(x) }
         end
 
         dt_s = if j["data"].nil?
           []
         else
-          j["data"].compact.map do |x|
-            AbiData.from_json(x)
-          end
+          j["data"].compact.map {|x| AbiData.from_json(x) }
         end
 
         self.new(
           abi_version: j["ABI version"],
-          header: j["header"],
+          
+
+          # header: j["header"],
+          header: [],
+
+
           functions: fn_s,
           events: ev_s,
           data: dt_s
