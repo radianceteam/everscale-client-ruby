@@ -17,7 +17,7 @@ pr_s = TonSdk::Abi::ParamsOfEncodeMessageBody.new(
   call_set: TonSdk::Abi::CallSet.new(
     function_name: "transfer",
     input: {
-      "comment": "howdy!!!1"
+      "comment": "howdy!!!1".bytes.map { |x| '%02X' % (x & 0xFF) }.join
     }
   ),
   is_internal: true,
@@ -38,23 +38,23 @@ TonSdk::Abi::encode_message_body(@graphql_c_ctx.context, pr_s) do |res|
         keys = res.result
       end
     end
-
     sleep(0.1) until keys
-    puts keys
-
-
 
     enc_pr_s = TonSdk::Abi::ParamsOfEncodeMessage.new(
       abi: abi2,
+      # address: GIVER_ADDRESS,
       address: WALLET_ADDRESS,
+
       call_set: TonSdk::Abi::CallSet.new(
         function_name: "sendTransaction",
         input: {
-          "dest": rec_addr,
-          "value": 12345000,
+          # "dest": WALLET_ADDRESS,
+          "dest": GIVER_ADDRESS,
+
+          "value": 12345,
           "bounce": false,
           "flags": 3,
-          "payload": res.result
+          "payload": res.result.body
         }
       ),
       signer: TonSdk::Abi::Signer.new(type_: :keys, keys: keys)
