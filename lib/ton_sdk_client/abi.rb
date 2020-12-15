@@ -263,7 +263,7 @@ module TonSdk
           abi: @abi.to_h,
           call_set: @call_set.to_h,
           is_internal: @is_internal,
-          signer: @singer.to_h,
+          signer: @signer.to_h,
           processing_try_index: @processing_try_index
         }
       end
