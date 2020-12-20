@@ -138,8 +138,16 @@ module TonSdk
       TYPES = [:message, :state_init, :tvc]
       attr_reader :type_, :source, :code, :data, :library, :tvc, :public_key, :init_params
 
-      def initialize(type_:, source: nil, code: nil, data: nil, library: nil, tvc: nil,
-          public_key: nil, init_params: nil)
+      def initialize(
+        type_:,
+        source: nil,
+        code: nil,
+        data: nil,
+        library: nil,
+        tvc: nil,
+        public_key: nil,
+        init_params: nil
+      )
         unless TYPES.include?(type_)
           raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
         end
@@ -344,7 +352,7 @@ module TonSdk
     class ParamsOfAttachSignature
       attr_reader :abi, :public_key, :message, :signature
 
-      def initialize(abi: , public_key: , message: , signature:)
+      def initialize(abi:, public_key:, message:, signature:)
         @abi = abi
         @public_key = public_key
         @message = message
@@ -386,16 +394,13 @@ module TonSdk
       end
     end
 
-    class MessageBodyType
-      VALUES = [:input, :output, :internal_output, :event]
-    end
-
     class DecodedMessageBody
+      MESSAGE_BODY_TYPE_VALUES = [:input, :output, :internal_output, :event]
       attr_reader :body_type, :name, :value, :header
 
       def initialize(body_type:, name:, value: nil, header: nil)
-        unless MessageBodyType::VALUES.include?(body_type)
-          raise ArgumentError.new("body_type #{body_type} is unknown; known ones: #{MessageBodyType::VALUES}")
+        unless MESSAGE_BODY_TYPE_VALUES.include?(body_type)
+          raise ArgumentError.new("body_type #{body_type} is unknown; known ones: #{MESSAGE_BODY_TYPE_VALUES}")
         end
 
         @body_type = body_type
@@ -447,7 +452,7 @@ module TonSdk
         when 'event'
           :event
         else
-          raise ArgumentError.new("body_type #{s} is unknown; known ones: #{MessageBodyType::VALUES}")
+          raise ArgumentError.new("body_type #{s} is unknown; known ones: #{MESSAGE_BODY_TYPE_VALUES}")
         end
       end
     end
@@ -491,17 +496,17 @@ module TonSdk
     end
 
     class ResultOfEncodeAccount
-      attr_reader :account, :id
+      attr_reader :account, :id_
 
-      def initialize(account: , id:)
+      def initialize(account:, id_:)
         @account = account
-        @id = id
+        @id_ = id_
       end
 
       def to_h
         {
-          account: @account.to_h,
-          id: @id
+          account: @account,
+          id: @id_
         }
       end
     end
@@ -867,7 +872,7 @@ module TonSdk
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeAccount.new(
               account: resp.result["account"],
-              id: resp.result["id"]
+              id_: resp.result["id"]
             )
           )
         else

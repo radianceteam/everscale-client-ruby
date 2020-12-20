@@ -126,7 +126,7 @@ module TonSdk
       ctx,
       function_name,
       function_params_json,
-      custom_response_callback: nil,
+      custom_response_handler: nil,
       single_thread_only: true
     )
 
@@ -139,11 +139,11 @@ module TonSdk
       end
 
       # using @@request_counter here to pass a @@request_counter and handlers and then retrieve them
-      # is probably isn't need in this Ruby implementation of SDK client
-      # because they same affect can be achived without that, but in a block, in an easier way, that is.
-      # therefore, @@request_counter is only used to send a request_counter to a server
-      # and increment it for a next request, and for nothing else,
-      # unlike in the other implementations of SDK clients
+      # is probably isn't needed.
+      # Thanks to the way Ruby is, the same affect can be achived by a block which is an easier way.
+      # Nonetheless, @@request_counter is incremented with each request and then sent out to a server
+      # in order to keep a server happy,
+      # because otherwise a server will, probably, reply in a wrong way.
 
       self.tc_request(
         ctx,
@@ -175,7 +175,7 @@ module TonSdk
             nil
 
           when TcResponseCodes::CUSTOM
-            custom_response_callback.call(tc_data_json_content) if !custom_response_callback.nil?
+            custom_response_handler.call(tc_data_json_content) if !custom_response_handler.nil?
 
           else
             raise ArgumentError.new("unsupported response type: #{response_type}")

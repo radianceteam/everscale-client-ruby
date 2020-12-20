@@ -42,14 +42,14 @@ TonSdk::Abi::encode_message_body(@graphql_c_ctx.context, pr_s) do |res|
 
     enc_pr_s = TonSdk::Abi::ParamsOfEncodeMessage.new(
       abi: abi2,
-      # address: GIVER_ADDRESS,
-      address: WALLET_ADDRESS,
+      address: GIVER_ADDRESS,
+      # address: WALLET_ADDRESS,
 
       call_set: TonSdk::Abi::CallSet.new(
         function_name: "sendTransaction",
         input: {
-          # "dest": WALLET_ADDRESS,
-          "dest": GIVER_ADDRESS,
+          "dest": WALLET_ADDRESS,
+          # "dest": GIVER_ADDRESS,
 
           "value": 12345,
           "bounce": false,

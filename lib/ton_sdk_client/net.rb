@@ -5,17 +5,15 @@ module TonSdk
     # types
     #
 
-    class SortDirection
-      VALUES = [:asc, :desc]
-    end
-
     class OrderBy
+      SORT_DIRECTION_VALUES = [:asc, :desc]
+
       attr_reader :path, :direction
 
       def initialize(path:, direction:)
         @path = path
-        unless SortDirection::VALUES.include?(direction)
-          raise ArgumentError.new("direction #{direction} doesn't exist; existing values: #{SortDirection::VALUES}")
+        unless SORT_DIRECTION_VALUES.include?(direction)
+          raise ArgumentError.new("direction #{direction} doesn't exist; existing values: #{SORT_DIRECTION_VALUES}")
         end
 
         @direction = direction
@@ -152,11 +150,10 @@ module TonSdk
     #
 
     def self.query_collection(ctx, pr1)
-      pr_json = pr1.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "net.query_collection",
-        pr_json,
+        pr1.to_h.to_json,
         single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -170,11 +167,10 @@ module TonSdk
     end
 
     def self.wait_for_collection(ctx, pr1)
-      pr_json = pr1.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "net.wait_for_collection",
-        pr_json,
+        pr1.to_h.to_json,
         single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -188,8 +184,7 @@ module TonSdk
     end
 
     def self.unsubscribe(ctx, pr1)
-      pr_json = pr1.to_h.to_json
-      Interop::request_to_native_lib(ctx, "net.unsubscribe", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "net.unsubscribe", pr1.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ""
@@ -200,13 +195,12 @@ module TonSdk
       end
     end
 
-    def self.subscribe_collection(ctx, pr1, custom_response_callback = nil, &block)
-      pr_json = pr1.to_h.to_json
+    def self.subscribe_collection(ctx, pr1, custom_response_handler = nil, &block)
       Interop::request_to_native_lib(
         ctx,
         "net.subscribe_collection",
-        pr_json,
-        custom_response_callback: custom_response_callback,
+        pr1.to_h.to_json,
+        custom_response_handler: custom_response_handler,
         single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -219,9 +213,10 @@ module TonSdk
       end
     end
 
+
+    # TODO
     def self.query(ctx, pr_s)
-      pr_json = pr_s.to_h.to_json
-      Interop::request_to_native_lib(ctx, "net.query", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "net.query", pr_s.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfQuery.new(resp.result["result"])
@@ -232,10 +227,15 @@ module TonSdk
       end
     end
 
+
+
+
+
+
     def self.suspend(ctx)
-      Interop::request_to_native_lib(ctx, "net.suspend") do |resp|
+      Interop::request_to_native_lib(ctx, "net.suspend", "") do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(result: nil)
+          yield NativeLibResponsetResult.new(result: "")
         else
           yield resp
         end
@@ -243,9 +243,9 @@ module TonSdk
     end
 
     def self.resume(ctx)
-      Interop::request_to_native_lib(ctx, "net.resume") do |resp|
+      Interop::request_to_native_lib(ctx, "net.resume", "") do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(result: nil)
+          yield NativeLibResponsetResult.new(result: "")
         else
           yield resp
         end

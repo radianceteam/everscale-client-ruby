@@ -24,14 +24,6 @@ module TonSdk
       end
     end
 
-    class ResultOfBuildInfo
-      attr_reader :build_info
-
-      def initialize(a)
-        @build_info = a
-      end
-    end
-
     class BuildInfoDependency
       attr_reader :name, :git_commit
 
@@ -100,16 +92,6 @@ module TonSdk
     end
 
 
-
-
-
-
-
-
-
-
-
-
     #
     # functions
     #
@@ -155,8 +137,7 @@ module TonSdk
     end
 
     def self.resolve_app_request(ctx, pr_s)
-      pr_json = pr_s.to_h.to_json
-      Interop::request_to_native_lib(ctx, "client.resolve_app_request", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "client.resolve_app_request", pr_s.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ""

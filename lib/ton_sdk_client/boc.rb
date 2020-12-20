@@ -142,11 +142,11 @@ module TonSdk
       end
     end
 
-    def self.get_blockchain_config(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", pr_s.to_h.to_json) do |resp|
+    def self.parse_shardstate(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "boc.parse_shardstate", pr_s.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfGetBlockchainConfig.new(resp.result["config_boc"])
+            result: ResultOfParse.new(resp.result["parsed"])
           )
         else
           yield resp
@@ -154,11 +154,11 @@ module TonSdk
       end
     end
 
-    def self.parse_shardstate(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "boc.parse_shardstate", pr_s.to_h.to_json) do |resp|
+    def self.get_blockchain_config(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", pr_s.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfParse.new(resp.result["parsed"])
+            result: ResultOfGetBlockchainConfig.new(resp.result["config_boc"])
           )
         else
           yield resp
