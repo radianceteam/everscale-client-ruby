@@ -81,7 +81,7 @@ module TonSdk
       end
     end
 
-    class ResultOfGetBlockchainConfig
+    class ResultOfGetBocHash
       attr_reader :hash
 
       def initialize(a)

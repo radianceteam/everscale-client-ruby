@@ -83,7 +83,6 @@ describe TonSdk::Boc do
       expect { |b| TonSdk::Boc.get_blockchain_config(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
 
       TonSdk::Boc.get_blockchain_config(@c_ctx.context, pr1) { |a| @res = a }
-
       expect(@res.success?).to eq true
 
       cont_boc = File.read("spec/data/boc/get_blockchain_config2.txt")
