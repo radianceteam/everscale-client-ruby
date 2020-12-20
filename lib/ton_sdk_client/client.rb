@@ -60,8 +60,16 @@ module TonSdk
           raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
         end
         @type_ = type_
-        @result = result
-        @text = text
+
+        if !result.nil? && !text.nil?
+          raise ArgumentError.new("both 'result' and 'text' may not contain values at the same time")
+        end
+
+        if @type_ == :ok
+          @result = result
+        elsif @type_ == :error
+          @text = text
+        end
       end
 
       def to_h
