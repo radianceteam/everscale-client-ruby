@@ -12,7 +12,7 @@ describe TonSdk::Net do
       TonSdk::Net.query_collection(@c_ctx.context, pr1) { |a| @res1 = a }
       now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res1 || now >= timeout_at
+      sleep(0.1) until @res1 || now >= timeout_at # FIXME
 
       expect(@res1.success?).to eq true
 
@@ -24,7 +24,7 @@ describe TonSdk::Net do
       TonSdk::Net.query_collection(@c_ctx.context, pr2) { |a| @res2 = a }
       now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res2 || now >= timeout_at
+      sleep(0.1) until @res2 || now >= timeout_at # FIXME
 
       expect(@res2.success?).to eq true
       expect(@res2.result.result.length).to be > 0
@@ -40,7 +40,7 @@ describe TonSdk::Net do
       TonSdk::Net.query_collection(@c_ctx.context, pr3) { |a| @res3 = a }
       now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res3 || now >= timeout_at
+      sleep(0.1) until @res3 || now >= timeout_at # FIXME
 
       expect(@res3.success?).to eq true
       expect(@res3.result.result[0]["created_at"]).to be > 1562342740
@@ -60,7 +60,7 @@ describe TonSdk::Net do
       now = get_now_for_async_operation()
       now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res || now >= (timeout_at * 2)
+      sleep(0.1) until @res || now >= (timeout_at * 2) # FIXME
 
       expect(@res.success?).to eq true
       expect(@res.result.result["id"]).to_not eq nil
@@ -81,7 +81,7 @@ describe TonSdk::Net do
       TonSdk::Net.subscribe_collection(@c_ctx.context, pr1, cb) { |a| @res = a }
       now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res || now >= timeout_at
+      sleep(0.1) until @res || now >= timeout_at # FIXME
 
       expect(@res.success?).to eq true
 
