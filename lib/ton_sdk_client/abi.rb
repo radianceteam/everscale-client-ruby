@@ -149,9 +149,8 @@ module TonSdk
         init_params: nil
       )
         unless TYPES.include?(type_)
-          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
+          raise ArgumentError.new("unknown type: #{type_}; known types: #{TYPES}")
         end
-
         @type_ = type_
         @source = source
         @code = code
@@ -184,7 +183,7 @@ module TonSdk
             init_params: @init_params.to_h
           }
         else
-          raise ArgumentError.new("type #{@type_} is unknown; known types: #{TYPES}")
+          raise ArgumentError.new("unknown type: #{@type_}; known types: #{TYPES}")
         end
 
         h1.merge(h2)
@@ -216,7 +215,7 @@ module TonSdk
       def initialize(type_:, message: nil, abi:  nil, address: nil, deploy_set: nil,
         call_set: nil, signer:  nil, processing_try_index: 0)
         unless TYPES.include?(type_)
-          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
+          raise ArgumentError.new("unknown type: #{type_}; known types: #{TYPES}")
         end
 
         @type_ = type_
@@ -400,7 +399,7 @@ module TonSdk
 
       def initialize(body_type:, name:, value: nil, header: nil)
         unless MESSAGE_BODY_TYPE_VALUES.include?(body_type)
-          raise ArgumentError.new("body_type #{body_type} is unknown; known ones: #{MESSAGE_BODY_TYPE_VALUES}")
+          raise ArgumentError.new("unknown body_type: #{body_type}; known ones: #{MESSAGE_BODY_TYPE_VALUES}")
         end
 
         @body_type = body_type
@@ -452,7 +451,7 @@ module TonSdk
         when 'event'
           :event
         else
-          raise ArgumentError.new("body_type #{s} is unknown; known ones: #{MESSAGE_BODY_TYPE_VALUES}")
+          raise ArgumentError.new("unknown body_type: #{s}; known ones: #{MESSAGE_BODY_TYPE_VALUES}")
         end
       end
     end
