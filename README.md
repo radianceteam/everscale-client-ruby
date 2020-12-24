@@ -98,6 +98,7 @@ while other methods will deliver a result relatively fast, without a callback, a
 - ✅ processing
 - ✅ tvm
 - ✅ utils
+- ✅ debot (unstable)
 
 
 ## Documentation
@@ -151,6 +152,7 @@ rspec spec/boc_spec.rb
 - ✅ processing
 - ✅ tvm
 - ✅ utils
+- ✅ debot (in progress)
 
 
 ### Run the examples
@@ -189,19 +191,19 @@ factorize
   * Testing asyncronous code in Ruby is difficult and can incur hacks. Not all asyncronous code should be tested automatically via Rspec or other libraries, some should be instead tested manually once and then left alone thereafter:
   https://www.mikeperham.com/2015/12/14/how-to-test-multithreaded-code
 
-  * In some of the tests of the gem a "sleep" loop with a timeout are used to wait for an asyncronous operation to deliver a result, and this approach will do, although it can be replaced with a more idiomatic one. Owing to the side effects, at times some tests may fail. When it happens, try to increase a timeout:
+  * In some of the tests of the gem a "sleep" loop with a timeout are used to wait for an asyncronous operation to deliver a result, and this approach will do, although it can be replaced with a more idiomatic one. Oweing to the side effects, at times some tests may fail. When it happens, try to increase a timeout:
 
   ```ruby
   timeout_at = get_timeout_for_async_operation()
 
   # before, 5 seconds by default
-  sleep(0.1) until @res || now >= timeout_at
+  sleep(0.1) until @res || get_now() >= timeout_at
 
-  # after
-  sleep(0.1) until @res || now >= (timeout_at * 2)
+  # after, longer timeout
+  sleep(0.1) until @res || get_now() >= (timeout_at * 2)
   ```
 
-  * No automatic generator has been used to generate Ruby classes or bindings to the SDK. Why not? Because no appropriate simple and working one has been found.
+  * No automatic generator has been used to generate Ruby classes or bindings to the SDK. Why not Because no appropriate simple and working one has been found.
 
   * The constant `TonSdk::NATIVE_LIB_VERSION` holds a version of TON SDK native library which the gem supports.
 

@@ -78,7 +78,10 @@ module TonSdk
       attr_reader :type_, :msg, :context_id, :action, :prompt, :debot_addr
 
       # TODO
-      def initialize(type_:, msg:, context_id:, action:, prompt:, debot_addr:)
+      def initialize(type_:, msg: nil, context_id: nil, action: nil, prompt: nil, debot_addr: nil)
+        unless TYPE_VALUES.include?(type_)
+          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPE_VALUES}")
+        end
         @type_ = type_
         @msg = msg
         @context_id = context_id
@@ -89,7 +92,7 @@ module TonSdk
 
       def to_h
         {
-          type: @type_,
+          type: Helper.sym_to_capitalized_camel_case_str(@type_)
           msg: @msg,
           context_id: @context_id,
           action: @action,
@@ -109,6 +112,9 @@ module TonSdk
       attr_reader :type_, :value, :signing_box
 
       def initialize(type_:, value: nil, signing_box: nil)
+        unless TYPE_VALUES.include?(type_)
+          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPE_VALUES}")
+        end
         @type_ = type_
         @value = value
         @signing_box = signing_box
@@ -154,7 +160,7 @@ module TonSdk
     # functions
     #
 
-    # TODO app_debot_browser
+    # TODO app_debot_browser argument
     def self.start(ctx, pr_s, app_debot_browser = nil)
       Interop::request_to_native_lib(ctx, "debot.start", pr_s.to_h.to_json) do |resp|
         if resp.success?
@@ -167,8 +173,7 @@ module TonSdk
       end
     end
 
-
-    # TODO app_debot_browser
+    # TODO app_debot_browser argument
     def self.fetch(ctx, pr_s, app_debot_browser = nil)
       Interop::request_to_native_lib(ctx, "debot.fetch", pr_s.to_h.to_json) do |resp|
         if resp.success?
@@ -181,7 +186,6 @@ module TonSdk
       end
     end
 
-
     def self.execute(ctx, pr_s)
       Interop::request_to_native_lib(ctx, "debot.execute", pr_s.to_h.to_json) do |resp|
         if resp.success?
@@ -193,7 +197,6 @@ module TonSdk
         end
       end
     end
-
 
     def self.remove(ctx, pr_s)
       Interop::request_to_native_lib(ctx, "debot.remove", pr_s.to_h.to_json) do |resp|

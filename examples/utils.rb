@@ -9,7 +9,7 @@ p1 = TonSdk::Utils::ParamsOfConvertAddress.new(
 TonSdk::Utils.convert_address(@c_ctx.context, p1) do |res|
   if res.success?
     puts "convert_address"
-    puts "  source: #{account_id}"
-    puts "  result: #{res.result.address}"
+    puts "\tsource: #{account_id}"
+    puts "\tresult: #{res.result.address}"
   end
 end

@@ -13,7 +13,8 @@ TonSdk::Client.get_api_reference(@c_ctx.context) do |res|
   if res.success?
     puts "\r\n"
     puts "get_api_reference (first #{PRINT_RESULT_MAX_LEN} chars):\r\n"
-    puts "#{res.result.api.to_s[0..PRINT_RESULT_MAX_LEN]}"
+    short_res = cut_off_long_string(res.result.api)
+    puts short_res
   else
     puts "error: #{res.error}"
   end
