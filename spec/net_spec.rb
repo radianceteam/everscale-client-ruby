@@ -10,9 +10,8 @@ describe TonSdk::Net do
         limit: 1
       )
       TonSdk::Net.query_collection(@c_ctx.context, pr1) { |a| @res1 = a }
-      now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res1 || now >= timeout_at # FIXME
+      sleep(0.1) until @res1 || (get_now_for_async_operation() >= timeout_at)
 
       expect(@res1.success?).to eq true
 
@@ -22,9 +21,8 @@ describe TonSdk::Net do
         result: "id balance",
       )
       TonSdk::Net.query_collection(@c_ctx.context, pr2) { |a| @res2 = a }
-      now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res2 || now >= timeout_at # FIXME
+      sleep(0.1) until @res2 || (get_now_for_async_operation() >= timeout_at)
 
       expect(@res2.success?).to eq true
       expect(@res2.result.result.length).to be > 0
@@ -38,9 +36,8 @@ describe TonSdk::Net do
         result: "body created_at"
       )
       TonSdk::Net.query_collection(@c_ctx.context, pr3) { |a| @res3 = a }
-      now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res3 || now >= timeout_at # FIXME
+      sleep(0.1) until @res3 || (get_now_for_async_operation() >= timeout_at)
 
       expect(@res3.success?).to eq true
       expect(@res3.result.result[0]["created_at"]).to be > 1562342740
@@ -57,10 +54,8 @@ describe TonSdk::Net do
       )
 
       TonSdk::Net.wait_for_collection(@c_ctx.context, pr1) { |a| @res = a }
-      now = get_now_for_async_operation()
-      now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res || now >= (timeout_at * 2) # FIXME
+      sleep(0.1) until @res || (get_now_for_async_operation() >= (timeout_at * 2))
 
       expect(@res.success?).to eq true
       expect(@res.result.result["id"]).to_not eq nil
@@ -79,14 +74,13 @@ describe TonSdk::Net do
       )
 
       TonSdk::Net.subscribe_collection(@c_ctx.context, pr1, cb) { |a| @res = a }
-      now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res || now >= timeout_at # FIXME
+      sleep(0.1) until @res || (get_now_for_async_operation() >= timeout_at)
 
       expect(@res.success?).to eq true
 
       TonSdk::Net.unsubscribe(@c_ctx.context, @res.result) { |_| }
-      sleep 1
+      sleep(1)
     end
   end
 end

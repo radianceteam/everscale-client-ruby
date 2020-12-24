@@ -152,7 +152,7 @@ rspec spec/boc_spec.rb
 - ✅ processing
 - ✅ tvm
 - ✅ utils
-- ✅ debot (in progress)
+- ✅ debot
 
 
 ### Run the examples
