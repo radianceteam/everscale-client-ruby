@@ -89,6 +89,29 @@ module TonSdk
       end
     end
 
+    class ParamsOfGetCodeFromTvc
+      attr_reader :tvc
+
+      def initialize(a)
+        @tvc = a
+      end
+
+      def to_h
+        {
+          tvc: @tvc
+        }
+      end
+    end
+
+    class ResultOfGetCodeFromTvc
+      attr_reader :code
+
+      def initialize(a)
+        @code = a
+      end
+    end
+
+
 
     #
     # functions
@@ -171,6 +194,18 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetBocHash.new(resp.result["hash"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.get_code_from_tvc(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "boc.get_code_from_tvc", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfGetCodeFromTvc.new(resp.result["code"])
           )
         else
           yield resp

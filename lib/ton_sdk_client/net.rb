@@ -143,6 +143,22 @@ module TonSdk
       end
     end
 
+    class ParamsOfFindLastShardBlock
+      attr_reader :address
+
+      def initialize(a)
+        @address = a
+      end
+    end
+
+    class ResultOfFindLastShardBlock
+      attr_reader :block_id
+
+      def initialize(a)
+        @block_id = a
+      end
+    end
+
 
 
     #
@@ -227,11 +243,6 @@ module TonSdk
       end
     end
 
-
-
-
-
-
     def self.suspend(ctx)
       Interop::request_to_native_lib(ctx, "net.suspend", "") do |resp|
         if resp.success?
@@ -246,6 +257,18 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "net.resume", "") do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(result: "")
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.find_last_shard_block(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "net.find_last_shard_block", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfFindLastShardBlock.new(resp.result["block_id"])
+          )
         else
           yield resp
         end

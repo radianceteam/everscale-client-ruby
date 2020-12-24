@@ -13,9 +13,6 @@ module TonSdk
     class DebotAction
       attr_reader :description, :name, :action_type, :to, :attributes, :misc
 
-      # TODO 'name' keyword?
-
-
       def initialize(description:, name:, action_type:, to:, attributes:, misc:)
         @description = description
         @name = name
