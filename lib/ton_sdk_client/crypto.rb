@@ -723,6 +723,20 @@ module TonSdk
       end
     end
 
+    class ResultOfSigningBoxGetPublicKey
+      attr_reader :pubkey
+
+      def initialize(a)
+        @pubkey = a
+      end
+
+      def to_h
+        {
+          pubkey: @pubkey
+        }
+      end
+    end
+
 
     #
     # functions
