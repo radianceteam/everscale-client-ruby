@@ -214,5 +214,29 @@ describe TonSdk::Crypto do
       expect(@res.success?).to eq true
       expect(@res.result.data).to eq "w5QOGsJodQ=="
     end
+
+    it "#signing_box" do
+      kp = TonSdk::Crypto::KeyPair.new(
+        public_: "1869b7ef29d58026217e9cf163cbfbd0de889bdf1bf4daebf5433a312f5b8d6e",
+        secret: "56b6a77093d6fdf14e593f36275d872d75de5b341942376b2a08759f3cbae78f"
+      )
+
+      TonSdk::Crypto.get_signing_box(@c_ctx.context, kp) { |a| @res1 = a }
+      sleep(0.1) until @res1
+      expect(@res1.success?).to eq true
+      sb_handle = @res1.result.handle
+      expect(sb_handle).to_not eq nil
+      
+
+      reg_sb = TonSdk::Crypto::RegisteredSigningBox.new(sb_handle)
+      TonSdk::Crypto.signing_box_get_public_key(@c_ctx.context, reg_sb) do |a|
+        @res2 = a
+      end
+      sleep(0.1) until @res2
+
+
+      expect(@res2.success?).to eq true
+      expect(@res2.result.pubkey).to eq ""
+    end
   end
 end

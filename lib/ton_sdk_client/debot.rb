@@ -25,7 +25,7 @@ module TonSdk
       def to_h
         {
           description: @description,
-          name = @name,
+          name: @name,
           action_type: @action_type,
           to: @to,
           attributes: @attributes,
@@ -89,7 +89,7 @@ module TonSdk
 
       def to_h
         {
-          type: Helper.sym_to_capitalized_camel_case_str(@type_)
+          type: Helper.sym_to_capitalized_camel_case_str(@type_),
           msg: @msg,
           context_id: @context_id,
           action: @action,

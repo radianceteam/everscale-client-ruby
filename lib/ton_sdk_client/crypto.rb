@@ -1149,19 +1149,6 @@ module TonSdk
       end
     end
 
-
-
-
-
-
-    # register_signing_box – Register an application implemented signing box.
-    # get_signing_box – Creates a default signing box implementation.
-    # signing_box_get_public_key – Returns public key of signing key pair.
-    # signing_box_sign – Returns signed user data.
-    # remove_signing_box – Removes signing box from SDK.
-
-
-
     def self.register_signing_box(ctx, pr_s)
       Interop::request_to_native_lib(ctx, "crypto.register_signing_box", pr_s.to_h.to_json) do |resp|
         if resp.success?

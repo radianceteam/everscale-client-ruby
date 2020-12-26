@@ -4,6 +4,9 @@ CONTRACTS_PATH = "data/contracts"
 TESTS_DATA_DIR = "spec/data/"
 ASYNC_OPERATION_TIMEOUT_SECONDS = 5
 
+class TestClient
+end
+
 def get_now_for_async_operation
   Process.clock_gettime(Process::CLOCK_MONOTONIC)
 end
