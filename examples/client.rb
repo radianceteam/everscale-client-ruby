@@ -23,7 +23,7 @@ end
 TonSdk::Client.build_info(@c_ctx.context) do |res|
   if res.success?
     puts "build_info build_number: #{res.result.build_number}"
-    puts "build_info dependencies"
+    puts "build_info dependencies:"
     res.result.dependencies.each do |x|
       puts "    #{x.name}, #{x.git_commit}"
     end
