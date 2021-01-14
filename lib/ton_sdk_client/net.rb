@@ -274,5 +274,32 @@ module TonSdk
         end
       end
     end
+
+
+
+    # TODO
+    def self.fetch_endpoints(ctx)
+      Interop::request_to_native_lib(ctx, "net.fetch_endpoints", nil) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: resp.result["endpoints"] #TODO
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.set_endpoints(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "net.set_endpoints", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: nil
+          )
+        else
+          yield resp
+        end
+      end
+    end
   end
 end

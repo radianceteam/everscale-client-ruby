@@ -88,7 +88,8 @@ RSpec.configure do |config|
   config.before(:each) do
     cfg = TonSdk::ClientConfig.new(
       network: TonSdk::NetworkConfig.new(
-        server_address: "net.ton.dev"
+        # server_address: "net.ton.dev"
+        endpoints: ["net.ton.dev"]
       )
     )
     @c_ctx = TonSdk::ClientContext.new(cfg.to_h.to_json)

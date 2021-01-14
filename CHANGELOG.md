@@ -2,7 +2,8 @@
 
 1.2.x
 -----
-* ruby 3.0 is the minimal version of ruby supported
+* ruby 3.0 is now the minimal version of ruby supported
+
 
 1.1.x
 -----
@@ -12,7 +13,20 @@
 * new `Boc` `.get_boc_hash()`
 * new `Crypto` `.register_signing_box()`, `.get_signing_box()`, `.signing_box_get_public_key()`,
 `.signing_box_sign()`, `remove_signing_box()`
-* new paramentes in `NetworkConfig`
+* new paramentes in `NetworkConfig`; particularly
+
+```
+  server_address: "example.com"
+```
+
+becomes
+
+```
+  endpoints: ["example.com"]
+```
+
+check out the main repository for the details
+
 * new data types/classes in several modules
 
 
