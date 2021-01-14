@@ -5,6 +5,21 @@ module TonSdk
     # types
     #
 
+    NET_ERROR_CODES = {
+      query_failed: 601,
+      subscribe_failed: 602,
+      wait_for_failed: 603,
+      get_subscription_result_failed: 604,
+      invalid_server_response: 605,
+      clock_out_of_sync: 606,
+      wait_for_timeout: 607,
+      graphql_error: 608,
+      network_module_suspended: 609,
+      websocket_disconnected: 610,
+      not_supported: 611,
+      no_endpoints_provided: 612
+    }
+
     class OrderBy
       SORT_DIRECTION_VALUES = [:asc, :desc]
 
@@ -159,6 +174,19 @@ module TonSdk
       end
     end
 
+    class EndpointsSet
+      attr_reader :endpoints
+
+      def initialize(a)
+        @endpoints = a
+      end
+
+      def to_h
+        {
+          endpoints: @endpoints
+        }
+      end
+    end
 
 
     #
@@ -229,8 +257,6 @@ module TonSdk
       end
     end
 
-
-    # TODO
     def self.query(ctx, pr_s)
       Interop::request_to_native_lib(ctx, "net.query", pr_s.to_h.to_json) do |resp|
         if resp.success?
@@ -275,14 +301,11 @@ module TonSdk
       end
     end
 
-
-
-    # TODO
     def self.fetch_endpoints(ctx)
       Interop::request_to_native_lib(ctx, "net.fetch_endpoints", nil) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: resp.result["endpoints"] #TODO
+            result: EndpointsSet.new(resp.result["endpoints"])
           )
         else
           yield resp
