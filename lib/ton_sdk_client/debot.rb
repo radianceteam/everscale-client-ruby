@@ -1,14 +1,19 @@
 module TonSdk
 
-  # in the main repository this module is still unstable
+  # NOTE
+  # as of 15 jan 2021, in the main repository this module is still unstable
   module Debot
 
     #
     # types
     #
 
-    # TODO
-
+    DEBOT_ERROR_CODE = {
+      debot_start_failed: 801,
+      debot_fetch_failed: 802,
+      debot_execution_failed: 803,
+      debot_invalid_handle: 804
+    }
 
     class DebotAction
       attr_reader :description, :name, :action_type, :to, :attributes, :misc
@@ -41,11 +46,7 @@ module TonSdk
         @address = a
       end
 
-      def to_h
-        {
-          address: @address
-        }
-      end
+      def to_h() = { address: @address }
     end
 
     class RegisteredDebot
@@ -55,11 +56,7 @@ module TonSdk
         @debot_handle = a
       end
 
-      def to_h
-        {
-          debot_handle: @debot_handle
-        }
-      end
+      def to_h() = { debot_handle: @debot_handle }
     end
 
     class ParamsOfAppDebotBrowser
@@ -74,7 +71,6 @@ module TonSdk
       ]
       attr_reader :type_, :msg, :context_id, :action, :prompt, :debot_addr
 
-      # TODO
       def initialize(type_:, msg: nil, context_id: nil, action: nil, prompt: nil, debot_addr: nil)
         unless TYPE_VALUES.include?(type_)
           raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPE_VALUES}")
@@ -125,11 +121,7 @@ module TonSdk
         @address = a
       end
 
-      def to_h
-        {
-          address: @address
-        }
-      end
+      def to_h() = { address: @address }
     end
 
     class ParamsOfExecute
@@ -147,10 +139,6 @@ module TonSdk
         }
       end
     end
-
-
-
-
 
 
     #

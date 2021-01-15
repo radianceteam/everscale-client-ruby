@@ -205,7 +205,7 @@ factorize
 
   * No automatic generator has been used to generate Ruby classes or bindings to the SDK. Why not Because no appropriate simple and working one has been found.
 
-  * The constant `TonSdk::NATIVE_LIB_VERSION` holds a version of TON SDK native library which the gem supports. The version of the gem which is `TonSdk::NATIVE_LIB_VERSION`, and `TonSdk::VERSION` aren't equal to each other.
+  * The constant `TonSdk::NATIVE_LIB_VERSION` holds a version of TON SDK native library which the gem supports. The version of the gem which is `TonSdk::NATIVE_LIB_VERSION`, and `TonSdk::VERSION` don't necessarily match each other.
 
 
 ## Credits

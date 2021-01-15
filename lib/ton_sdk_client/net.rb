@@ -5,7 +5,7 @@ module TonSdk
     # types
     #
 
-    NET_ERROR_CODES = {
+    NET_ERROR_CODE = {
       query_failed: 601,
       subscribe_failed: 602,
       wait_for_failed: 603,
