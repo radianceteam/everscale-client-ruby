@@ -190,16 +190,13 @@ module TonSdk
     # functions
     #
 
-
-
-
-    # TODO
-
-
     def self.start(ctx, pr_s, app_browser_obj)
       # TODO
-      # the handlers in 'start' and 'fetch' are identical
+      # 1) the handlers in 'start' and 'fetch' are identical
       # verify that it works and get rid of repetition
+
+      # 2) this all can be replaced with 'app_browser_obj.request(...)' and 
+      # 'app_browser_obj.notify(...)' calls, possibly
 
       app_resp_handler = Proc.new do |data|
         req_data = data["request_data"]
@@ -289,11 +286,13 @@ module TonSdk
       end
     end
 
-    # TODO
     def self.fetch(ctx, pr_s, app_browser_obj)
-            # TODO
-      # the handlers in 'start' and 'fetch' are identical
+      # TODO
+      # 1) the handlers in 'start' and 'fetch' are identical
       # verify that it works and get rid of repetition
+
+      # 2) this all can be replaced with 'app_browser_obj.request(...)' and 
+      # 'app_browser_obj.notify(...)' calls, possibly
 
       app_resp_handler = Proc.new do |data|
         req_data = data["request_data"]
