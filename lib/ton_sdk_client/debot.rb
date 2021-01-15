@@ -123,17 +123,16 @@ module TonSdk
       private
 
       def self.parse_type(s)
-        s_dc = s.downcase()
-        case s_dc
-        when 'log', 'switch', 'input'
-          s_dc.to_sym
-        when 'switchcompleted'
+        case s
+        when 'Log', 'Switch', 'Input'
+          s_dc.downcase.to_sym
+        when 'SwitchCompleted'
           :switch_completed
-        when 'showaction'
+        when 'ShowAction'
           :show_action
-        when 'getsigningbox'
+        when 'GetSigningBox'
           :get_signing_box
-        when 'invokedebot'
+        when 'InvokeDebot'
           :invoke_debot
         else
           raise ArgumentError.new("unknown type: #{s}; known ones: #{TYPE_VALUES}")
@@ -191,17 +190,85 @@ module TonSdk
     # functions
     #
 
-    # TODO app_debot_browser argument
-    def self.start(ctx, pr_s, app_browser)
+
+
+
+    # TODO
+
+
+    def self.start(ctx, pr_s, app_browser_obj)
+      # TODO
+      # the handlers in 'start' and 'fetch' are identical
+      # verify that it works and get rid of repetition
+
       app_resp_handler = Proc.new do |data|
-        case data["request_data"]
+        req_data = data["request_data"]
+        case data["type"]
         when "Log"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          app_browser_obj.log(new_obj.msg)
+
         when "Switch"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          app_browser_obj.switch_to(new_obj.context_id)
+
         when "SwitchCompleted"
+          app_browser_obj.switch_completed()
+
         when "ShowAction"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          app_browser_obj.show_action(new_obj.action)
+
         when "Input"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          # TODO possibly in a new thread or fiber
+          app_req_res = begin
+            res = app_browser_obj.input(new_obj.prompt)
+            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :input, value: res))
+          rescue Exception => e
+            Client::AppRequestResult(type_: :error, text: e.message)
+          end
+
+          pr_s = Client::ParamsOfResolveAppRequest.new(
+            app_request_id: data["app_request_id"],
+            result: app_req_res
+          )
+          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
+
         when "GetSigningBox"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          # TODO possibly in a new thread or fiber
+          app_req_res = begin
+            res = app_browser_obj.get_signing_box()
+            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :get_signing_box, signing_box: res))
+          rescue Exception => e
+            Client::AppRequestResult(type_: :error, text: e.message)
+          end
+
+          pr_s = Client::ParamsOfResolveAppRequest.new(
+            app_request_id: data["app_request_id"],
+            result: app_req_res
+          )
+          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
+
         when "InvokeDebot"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          # TODO possibly in a new thread or fiber
+          app_req_res = begin
+            res = app_browser_obj.invoke_debot(new_obj.debot_addr, new_obj.action)
+            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :invoke_debot))
+          rescue Exception => e
+            Client::AppRequestResult(type_: :error, text: e.message)
+          end
+
+          pr_s = Client::ParamsOfResolveAppRequest.new(
+            app_request_id: data["app_request_id"],
+            result: app_req_res
+          )
+          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
+
+        else
+          # TODO log 'unknown option'
         end
       end
 
@@ -222,18 +289,90 @@ module TonSdk
       end
     end
 
-    # TODO app_debot_browser argument
-    def self.fetch(ctx, pr_s, app_browser)
+    # TODO
+    def self.fetch(ctx, pr_s, app_browser_obj)
+            # TODO
+      # the handlers in 'start' and 'fetch' are identical
+      # verify that it works and get rid of repetition
 
-      # TODO use 'custom_response_handler'?
+      app_resp_handler = Proc.new do |data|
+        req_data = data["request_data"]
+        case data["type"]
+        when "Log"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          app_browser_obj.log(new_obj.msg)
 
+        when "Switch"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          app_browser_obj.switch_to(new_obj.context_id)
 
+        when "SwitchCompleted"
+          app_browser_obj.switch_completed()
 
+        when "ShowAction"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          app_browser_obj.show_action(new_obj.action)
 
+        when "Input"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          # TODO possibly in a new thread or fiber
+          app_req_res = begin
+            res = app_browser_obj.input(new_obj.prompt)
+            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :input, value: res))
+          rescue Exception => e
+            Client::AppRequestResult(type_: :error, text: e.message)
+          end
 
+          pr_s = Client::ParamsOfResolveAppRequest.new(
+            app_request_id: data["app_request_id"],
+            result: app_req_res
+          )
+          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
 
+        when "GetSigningBox"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          # TODO possibly in a new thread or fiber
+          app_req_res = begin
+            res = app_browser_obj.get_signing_box()
+            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :get_signing_box, signing_box: res))
+          rescue Exception => e
+            Client::AppRequestResult(type_: :error, text: e.message)
+          end
 
-      Interop::request_to_native_lib(ctx, "debot.fetch", pr_s.to_h.to_json) do |resp|
+          pr_s = Client::ParamsOfResolveAppRequest.new(
+            app_request_id: data["app_request_id"],
+            result: app_req_res
+          )
+          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
+
+        when "InvokeDebot"
+          new_obj = ParamsOfAppDebotBrowser.from_json(data)
+          # TODO possibly in a new thread or fiber
+          app_req_res = begin
+            res = app_browser_obj.invoke_debot(new_obj.debot_addr, new_obj.action)
+            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :invoke_debot))
+          rescue Exception => e
+            Client::AppRequestResult(type_: :error, text: e.message)
+          end
+
+          pr_s = Client::ParamsOfResolveAppRequest.new(
+            app_request_id: data["app_request_id"],
+            result: app_req_res
+          )
+          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
+
+        else
+          # TODO log 'unknown option'
+        end
+      end
+
+      Interop::request_to_native_lib(
+        ctx,
+        "debot.fetch",
+        pr_s.to_h.to_json,
+        debot_app_response_handler: app_resp_handler,
+        single_thread_only: false
+      ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: RegisteredDebot.new(resp.result["debot_handle"])

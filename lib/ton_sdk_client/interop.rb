@@ -127,16 +127,14 @@ module TonSdk
     def self.request_to_native_lib(
       ctx,
       function_name,
-      function_params_json,
+      function_params_json = nil,
       custom_response_handler: nil,
       debot_app_response_handler: nil,
       single_thread_only: true
     )
-
       function_name_tc_str = TcStringData.from_string(function_name)
-
-      function_params_json2 = function_params_json || ""
-      function_params_json_tc_str = TcStringData.from_string(function_params_json2)
+      function_params_json_str = function_params_json || ""
+      function_params_json_tc_str = TcStringData.from_string(function_params_json_str)
 
       sm = Concurrent::Semaphore.new(1)
       if single_thread_only == true
@@ -179,18 +177,15 @@ module TonSdk
           when TcResponseCodes::NOP
             nil
 
-          when TcResponseCodes::APP_REQUEST
-            if !debot_app_response_handler.nil?
-              debot_app_response_handler.call(tc_data_json_content)
-            end
-
-          when TcResponseCodes::APP_NOTIFY
+          when TcResponseCodes::APP_REQUEST, TcResponseCodes::APP_NOTIFY
             if !debot_app_response_handler.nil?
               debot_app_response_handler.call(tc_data_json_content)
             end
 
           when TcResponseCodes::CUSTOM
-            custom_response_handler.call(tc_data_json_content) if !custom_response_handler.nil?
+            if !custom_response_handler.nil?
+              custom_response_handler.call(tc_data_json_content)
+            end
 
           else
             raise ArgumentError.new("unsupported response type: #{response_type}")

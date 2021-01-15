@@ -3,8 +3,7 @@ require 'spec_helper'
 describe TonSdk::Debot do
 
   # TODO in the main repository 'debot' is still unstable, as of 15 jan 2021
-  # finish this once 'debot' has become stable
-
+  # finish the tests once 'debot' has become stable
 
   context "methods of debot" do
     it "#start" do
