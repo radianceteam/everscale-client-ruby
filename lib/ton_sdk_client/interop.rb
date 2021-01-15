@@ -66,6 +66,8 @@ module TonSdk
       SUCCESS = 0
       ERROR = 1
       NOP = 2
+      APP_REQUEST = 3
+      APP_NOTIFY = 4
       CUSTOM = 100
     end
 
@@ -127,6 +129,7 @@ module TonSdk
       function_name,
       function_params_json,
       custom_response_handler: nil,
+      debot_app_response_handler: nil,
       single_thread_only: true
     )
 
@@ -175,6 +178,16 @@ module TonSdk
 
           when TcResponseCodes::NOP
             nil
+
+          when TcResponseCodes::APP_REQUEST
+            if !debot_app_response_handler.nil?
+              debot_app_response_handler.call(tc_data_json_content)
+            end
+
+          when TcResponseCodes::APP_NOTIFY
+            if !debot_app_response_handler.nil?
+              debot_app_response_handler.call(tc_data_json_content)
+            end
 
           when TcResponseCodes::CUSTOM
             custom_response_handler.call(tc_data_json_content) if !custom_response_handler.nil?

@@ -8,12 +8,12 @@ module TonSdk
     # types
     #
 
-    DEBOT_ERROR_CODE = {
-      debot_start_failed: 801,
-      debot_fetch_failed: 802,
-      debot_execution_failed: 803,
-      debot_invalid_handle: 804
-    }
+    module DebotErrorCodes
+      DEBOT_START_FAILED = 801
+      DEBOT_FETCH_FAILED = 802
+      DEBOT_EXECUTION_FAILED = 803
+      DEBOT_INVALID_HANDLE = 804
+    end
 
     class DebotAction
       attr_reader :description, :name, :action_type, :to, :attributes, :misc
@@ -36,6 +36,19 @@ module TonSdk
           attributes: @attributes,
           misc: @misc
         }
+      end
+
+      def self.from_json(j)
+        return nil if j.nil?
+
+        self.new(
+          description: j["description"],
+          name: j["name"],
+          action_type: j["action_type"],
+          to: j["to"],
+          attributes: j["attributes"],
+          misc: j["misc"]
+        )
       end
     end
 
@@ -93,6 +106,39 @@ module TonSdk
           debot_addr: @debot_addr
         }
       end
+
+      def self.from_json(j)
+        return nil if j.nil?
+
+        self.new(
+          type_: self.parse_type(j["type"]),
+          msg: j["msg"],
+          context_id: j["context_id"],
+          action: DebotAction.from_json(j["action"]),
+          prompt: j["prompt"],
+          debot_addr: j["debot_addr"]
+        )
+      end
+
+      private
+
+      def self.parse_type(s)
+        s_dc = s.downcase()
+        case s_dc
+        when 'log', 'switch', 'input'
+          s_dc.to_sym
+        when 'switchcompleted'
+          :switch_completed
+        when 'showaction'
+          :show_action
+        when 'getsigningbox'
+          :get_signing_box
+        when 'invokedebot'
+          :invoke_debot
+        else
+          raise ArgumentError.new("unknown type: #{s}; known ones: #{TYPE_VALUES}")
+        end
+      end
     end
 
     class ResultOfAppDebotBrowser
@@ -146,8 +192,26 @@ module TonSdk
     #
 
     # TODO app_debot_browser argument
-    def self.start(ctx, pr_s, app_debot_browser = nil)
-      Interop::request_to_native_lib(ctx, "debot.start", pr_s.to_h.to_json) do |resp|
+    def self.start(ctx, pr_s, app_browser)
+      app_resp_handler = Proc.new do |data|
+        case data["request_data"]
+        when "Log"
+        when "Switch"
+        when "SwitchCompleted"
+        when "ShowAction"
+        when "Input"
+        when "GetSigningBox"
+        when "InvokeDebot"
+        end
+      end
+
+      Interop::request_to_native_lib(
+        ctx,
+        "debot.start",
+        pr_s.to_h.to_json,
+        debot_app_response_handler: app_resp_handler,
+        single_thread_only: false
+      ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: RegisteredDebot.new(resp.result["debot_handle"])
@@ -159,7 +223,16 @@ module TonSdk
     end
 
     # TODO app_debot_browser argument
-    def self.fetch(ctx, pr_s, app_debot_browser = nil)
+    def self.fetch(ctx, pr_s, app_browser)
+
+      # TODO use 'custom_response_handler'?
+
+
+
+
+
+
+
       Interop::request_to_native_lib(ctx, "debot.fetch", pr_s.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(

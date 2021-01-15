@@ -5,20 +5,20 @@ module TonSdk
     # types
     #
 
-    NET_ERROR_CODE = {
-      query_failed: 601,
-      subscribe_failed: 602,
-      wait_for_failed: 603,
-      get_subscription_result_failed: 604,
-      invalid_server_response: 605,
-      clock_out_of_sync: 606,
-      wait_for_timeout: 607,
-      graphql_error: 608,
-      network_module_suspended: 609,
-      websocket_disconnected: 610,
-      not_supported: 611,
-      no_endpoints_provided: 612
-    }
+    module NetErrorCodes
+      QUERY_FAILED = 601
+      SUBSCRIBE_FAILED = 602
+      WAIT_FOR_FAILED = 603
+      GET_SUBSCRIPTION_FAILED = 604
+      INVALID_SERVER_RESPONSE = 605
+      CLOCK_OUT_OF_SYNC = 606
+      WAIT_FOR_TIMEOUT = 607
+      GRAPHQL_ERROR = 608
+      NETWORK_MODULE_SUSPENDED = 609
+      WEBSOCKET_DISCONNECTED = 610
+      NOT_SUPPORTED = 611
+      NO_ENDPOINTS_PROVIDED = 612
+    end
 
     class OrderBy
       SORT_DIRECTION_VALUES = [:asc, :desc]

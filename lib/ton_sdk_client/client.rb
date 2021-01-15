@@ -51,6 +51,15 @@ module TonSdk
       end
     end
 
+    class ParamsOfAppRequest
+      attr_reader :app_request_id, :request_data
+
+      def initialize(app_request_id:, request_data:)
+        @app_request_id = app_request_id
+        @request_data = request_data
+      end
+    end
+
     class AppRequestResult
       TYPES = [:ok, :error]
       attr_reader :type_, :text, :result
