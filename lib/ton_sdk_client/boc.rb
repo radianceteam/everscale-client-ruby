@@ -12,11 +12,7 @@ module TonSdk
         @boc = a
       end
 
-      def to_h
-        {
-          boc: @boc
-        }
-      end
+      def to_h() = { boc: @boc }
     end
 
     class ResultOfParse
