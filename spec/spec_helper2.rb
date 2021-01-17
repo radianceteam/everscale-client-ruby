@@ -11,38 +11,36 @@ module AbiVersion
   V2 = "abi_v2"
 end
 
-def get_now_for_async_operation() = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+def get_now_for_async_operation = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
-def get_timeout_for_async_operation() = Process.clock_gettime(Process::CLOCK_MONOTONIC) + ASYNC_OPERATION_TIMEOUT_SECONDS
+def get_timeout_for_async_operation = Process.clock_gettime(Process::CLOCK_MONOTONIC) + ASYNC_OPERATION_TIMEOUT_SECONDS
 
 def b64_from_hex(hex_digest) = [[hex_digest].pack("H*")].pack("m0")
 
-def load_abi(name:, abi_version:)
-  cont_json = File.read("#{TESTS_DATA_DIR}/contracts/#{abi_version}/#{name}.abi.json")
+def load_abi(name:, version:)
+  cont_json = File.read("#{TESTS_DATA_DIR}/contracts/#{version}/#{name}.abi.json")
   TonSdk::Abi::Abi.new(
     type_: :contract,
     value: TonSdk::Abi::AbiContract.from_json(JSON.parse(cont_json))
   )
 end
 
-def load_tvc(name:, abi_version:)
-  tvc_cont_bin = IO.binread("#{TESTS_DATA_DIR}/contracts/#{abi_version}/#{name}.tvc")
+def load_tvc(name:, version:)
+  tvc_cont_bin = IO.binread("#{TESTS_DATA_DIR}/contracts/#{version}/#{name}.tvc")
   Base64::strict_encode64(tvc_cont_bin)
 end
 
 def get_grams_from_giver(ctx, to_address)
-  abi = load_abi(name: "Giver", abi_version: AbiVersion::V1)
-  input = {
-    "dest": to_address,
-    "amount": AMOUNT_FROM_GIVER
-  }.to_json
-
+  abi = load_abi(name: "Giver", version: AbiVersion::V1)
   par_enc_msg = TonSdk::Abi::ParamsOfEncodeMessage.new(
     address: GIVER_ADDRESS,
     abi: abi,
     call_set: TonSdk::Abi::CallSet.new(
       function_name: "sendGrams",
-      input: input,
+      input: {
+        dest: to_address,
+        amount: AMOUNT_FROM_GIVER
+      },
     ),
     signer: TonSdk::Abi::Signer.new(type_: :none)
   )
@@ -55,7 +53,6 @@ def get_grams_from_giver(ctx, to_address)
   TonSdk::Processing::process_message(ctx, pr_s) do |res|
     if res.success?
       res.result.out_messages.map do |msg|
-        # TODO
         Boc.parse_message(ctx, TonSdk::Boc::ParamsOfParse.new(msg))
       end
     else

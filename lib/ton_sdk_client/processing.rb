@@ -40,7 +40,7 @@ module TonSdk
     class ParamsOfWaitForTransaction
       attr_reader :abi, :message, :shard_block_id, :send_events
 
-      def initialize(abi: nil, message:, shard_block_id:,  send_events:)
+      def initialize(abi: nil, message:, shard_block_id:, send_events:)
         @abi = abi
         @message = message
         @shard_block_id = shard_block_id

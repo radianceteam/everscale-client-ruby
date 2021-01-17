@@ -23,19 +23,22 @@ module TonSdk
     def initialize(result: nil, error: nil)
       if !result.nil? && !error.nil?
         raise ArgumentError.new('only either argument, result or error, should be specified')
+      elsif !result.nil?
+        @result = result
+      elsif !error.ni?
+        @error = SdkError.new(
+          code: error["code"],
+          message: error["message"],
+          data: error["data"]
+        )
+      else
+        raise ArgumentError.new('some arguments are wrong; provide either result or error')
       end
 
-      @result = result
-      @error = error
       self
     end
 
-    def success?
-      !@result.nil?
-    end
-
-    def failure?
-      !@error.nil?
-    end
+    def success? = !@result.nil?
+    def failure? = !@error.nil?
   end
 end

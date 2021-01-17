@@ -182,7 +182,16 @@ module TonSdk
               debot_app_response_handler.call(tc_data_json_content)
             end
 
+          # TODO
+          # think of a return value, namely, calling a block via 'yield',
+          # for the cases when response_type isn't equal to 'SUCCESS' or 'ERROR';
+          # as for the time being, it'll be called with success and "" (empty string) as a value
+
           when TcResponseCodes::CUSTOM
+            if block_given?
+              yield NativeLibResponsetResult.new(result: "")
+            end
+
             if !custom_response_handler.nil?
               custom_response_handler.call(tc_data_json_content)
             end
