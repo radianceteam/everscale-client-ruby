@@ -1,5 +1,10 @@
 module TonSdk
   module Abi
+
+    #
+    # types
+    #
+
     class Abi
       TYPES = [:contract, :json, :handle, :serialized]
       attr_reader :type_, :value
@@ -133,12 +138,19 @@ module TonSdk
       TYPES = [:message, :state_init, :tvc]
       attr_reader :type_, :source, :code, :data, :library, :tvc, :public_key, :init_params
 
-      def initialize(type_:, source: nil, code: nil, data: nil, library: nil, tvc: nil,
-          public_key: nil, init_params: nil)
+      def initialize(
+        type_:,
+        source: nil,
+        code: nil,
+        data: nil,
+        library: nil,
+        tvc: nil,
+        public_key: nil,
+        init_params: nil
+      )
         unless TYPES.include?(type_)
-          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
+          raise ArgumentError.new("unknown type: #{type_}; known types: #{TYPES}")
         end
-
         @type_ = type_
         @source = source
         @code = code
@@ -171,7 +183,7 @@ module TonSdk
             init_params: @init_params.to_h
           }
         else
-          raise ArgumentError.new("type #{@type_} is unknown; known types: #{TYPES}")
+          raise ArgumentError.new("unknown type: #{@type_}; known types: #{TYPES}")
         end
 
         h1.merge(h2)
@@ -201,9 +213,9 @@ module TonSdk
         :signer, :processing_try_index
 
       def initialize(type_:, message: nil, abi:  nil, address: nil, deploy_set: nil,
-        call_set: nil, signer:  nil, processing_try_index: nil)
+        call_set: nil, signer:  nil, processing_try_index: 0)
         unless TYPES.include?(type_)
-          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
+          raise ArgumentError.new("unknown type: #{type_}; known types: #{TYPES}")
         end
 
         @type_ = type_
@@ -245,7 +257,7 @@ module TonSdk
     class ParamsOfEncodeMessageBody
       attr_reader :abi, :call_set, :is_internal, :signer, :processing_try_index
 
-      def initialize(abi:, call_set:, is_internal:, signer:, processing_try_index: nil)
+      def initialize(abi:, call_set:, is_internal:, signer:, processing_try_index: 0)
         @abi = abi
         @call_set = call_set
         @is_internal = is_internal
@@ -258,7 +270,7 @@ module TonSdk
           abi: @abi.to_h,
           call_set: @call_set.to_h,
           is_internal: @is_internal,
-          signer: @singer.to_h,
+          signer: @signer.to_h,
           processing_try_index: @processing_try_index
         }
       end
@@ -304,7 +316,7 @@ module TonSdk
     class ParamsOfEncodeMessage
       attr_reader :abi, :address, :deploy_set, :call_set, :signer, :processing_try_index
 
-      def initialize(abi:, address: nil, deploy_set: nil, call_set: nil, signer:, processing_try_index: nil)
+      def initialize(abi:, address: nil, deploy_set: nil, call_set: nil, signer:, processing_try_index: 0)
         @abi = abi
         @address = address
         @deploy_set = deploy_set
@@ -339,7 +351,7 @@ module TonSdk
     class ParamsOfAttachSignature
       attr_reader :abi, :public_key, :message, :signature
 
-      def initialize(abi: , public_key: , message: , signature:)
+      def initialize(abi:, public_key:, message:, signature:)
         @abi = abi
         @public_key = public_key
         @message = message
@@ -381,16 +393,13 @@ module TonSdk
       end
     end
 
-    class MessageBodyType
-      VALUES = [:input, :output, :internal_output, :event]
-    end
-
     class DecodedMessageBody
+      MESSAGE_BODY_TYPE_VALUES = [:input, :output, :internal_output, :event]
       attr_reader :body_type, :name, :value, :header
 
       def initialize(body_type:, name:, value: nil, header: nil)
-        unless MessageBodyType::VALUES.include?(body_type)
-          raise ArgumentError.new("body_type #{body_type} is unknown; known ones: #{MessageBodyType::VALUES}")
+        unless MESSAGE_BODY_TYPE_VALUES.include?(body_type)
+          raise ArgumentError.new("unknown body_type: #{body_type}; known ones: #{MESSAGE_BODY_TYPE_VALUES}")
         end
 
         @body_type = body_type
@@ -442,7 +451,7 @@ module TonSdk
         when 'event'
           :event
         else
-          raise ArgumentError.new("body_type #{s} is unknown; known ones: #{MessageBodyType::VALUES}")
+          raise ArgumentError.new("unknown body_type: #{s}; known ones: #{MESSAGE_BODY_TYPE_VALUES}")
         end
       end
     end
@@ -486,17 +495,17 @@ module TonSdk
     end
 
     class ResultOfEncodeAccount
-      attr_reader :account, :id
+      attr_reader :account, :id_
 
-      def initialize(account: , id:)
+      def initialize(account:, id_:)
         @account = account
-        @id = id
+        @id_ = id_
       end
 
       def to_h
         {
-          account: @account.to_h,
-          id: @id
+          account: @account,
+          id: @id_
         }
       end
     end
@@ -695,10 +704,14 @@ module TonSdk
 
       def initialize(abi_version: nil, header: [], functions: [], events: [], data: [])
         @abi_version = abi_version
-        @header = header
-        @functions = functions
-        @events = events
-        @data = data
+
+        # in case if an argument has been passed as nil,
+        # a default value should be used instead
+
+        @header = header || []
+        @functions = functions || []
+        @events = events || []
+        @data = data || []
       end
 
       def to_h
@@ -717,8 +730,9 @@ module TonSdk
         end
 
         {
-          # abi_version: @abi_version,
-          :"ABI version" => @abi_version,
+          abi_version: @abi_version,
+          :"ABI version" => @abi_version, #TODO
+
           header: @header,
           functions: fn_h_s,
           events: ev_h_s,
@@ -732,25 +746,19 @@ module TonSdk
         fn_s = if j["functions"].nil?
           []
         else
-          j["functions"].compact.map do |x|
-            AbiFunction.from_json(x)
-          end
+          j["functions"].compact.map { |x| AbiFunction.from_json(x) }
         end
 
         ev_s = if j["events"].nil?
           []
         else
-          j["events"].compact.map do |x|
-            AbiEvent.from_json(x)
-          end
+          j["events"].compact.map { |x| AbiEvent.from_json(x) }
         end
 
         dt_s = if j["data"].nil?
           []
         else
-          j["data"].compact.map do |x|
-            AbiData.from_json(x)
-          end
+          j["data"].compact.map {|x| AbiData.from_json(x) }
         end
 
         self.new(
@@ -766,7 +774,7 @@ module TonSdk
 
 
     #
-    # methods
+    # functions
     #
 
     def self.encode_message_body(ctx, pr1)
@@ -863,7 +871,7 @@ module TonSdk
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeAccount.new(
               account: resp.result["account"],
-              id: resp.result["id"]
+              id_: resp.result["id"]
             )
           )
         else

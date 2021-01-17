@@ -1,5 +1,6 @@
 require_relative './examples_helper.rb'
 
+
 p1 = TonSdk::Net::ParamsOfQueryCollection.new(
   collection: "blocks_signatures", 
   result: "id",

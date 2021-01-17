@@ -1,5 +1,10 @@
 module TonSdk
   module Processing
+
+    #
+    # types
+    #
+
     class ParamsOfSendMessage
       attr_reader :message, :abi, :send_events
 
@@ -35,7 +40,7 @@ module TonSdk
     class ParamsOfWaitForTransaction
       attr_reader :abi, :message, :shard_block_id, :send_events
 
-      def initialize(abi: nil, message:, shard_block_id:,  send_events:)
+      def initialize(abi: nil, message:, shard_block_id:, send_events:)
         @abi = abi
         @message = message
         @shard_block_id = shard_block_id
@@ -73,8 +78,16 @@ module TonSdk
     end
 
     class ProcessingEvent
-      TYPES = [:will_fetch_first_block, :fetch_first_block_failed, :will_send, :did_send,
-        :send_failed, :will_fetch_next_block, :fetch_next_block_failed, :message_expired]
+      TYPES = [
+        :will_fetch_first_block,
+        :fetch_first_block_failed,
+        :will_send,
+        :did_send,
+        :send_failed,
+        :will_fetch_next_block,
+        :fetch_next_block_failed,
+        :message_expired
+      ]
 
       attr_reader :type_, :error, :shard_block_id, :message_id, :message
 
@@ -162,20 +175,19 @@ module TonSdk
 
 
     #
-    # methods
+    # functions
     #
 
-    def self.send_message(ctx, pr1, custom_response_callback = nil)
-      if (pr1.send_events == true) && custom_response_callback.nil?
-        raise ArgumentError.new("with `send_events` set to true, `custom_response_callback` may not be nil")
+    def self.send_message(ctx, pr1, custom_response_handler = nil)
+      if (pr1.send_events == true) && custom_response_handler.nil?
+        raise ArgumentError.new("with `send_events` set to true, `custom_response_handler` may not be nil")
       end
 
-      pr_json = pr1.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "processing.send_message",
-        pr_json,
-        custom_response_callback: custom_response_callback,
+        pr1.to_h.to_json,
+        custom_response_handler: custom_response_handler,
         single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -189,45 +201,43 @@ module TonSdk
       end
     end
 
-    def self.wait_for_transaction(ctx, pr1, custom_response_callback = nil)
-      if (pr1.send_events == true) && custom_response_callback.nil?
-        raise ArgumentError.new("with `send_events` set to true, `custom_response_callback` may not be nil")
+    def self.wait_for_transaction(ctx, pr1, custom_response_handler = nil)
+      if (pr1.send_events == true) && custom_response_handler.nil?
+        raise ArgumentError.new("with `send_events` set to true, `custom_response_handler` may not be nil")
       end
 
-      pr_json = pr1.to_h.to_json
-        Interop::request_to_native_lib(
-          ctx,
-          "processing.wait_for_transaction",
-          pr_json,
-          custom_response_callback: custom_response_callback,
-          single_thread_only: false
-        ) do |resp|
-          if resp.success?
-            yield NativeLibResponsetResult.new(
-              result: ResultOfProcessMessage.new(
-                transaction: resp.result["transaction"],
-                out_messages: resp.result["out_messages"],
-                decoded: resp.result["decoded"],
-                fees: resp.result["fees"]
-              )
+      Interop::request_to_native_lib(
+        ctx,
+        "processing.wait_for_transaction",
+        pr1.to_h.to_json,
+        custom_response_handler: custom_response_handler,
+        single_thread_only: false
+      ) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfProcessMessage.new(
+              transaction: resp.result["transaction"],
+              out_messages: resp.result["out_messages"],
+              decoded: resp.result["decoded"],
+              fees: resp.result["fees"]
             )
-          else
-            yield resp
-          end
+          )
+        else
+          yield resp
         end
+      end
     end
 
-    def self.process_message(ctx, pr1, custom_response_callback = nil)
-      if (pr1.send_events == true) && custom_response_callback.nil?
-        raise ArgumentError.new("with `send_events` set to true `custom_response_callback` may not be nil")
+    def self.process_message(ctx, pr1, custom_response_handler = nil)
+      if (pr1.send_events == true) && custom_response_handler.nil?
+        raise ArgumentError.new("with `send_events` set to true `custom_response_handler` may not be nil")
       end
 
-      pr_json = pr1.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "processing.process_message",
-        pr_json,
-        custom_response_callback: custom_response_callback,
+        pr1.to_h.to_json,
+        custom_response_handler: custom_response_handler,
         single_thread_only: false
       ) do |resp|
         if resp.success?

@@ -66,6 +66,8 @@ module TonSdk
       SUCCESS = 0
       ERROR = 1
       NOP = 2
+      APP_REQUEST = 3
+      APP_NOTIFY = 4
       CUSTOM = 100
     end
 
@@ -125,13 +127,14 @@ module TonSdk
     def self.request_to_native_lib(
       ctx,
       function_name,
-      function_params_json,
-      custom_response_callback: nil,
+      function_params_json = nil,
+      custom_response_handler: nil,
+      debot_app_response_handler: nil,
       single_thread_only: true
     )
-
       function_name_tc_str = TcStringData.from_string(function_name)
-      function_params_json_tc_str = TcStringData.from_string(function_params_json)
+      function_params_json_str = function_params_json || ""
+      function_params_json_tc_str = TcStringData.from_string(function_params_json_str)
 
       sm = Concurrent::Semaphore.new(1)
       if single_thread_only == true
@@ -139,11 +142,11 @@ module TonSdk
       end
 
       # using @@request_counter here to pass a @@request_counter and handlers and then retrieve them
-      # is probably isn't need in this Ruby implementation of SDK client
-      # because they same affect can be achived without that, but in a block, in an easier way, that is.
-      # therefore, @@request_counter is only used to send a request_counter to a server
-      # and increment it for a next request, and for nothing else,
-      # unlike in the other implementations of SDK clients
+      # is probably isn't needed.
+      # Thanks to the way Ruby is, the same affect can be achived by a block which is an easier way.
+      # Nonetheless, @@request_counter is incremented with each request and then sent out to a server
+      # in order to keep a server happy,
+      # because otherwise a server will, probably, reply in a wrong way.
 
       self.tc_request(
         ctx,
@@ -174,8 +177,24 @@ module TonSdk
           when TcResponseCodes::NOP
             nil
 
+          when TcResponseCodes::APP_REQUEST, TcResponseCodes::APP_NOTIFY
+            if !debot_app_response_handler.nil?
+              debot_app_response_handler.call(tc_data_json_content)
+            end
+
+          # TODO
+          # think of a return value, namely, calling a block via 'yield',
+          # for the cases when response_type isn't equal to 'SUCCESS' or 'ERROR';
+          # as for the time being, it'll be called with success and "" (empty string) as a value
+
           when TcResponseCodes::CUSTOM
-            custom_response_callback.call(tc_data_json_content) if !custom_response_callback.nil?
+            if block_given?
+              yield NativeLibResponsetResult.new(result: "")
+            end
+
+            if !custom_response_handler.nil?
+              custom_response_handler.call(tc_data_json_content)
+            end
 
           else
             raise ArgumentError.new("unsupported response type: #{response_type}")

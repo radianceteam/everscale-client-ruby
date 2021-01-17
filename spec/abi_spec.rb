@@ -33,7 +33,7 @@ describe TonSdk::Abi do
             expire: expire1,
           ),
         ),
-        signer: signing
+        signer: signing,
       )
 
       expect { |b| TonSdk::Abi.encode_message(@c_ctx.context, pr1, &b) }.to yield_control
@@ -54,14 +54,17 @@ describe TonSdk::Abi do
         abi: abi1,
         message: "te6ccgEBAwEAvAABRYgAC31qq9KF9Oifst6LU9U6FQSQQRlCSEMo+A3LN5MvphIMAQHhrd/b+MJ5Za+AygBc5qS/dVIPnqxCsM9PvqfVxutK+lnQEKzQoRTLYO6+jfM8TF4841bdNjLQwIDWL4UVFdxIhdMfECP8d3ruNZAXul5xxahT91swIEkEHph08JVlwmUmQAAAXRnJcuDX1XMZBW+LBKACAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
       )
+
       expect { |b| TonSdk::Abi.decode_message(@c_ctx.context, pr1, &b) }.to yield_control
       TonSdk::Abi.decode_message(@c_ctx.context, pr1) { |a| @res1 = a }
+      sleep(0.1) until @res1
 
       # 1
       expected1 = TonSdk::Abi::DecodedMessageBody.new(
         body_type: :input,
         name: "returnValue",
         value: {id: "0x0"},
+        # value: {id: 256},
         header: TonSdk::Abi::FunctionHeader.new(
           expire: 1599458404,
           time: 1599458364291,
@@ -77,7 +80,8 @@ describe TonSdk::Abi do
       expect(@res1.result.header.time).to eq expected1.header.time
       expect(@res1.result.header.pubkey).to eq expected1.header.pubkey
 
-      # 2
+
+      # # 2
       pr2 = TonSdk::Abi::ParamsOfDecodeMessage.new(
         abi: abi1,
         message: "te6ccgEBAQEAVQAApeACvg5/pmQpY4m61HmJ0ne+zjHJu3MNG8rJxUDLbHKBu/AAAAAAAAAMJL6z6ro48sYvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA"
@@ -98,7 +102,7 @@ describe TonSdk::Abi do
       expect(@res2.result.header).to eq expected2.header
 
 
-      # 3
+      # # 3
       pr3 = TonSdk::Abi::ParamsOfDecodeMessageBody.new(
         abi: abi1,
         body: "te6ccgEBAgEAlgAB4a3f2/jCeWWvgMoAXOakv3VSD56sQrDPT76n1cbrSvpZ0BCs0KEUy2Duvo3zPExePONW3TYy0MCA1i+FFRXcSIXTHxAj/Hd67jWQF7peccWoU/dbMCBJBB6YdPCVZcJlJkAAAF0ZyXLg19VzGQVviwSgAQBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
@@ -127,7 +131,7 @@ describe TonSdk::Abi do
       expect(@res3.result.header.pubkey).to eq expected3.header.pubkey
 
 
-      # 4
+      # # 4
       pr4 = TonSdk::Abi::ParamsOfDecodeMessage.new(
         abi: abi1,
         message: "te6ccgEBAQEAVQAApeACvg5/pmQpY4m61HmJ0ne+zjHJu3MNG8rJxUDLbHKBu/AAAAAAAAAMKr6z6rxK3xYJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA",

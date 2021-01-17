@@ -1,5 +1,10 @@
 module TonSdk
   module Tvm
+
+    #
+    # types
+    #
+
     class ExecutionOptions
       attr_reader :blockchain_config, :block_time, :block_lt, :transaction_lt
 
@@ -48,7 +53,7 @@ module TonSdk
     class ParamsOfRunExecutor
       attr_reader :message, :account, :execution_options, :abi, :skip_transaction_check
 
-      def initialize(message: , account: , execution_options: nil, abi: nil, skip_transaction_check: nil)
+      def initialize(message:, account:, execution_options: nil, abi: nil, skip_transaction_check: nil)
         @message = message
         @account = account
         @execution_options = execution_options
@@ -85,7 +90,7 @@ module TonSdk
     class ParamsOfRunTvm
       attr_reader :message, :account, :execution_options, :abi
 
-      def initialize(message: , account: , execution_options: nil, abi: nil)
+      def initialize(message:, account:, execution_options: nil, abi: nil)
         @message = message
         @account = account
         @execution_options = execution_options
@@ -108,7 +113,7 @@ module TonSdk
     class ResultOfRunTvm
       attr_reader :out_messages, :decoded, :account
 
-      def initialize(out_messages: , decoded: nil, account:)
+      def initialize(out_messages:, decoded: nil, account:)
         @out_messages = out_messages
         @decoded = decoded
         @account = account
@@ -172,7 +177,7 @@ module TonSdk
       end
     end
 
-    def self.run_executor(ctx, pr)
+    def self.run_executor(ctx, pr1)
       pr_json = pr1.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
@@ -197,7 +202,7 @@ module TonSdk
       end
     end
 
-    def self.run_tvm(ctx, pr)
+    def self.run_tvm(ctx, pr1)
       pr_json = pr1.to_h.to_json
       Interop::request_to_native_lib(
         ctx,

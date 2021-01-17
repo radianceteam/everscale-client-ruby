@@ -214,5 +214,54 @@ describe TonSdk::Crypto do
       expect(@res.success?).to eq true
       expect(@res.result.data).to eq "w5QOGsJodQ=="
     end
+
+    it "#signing_box" do
+      # 1
+      kp = TonSdk::Crypto::KeyPair.new(
+        public_: "1869b7ef29d58026217e9cf163cbfbd0de889bdf1bf4daebf5433a312f5b8d6e",
+        secret: "56b6a77093d6fdf14e593f36275d872d75de5b341942376b2a08759f3cbae78f"
+      )
+
+      TonSdk::Crypto.get_signing_box(@c_ctx.context, kp) { |a| @res1 = a }
+      sleep(0.1) until @res1
+      expect(@res1.success?).to eq true
+      sb_handle = @res1.result.handle
+      expect(sb_handle).to_not eq nil
+
+
+      # 2
+      reg_sb = TonSdk::Crypto::RegisteredSigningBox.new(sb_handle)
+      TonSdk::Crypto.signing_box_get_public_key(@c_ctx.context, reg_sb) { |a| @res2 = a }
+
+      timeout_at = get_timeout_for_async_operation()
+      sleep(0.1) until @res2 || (get_now_for_async_operation() >= timeout_at)
+
+      expect(@res2.success?).to eq true
+      expect(@res2.result.pubkey).to_not eq nil
+
+
+      # 3
+      unsigned_data =  Base64.urlsafe_encode64("11122Test Message34324652", padding: false)
+      a3 = TonSdk::Crypto::ParamsOfSigningBoxSign.new(
+        signing_box: sb_handle,
+        unsigned: unsigned_data
+      )
+      TonSdk::Crypto.signing_box_sign(@c_ctx.context, a3) { |a| @res3 = a }
+
+      timeout_at = get_timeout_for_async_operation()
+      sleep(0.1) until @res3 || (get_now_for_async_operation() >= timeout_at)
+
+      expect(@res3.success?).to eq true
+      expect(@res3.result.signature).to_not eq nil
+
+
+      # 4
+      TonSdk::Crypto.register_signing_box(@c_ctx.context, nil) { |a| @res4 = a }
+      timeout_at = get_timeout_for_async_operation()
+      sleep(0.1) until @res4 || (get_now_for_async_operation() >= timeout_at)
+
+      expect(@res4.success?).to eq true
+      expect(@res4.result.handle).to_not eq nil
+    end
   end
 end

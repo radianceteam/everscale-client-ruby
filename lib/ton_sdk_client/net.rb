@@ -1,16 +1,34 @@
 module TonSdk
   module Net
-    class SortDirection
-      VALUES = [:asc, :desc]
+
+    #
+    # types
+    #
+
+    module NetErrorCodes
+      QUERY_FAILED = 601
+      SUBSCRIBE_FAILED = 602
+      WAIT_FOR_FAILED = 603
+      GET_SUBSCRIPTION_FAILED = 604
+      INVALID_SERVER_RESPONSE = 605
+      CLOCK_OUT_OF_SYNC = 606
+      WAIT_FOR_TIMEOUT = 607
+      GRAPHQL_ERROR = 608
+      NETWORK_MODULE_SUSPENDED = 609
+      WEBSOCKET_DISCONNECTED = 610
+      NOT_SUPPORTED = 611
+      NO_ENDPOINTS_PROVIDED = 612
     end
 
     class OrderBy
+      SORT_DIRECTION_VALUES = [:asc, :desc]
+
       attr_reader :path, :direction
 
       def initialize(path:, direction:)
         @path = path
-        unless SortDirection::VALUES.include?(direction)
-          raise ArgumentError.new("direction #{direction} doesn't exist; existing values: #{SortDirection::VALUES}")
+        unless SORT_DIRECTION_VALUES.include?(direction)
+          raise ArgumentError.new("direction #{direction} doesn't exist; existing values: #{SORT_DIRECTION_VALUES}")
         end
 
         @direction = direction
@@ -116,18 +134,70 @@ module TonSdk
       end
     end
 
+    class ParamsOfQuery
+      attr_reader :query, :variables
+
+      def initialize(query:, variables: nil)
+        @query = query
+        @variables = variables
+      end
+
+      def to_h
+        {
+          query: @query,
+          variables: @variables
+        }
+      end
+    end
+
+    class ResultOfQuery
+      attr_reader :result
+
+      def initialize(a)
+        @result = a
+      end
+    end
+
+    class ParamsOfFindLastShardBlock
+      attr_reader :address
+
+      def initialize(a)
+        @address = a
+      end
+    end
+
+    class ResultOfFindLastShardBlock
+      attr_reader :block_id
+
+      def initialize(a)
+        @block_id = a
+      end
+    end
+
+    class EndpointsSet
+      attr_reader :endpoints
+
+      def initialize(a)
+        @endpoints = a
+      end
+
+      def to_h
+        {
+          endpoints: @endpoints
+        }
+      end
+    end
 
 
     #
-    # methods
+    # functions
     #
 
     def self.query_collection(ctx, pr1)
-      pr_json = pr1.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "net.query_collection",
-        pr_json,
+        pr1.to_h.to_json,
         single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -141,11 +211,10 @@ module TonSdk
     end
 
     def self.wait_for_collection(ctx, pr1)
-      pr_json = pr1.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "net.wait_for_collection",
-        pr_json,
+        pr1.to_h.to_json,
         single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -159,8 +228,7 @@ module TonSdk
     end
 
     def self.unsubscribe(ctx, pr1)
-      pr_json = pr1.to_h.to_json
-      Interop::request_to_native_lib(ctx, "net.unsubscribe", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "net.unsubscribe", pr1.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ""
@@ -171,18 +239,85 @@ module TonSdk
       end
     end
 
-    def self.subscribe_collection(ctx, pr1, custom_response_callback = nil, &block)
-      pr_json = pr1.to_h.to_json
+    def self.subscribe_collection(ctx, pr1, custom_response_handler = nil, &block)
       Interop::request_to_native_lib(
         ctx,
         "net.subscribe_collection",
-        pr_json,
-        custom_response_callback: custom_response_callback,
+        pr1.to_h.to_json,
+        custom_response_handler: custom_response_handler,
         single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfSubscribeCollection.new(resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.query(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "net.query", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfQuery.new(resp.result["result"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.suspend(ctx)
+      Interop::request_to_native_lib(ctx, "net.suspend", "") do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(result: "")
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.resume(ctx)
+      Interop::request_to_native_lib(ctx, "net.resume", "") do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(result: "")
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.find_last_shard_block(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "net.find_last_shard_block", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfFindLastShardBlock.new(resp.result["block_id"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.fetch_endpoints(ctx)
+      Interop::request_to_native_lib(ctx, "net.fetch_endpoints", nil) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: EndpointsSet.new(resp.result["endpoints"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.set_endpoints(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "net.set_endpoints", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: nil
           )
         else
           yield resp

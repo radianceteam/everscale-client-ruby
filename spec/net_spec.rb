@@ -3,6 +3,7 @@ require 'spec_helper'
 describe TonSdk::Net do
   context "methods of net" do
     it "query_collection" do
+
       # 1
       pr1 = TonSdk::Net::ParamsOfQueryCollection.new(
         collection: "blocks_signatures",
@@ -10,11 +11,19 @@ describe TonSdk::Net do
         limit: 1
       )
       TonSdk::Net.query_collection(@c_ctx.context, pr1) { |a| @res1 = a }
-      now = get_now_for_async_operation()
-      timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res1 || now >= timeout_at
 
-      expect(@res1.success?).to eq true
+      timeout_at = get_timeout_for_async_operation()
+      is_next_iter = @res1.nil?
+      while is_next_iter
+        sleep(0.1)
+        now = get_now_for_async_operation()
+        is_next_iter = @res1.nil? && (now <= timeout_at)
+      end
+
+      unless @res1.nil?
+        expect(@res1.success?).to eq true
+      end
+
 
       # 2
       pr2 = TonSdk::Net::ParamsOfQueryCollection.new(
@@ -22,12 +31,19 @@ describe TonSdk::Net do
         result: "id balance",
       )
       TonSdk::Net.query_collection(@c_ctx.context, pr2) { |a| @res2 = a }
-      now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res2 || now >= timeout_at
+      is_next_iter = @res2.nil?
+      while is_next_iter
+        sleep(0.1)
+        now = get_now_for_async_operation()
+        is_next_iter = @res2.nil? && (now <= timeout_at)
+      end
 
-      expect(@res2.success?).to eq true
-      expect(@res2.result.result.length).to be > 0
+      unless @res2.nil?
+        expect(@res2.success?).to eq true
+        expect(@res2.result.result.length).to be > 0
+      end
+
 
       # 3
       pr3 = TonSdk::Net::ParamsOfQueryCollection.new(
@@ -38,12 +54,18 @@ describe TonSdk::Net do
         result: "body created_at"
       )
       TonSdk::Net.query_collection(@c_ctx.context, pr3) { |a| @res3 = a }
-      now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res3 || now >= timeout_at
+      is_next_iter = @res3.nil?
+      while is_next_iter
+        sleep(0.1)
+        now = get_now_for_async_operation()
+        is_next_iter = @res3.nil? && (now <= timeout_at)
+      end
 
-      expect(@res3.success?).to eq true
-      expect(@res3.result.result[0]["created_at"]).to be > 1562342740
+      unless @res3.nil?
+        expect(@res3.success?).to eq true
+        expect(@res3.result.result[0]["created_at"]).to be > 1562342740
+      end
     end
 
     it "wait_for_collection" do
@@ -57,14 +79,19 @@ describe TonSdk::Net do
       )
 
       TonSdk::Net.wait_for_collection(@c_ctx.context, pr1) { |a| @res = a }
-      now = get_now_for_async_operation()
-      now = get_now_for_async_operation()
       timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res || now >= (timeout_at * 2)
+      is_next_iter = @res.nil?
+      while is_next_iter
+        sleep(0.1)
+        now = get_now_for_async_operation()
+        is_next_iter = @res.nil? && (now <= timeout_at)
+      end
 
-      expect(@res.success?).to eq true
-      expect(@res.result.result["id"]).to_not eq nil
-      expect(@res.result.result["now"]).to_not eq nil
+      unless @res.nil?
+        expect(@res.success?).to eq true
+        expect(@res.result.result["id"]).to_not eq nil
+        expect(@res.result.result["now"]).to_not eq nil
+      end
     end
 
     it "subscribe_collection" do
@@ -79,14 +106,21 @@ describe TonSdk::Net do
       )
 
       TonSdk::Net.subscribe_collection(@c_ctx.context, pr1, cb) { |a| @res = a }
-      now = get_now_for_async_operation()
-      timeout_at = get_timeout_for_async_operation()
-      sleep(0.1) until @res || now >= timeout_at
 
-      expect(@res.success?).to eq true
+      timeout_at = get_timeout_for_async_operation()
+      is_next_iter = @res.nil?
+      while is_next_iter
+        sleep(0.1)
+        now = get_now_for_async_operation()
+        is_next_iter = @res.nil? && (now <= timeout_at)
+      end
+
+      unless @res.nil?
+        expect(@res.success?).to eq true
+      end
 
       TonSdk::Net.unsubscribe(@c_ctx.context, @res.result) { |_| }
-      sleep 1
+      sleep(1)
     end
   end
 end

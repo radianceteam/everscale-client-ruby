@@ -1,5 +1,10 @@
 module TonSdk
   module Utils
+
+    #
+    # types
+    #
+
     class AddressStringFormat
       TYPES = [:account_id, :hex, :base64]
       attr_reader :type_, :url, :test_, :bounce
@@ -50,6 +55,11 @@ module TonSdk
         @address = a
       end
     end
+
+
+    #
+    # functions
+    #
 
     def self.convert_address(ctx, prm)
       Interop::request_to_native_lib(ctx, "utils.convert_address", prm.to_h.to_json) do |resp|

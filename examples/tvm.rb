@@ -57,5 +57,5 @@ end
 # required, to keep the main thread alive
 loop do
   puts "[*] to interrupt the loop press Ctrl+C\r\n"
-  sleep 1
+  sleep(1)
 end

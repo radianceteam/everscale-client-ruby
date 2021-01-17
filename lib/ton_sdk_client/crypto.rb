@@ -1,5 +1,10 @@
 module TonSdk
   module Crypto
+
+    #
+    # types
+    #
+
     class ParamsOfFactorize
       attr_reader :composite
 
@@ -25,7 +30,7 @@ module TonSdk
     class ParamsOfModularPower
       attr_reader :base, :exponent, :modulus
 
-      def initialize(base: , exponent: , modulus:)
+      def initialize(base:, exponent:, modulus:)
         @base = base
         @exponent = exponent
         @modulus = modulus
@@ -680,9 +685,61 @@ module TonSdk
       end
     end
 
+    class ParamsOfSigningBoxSign
+      attr_reader :signing_box, :unsigned
+
+      def initialize(signing_box:, unsigned:)
+        @signing_box = signing_box
+        @unsigned = unsigned
+      end
+
+      def to_h
+        {
+          signing_box: @signing_box,
+          unsigned: @unsigned
+        }
+      end
+    end
+
+    class ResultOfSigningBoxSign
+      attr_reader :signature
+
+      def initialize(a)
+        @signature = a
+      end
+    end
+
+    class RegisteredSigningBox
+      attr_reader :handle
+
+      def initialize(a)
+        @handle = a
+      end
+
+      def to_h
+        {
+          handle: @handle
+        }
+      end
+    end
+
+    class ResultOfSigningBoxGetPublicKey
+      attr_reader :pubkey
+
+      def initialize(a)
+        @pubkey = a
+      end
+
+      def to_h
+        {
+          pubkey: @pubkey
+        }
+      end
+    end
+
 
     #
-    # methods
+    # functions
     #
 
     def self.factorize(ctx, pr1)
@@ -1093,13 +1150,73 @@ module TonSdk
       end
     end
 
-    # TODO chacha20 is unavailable in the version 1.0.0, but in more recent versions
     def self.chacha20(ctx, pr1)
       pr_json = pr1.to_h.to_json
       Interop::request_to_native_lib(ctx, "crypto.chacha20", pr_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfChaCha20.new(resp.result["data"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.register_signing_box(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "crypto.register_signing_box", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: RegisteredSigningBox.new(resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.get_signing_box(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "crypto.get_signing_box", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: RegisteredSigningBox.new(resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.signing_box_get_public_key(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "crypto.signing_box_get_public_key", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfSigningBoxGetPublicKey.new(resp.result["pubkey"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+
+    def self.signing_box_sign(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "crypto.signing_box_sign", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfSigningBoxSign.new(resp.result["signature"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.remove_signing_box(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "crypto.remove_signing_box", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfSigningBoxSign.new(resp.result["signature"])
           )
         else
           yield resp
