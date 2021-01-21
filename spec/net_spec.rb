@@ -2,6 +2,45 @@ require 'spec_helper'
 
 describe TonSdk::Net do
   context "methods of net" do
+    it "query" do
+      pr1 = TonSdk::Net::ParamsOfQuery.new(
+        query: "query{info{version}}"
+      )
+      TonSdk::Net.query(@c_ctx.context, pr1) { |a| @res = a }
+      timeout_at = get_timeout_for_async_operation()
+      is_next_iter = @res.nil?
+      while is_next_iter
+        sleep(0.1)
+        now = get_now_for_async_operation()
+        is_next_iter = @res.nil? && (now <= timeout_at)
+      end
+
+      unless @res.nil?
+        expect(@res.success?).to eq true
+        vers = @res.result.result["data"]["info"]["version"]
+        expect(vers.split(".").length).to eq 3
+      end
+    end
+
+    it "find_last_shard_block" do
+      pr1 = TonSdk::Net::ParamsOfFindLastShardBlock.new(
+        GIVER_ADDRESS
+      )
+      TonSdk::Net.find_last_shard_block(@c_ctx.context, pr1) { |a| @res = a }
+      timeout_at = get_timeout_for_async_operation()
+      is_next_iter = @res.nil?
+      while is_next_iter
+        sleep(0.1)
+        now = get_now_for_async_operation()
+        is_next_iter = @res.nil? && (now <= timeout_at)
+      end
+
+      unless @res.nil?
+        expect(@res.success?).to eq true
+        expect(@res.result.block_id.length).to_not eq 0
+      end
+    end
+
     it "query_collection" do
 
       # 1

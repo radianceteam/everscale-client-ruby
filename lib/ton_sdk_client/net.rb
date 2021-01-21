@@ -127,11 +127,7 @@ module TonSdk
         @handle = a
       end
 
-      def to_h
-        {
-          handle: @handle
-        }
-      end
+      def to_h = { handle: @handle }
     end
 
     class ParamsOfQuery
@@ -164,6 +160,8 @@ module TonSdk
       def initialize(a)
         @address = a
       end
+
+      def to_h = { address: @address }
     end
 
     class ResultOfFindLastShardBlock
@@ -181,11 +179,7 @@ module TonSdk
         @endpoints = a
       end
 
-      def to_h
-        {
-          endpoints: @endpoints
-        }
-      end
+      def to_h = { endpoints: @endpoints }
     end
 
 
