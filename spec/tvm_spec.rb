@@ -1,14 +1,15 @@
 require 'spec_helper'
 require 'json'
 
+ELECTOR_ADDRESS = '-1:3333333333333333333333333333333333333333333333333333333333333333'
+
 describe TonSdk::Tvm do
   context "methods of tvm" do
     it "#run_get" do
       account = File.read(File.join(TESTS_DATA_DIR, "tvm", "encoded_account.txt"))
 
       # 1
-      elector_address = "-1:3333333333333333333333333333333333333333333333333333333333333333"
-      input1 = elector_address.split(":")[1]
+      input1 = ELECTOR_ADDRESS.split(":")[1]
 
       pr1 = TonSdk::Tvm::ParamsOfRunGet.new(
         account: account,

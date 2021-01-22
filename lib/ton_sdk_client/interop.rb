@@ -141,6 +141,7 @@ module TonSdk
         sm.acquire()
       end
 
+
       # using @@request_counter here to pass a @@request_counter and handlers and then retrieve them
       # is probably isn't needed.
       # Thanks to the way Ruby is, the same affect can be achived by a block which is an easier way.

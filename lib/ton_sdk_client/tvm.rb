@@ -182,7 +182,6 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "tvm.run_executor",
-        pr1,
         pr_json,
         single_thread_only: false
       ) do |resp|
@@ -207,7 +206,6 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "tvm.run_tvm",
-        pr1,
         pr_json,
         single_thread_only: false
       ) do |resp|

@@ -174,11 +174,10 @@ factorize
 
 * MacOS Catalina 10.15.5
 * Arch Linux x86_64
-* TON client native library: 1.1.0
+* TON client native library: `TonSdk::NATIVE_LIB_VERSION`
 
 
 ## References
-  
   * Wiki of the gem FFI: https://github.com/ffi/ffi/wiki ; callbacks: https://github.com/ffi/ffi/wiki/Callbacks
 
   * https://stackoverflow.com/questions/60689128/ruby-ffi-callback-return-values
@@ -202,9 +201,9 @@ factorize
   sleep(0.1) until @res || get_now() >= (timeout_at * 2)
   ```
 
-  * No automatic generator has been used to generate Ruby classes or bindings to the SDK. Why not Because no appropriate simple and working one has been found.
+  * No automatic generator has been used to generate Ruby classes or bindings to the SDK. Why not? Because no appropriate simple and working one has been found.
 
-  * The constant `TonSdk::NATIVE_LIB_VERSION` holds a version of TON SDK native library which the gem supports. The version of the gem which is `TonSdk::NATIVE_LIB_VERSION`, and `TonSdk::VERSION` don't necessarily match each other.
+  * The constant `TonSdk::NATIVE_LIB_VERSION` holds a version of TON SDK native library which the gem supports. Note that `TonSdk::VERSION` and `TonSdk::NATIVE_LIB_VERSION` constants don't necessarily match each other.
 
 
 ## Credits
