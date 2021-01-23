@@ -1,7 +1,12 @@
 # TON SDK client in Ruby and for Ruby
 
+[![Gem Version](https://badge.fury.io/rb/ton_sdk_client.png)](https://badge.fury.io/rb/ton_sdk_client)
 
 Ruby gem-client bindings for [TON SDK](https://github.com/tonlabs/TON-SDK) which allows one to communicate with [FreeTON](https://freeton.org) blockchain in Ruby.
+
+Note the version of this gem is held in `TonSdk::VERSION`, whereas the version of the TON SDK native library which the gem supports is in `TonSdk::NATIVE_LIB_VERSION`, and the two don't necessarily match each other.
+
+
 
 ## Installation
 
@@ -40,7 +45,7 @@ require 'ton_sdk_client'
 
 cfg = TonSdk::ClientConfig.new(
   network: TonSdk::NetworkConfig.new(
-    server_address: "net.ton.dev"
+    endpoints: ["net.ton.dev"]
   )
 )
 
@@ -202,8 +207,6 @@ factorize
   ```
 
   * No automatic generator has been used to generate Ruby classes or bindings to the SDK. Why not? Because no appropriate simple and working one has been found.
-
-  * The constant `TonSdk::NATIVE_LIB_VERSION` holds a version of TON SDK native library which the gem supports. Note that `TonSdk::VERSION` and `TonSdk::NATIVE_LIB_VERSION` constants don't necessarily match each other.
 
 
 ## Credits
