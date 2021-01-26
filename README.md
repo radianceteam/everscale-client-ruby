@@ -1,6 +1,7 @@
 # TON SDK client in Ruby and for Ruby
 
 [![Gem Version](https://badge.fury.io/rb/ton_sdk_client.png)](https://badge.fury.io/rb/ton_sdk_client)
+[![TON SDK version](https://img.shields.io/badge/TON%20SDK%20version-1.5.2-green)](https://github.com/tonlabs/TON-SDK/tree/1.5.2)
 
 Ruby gem-client bindings for [TON SDK](https://github.com/tonlabs/TON-SDK) which allows one to communicate with [FreeTON](https://freeton.org) blockchain in Ruby.
 
@@ -36,7 +37,7 @@ Also, check out the file `.ruby-version` to see which version has been used to d
 
 ## Examples
 
-The examples are located in the `examples` directory, and they cover most the modules. 
+The examples are located in the `examples` directory, and they cover most the modules.
 
 And here's a simple minimalistic one:
 
