@@ -2,7 +2,8 @@
 
 1.2.x
 -----
-* ruby 3.0 is now the minimal version of ruby supported
+* TON SDK version: 1.5.2
+* min Ruby version: 3.0
 
 
 1.1.x

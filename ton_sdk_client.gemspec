@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
 
   gem.version = TonSdk::VERSION
   gem.platform = Gem::Platform::RUBY
-  gem.required_ruby_version = ">= 2.7"
+  gem.required_ruby_version = ">= 3.0"
   gem.extra_rdoc_files = ["README.md", "LICENSE"]
 
   gem.files = Dir[
