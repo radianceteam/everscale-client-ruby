@@ -19,7 +19,7 @@ module TonSdk
 
       def to_h
         h1 = {
-          type: Helper.sym_to_capitalized_camel_case_str(@type_)
+          type: Helper.sym_to_capitalized_case_str(@type_)
         }
 
         h2 = case @type_
@@ -76,19 +76,21 @@ module TonSdk
     end
 
     class DeploySet
-      attr_reader :tvc, :workchain_id, :initial_data
+      attr_reader :tvc, :workchain_id, :initial_data, :initial_pubkey
 
-      def initialize(tvc:, workchain_id: nil, initial_data: nil)
+      def initialize(tvc:, workchain_id: nil, initial_data: nil, initial_pubkey: nil)
         @tvc = tvc
         @workchain_id = workchain_id
         @initial_data = initial_data
+        @initial_pubkey = initial_pubkey
       end
 
       def to_h
         {
           tvc: @tvc,
           workchain_id: @workchain_id,
-          initial_data: @initial_data
+          initial_data: @initial_data,
+          initial_pubkey: @initial_pubkey
         }
       end
     end
@@ -110,7 +112,7 @@ module TonSdk
 
       def to_h
         h1 = {
-          type: Helper.sym_to_capitalized_camel_case_str(@type_)
+          type: Helper.sym_to_capitalized_case_str(@type_)
         }
 
         h2 = case @type_
@@ -163,7 +165,7 @@ module TonSdk
 
       def to_h
         h1 = {
-          type: Helper.sym_to_capitalized_camel_case_str(@type_)
+          type: Helper.sym_to_capitalized_case_str(@type_)
         }
 
         h2 = case @type_
@@ -230,7 +232,7 @@ module TonSdk
 
       def to_h
         h1 = {
-          type: Helper.sym_to_capitalized_camel_case_str(@type_)
+          type: Helper.sym_to_capitalized_case_str(@type_)
         }
 
         h2 = case @type_
@@ -410,7 +412,7 @@ module TonSdk
 
       def to_h
         {
-          body_type: Helper.sym_to_capitalized_camel_case_str(@body_type),
+          body_type: Helper.sym_to_capitalized_case_str(@body_type),
           name: @name,
           value: @value,
           header: @header

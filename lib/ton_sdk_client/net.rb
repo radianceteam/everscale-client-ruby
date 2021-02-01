@@ -183,6 +183,58 @@ module TonSdk
     end
 
 
+
+
+    class ParamsOfBatchQuery
+      attr_reader :operations
+
+      def initialize(a)
+        @operations = a
+      end
+
+      def to_h = { operations: @operations }
+    end
+
+    class ResultOfBatchQuery
+      attr_reader :results
+
+      def initialize(a)
+        @results = a
+      end
+
+      def to_h = { results: @results }
+    end
+
+
+    class ParamsOfAggregateCollection
+      attr_reader :collection, :filter, :fields
+
+      def initialize(collection:, filter: nil, fields: [])
+        @collection = collection
+        @filter = filter
+        @fields = fields
+      end
+
+      def to_h
+        {
+          collection: @collection,
+          filter: @filter,
+          fields: @fields.map(&:to_h)
+        }
+      end
+    end
+
+    class ResultOfAggregateCollection
+      attr_reader :values
+
+      def initialize(a)
+        @values = a
+      end
+
+      def to_h = { values: @values }
+    end
+
+
     #
     # functions
     #
@@ -316,6 +368,30 @@ module TonSdk
         else
           yield resp
         end
+      end
+    end
+  end
+
+  def self.batch_query(ctx, pr_s)
+    Interop::request_to_native_lib(ctx, "net.batch_query", pr_s.to_h.to_json) do |resp|
+      if resp.success?
+        yield NativeLibResponsetResult.new(
+          result: ResultOfBatchQuery.new(resp.result["results"])
+        )
+      else
+        yield resp
+      end
+    end
+  end
+
+  def self.aggregate_collection(ctx, pr_s)
+    Interop::request_to_native_lib(ctx, "net.aggregate_collection", pr_s.to_h.to_json) do |resp|
+      if resp.success?
+        yield NativeLibResponsetResult.new(
+          result: ResultOfAggregateCollection.new(resp.result["values"])
+        )
+      else
+        yield resp
       end
     end
   end

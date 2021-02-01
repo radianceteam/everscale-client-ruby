@@ -24,7 +24,7 @@ module TonSdk
 
       def to_h
         {
-          type: Helper.sym_to_capitalized_camel_case_str(@type_),
+          type: Helper.sym_to_capitalized_case_str(@type_),
           url: @url,
           test: @test_,
           bounce: @bounce

@@ -736,7 +736,6 @@ module TonSdk
     class ParamsOfNaclSignDetachedVerify
       attr_reader :unsigned, :signature, :public
 
-
       def initialize(unsigned:, signature:, public_:)
         @unsigned:, @signature:, @public_ = unsigned, signature, public_
       end
