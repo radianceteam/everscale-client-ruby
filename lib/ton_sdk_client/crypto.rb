@@ -730,11 +730,34 @@ module TonSdk
         @pubkey = a
       end
 
+      def to_h = { pubkey: @pubkey }
+    end
+
+    class ParamsOfNaclSignDetachedVerify
+      attr_reader :unsigned, :signature, :public
+
+
+      def initialize(unsigned:, signature:, public_:)
+        @unsigned:, @signature:, @public_ = unsigned, signature, public_
+      end
+
       def to_h
         {
-          pubkey: @pubkey
+          unsigned: @unsigned,
+          signature: @signature,
+          public: @public_
         }
       end
+    end
+
+    class ResultOfNaclSignDetachedVerify 
+      attr_reader :succeeded
+
+      def initialize(a)
+        @succeeded = a
+      end
+
+      def to_h = { succeeded: @succeeded }
     end
 
 
@@ -1217,6 +1240,18 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfSigningBoxSign.new(resp.result["signature"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.nacl_sign_detached_verify(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "crypto.nacl_sign_detached_verify", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfNaclSignDetachedVerify.new(resp.result["succeeded"])
           )
         else
           yield resp
