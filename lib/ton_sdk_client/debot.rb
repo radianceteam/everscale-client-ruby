@@ -1,7 +1,7 @@
 module TonSdk
 
   # NOTE
-  # as of 15 jan 2021, in the main repository this module is still unstable
+  # as of 3 feb 2021, in the main repository this module is still unstable
   module Debot
 
     #
@@ -62,7 +62,7 @@ module TonSdk
         @address = a
       end
 
-      def to_h() = { address: @address }
+      def to_h = { address: @address }
     end
 
     class RegisteredDebot
@@ -72,7 +72,7 @@ module TonSdk
         @debot_handle = a
       end
 
-      def to_h() = { debot_handle: @debot_handle }
+      def to_h = { debot_handle: @debot_handle }
     end
 
     class ParamsOfAppDebotBrowser
@@ -172,7 +172,7 @@ module TonSdk
         @address = a
       end
 
-      def to_h() = { address: @address }
+      def to_h = { address: @address }
     end
 
     class ParamsOfExecute

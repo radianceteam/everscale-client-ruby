@@ -14,5 +14,7 @@ module TonSdk
     def self.capitalized_case_str_to_snake_case_sym(str)
         str.split(/(?=[A-Z])/).map(&:downcase).join("_").to_sym
     end
+
+    def self.base64_from_hex(hex_digest) = [[hex_digest].pack("H*")].pack("m0")
   end
 end

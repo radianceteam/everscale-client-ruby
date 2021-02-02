@@ -259,11 +259,7 @@ module TonSdk
         @secret = a
       end
 
-      def to_h
-        {
-          secret: @secret
-        }
-      end
+      def to_h = { secret: @secret }
     end
 
     class ParamsOfNaclSign
@@ -283,10 +279,10 @@ module TonSdk
     end
 
     class ResultOfNaclSign
-      attr_reader :secret
+      attr_reader :signed
 
       def initialize(a)
-        @secret = a
+        @signed = a
       end
     end
 
