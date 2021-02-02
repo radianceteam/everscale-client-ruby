@@ -751,7 +751,7 @@ module TonSdk
       attr_reader :unsigned, :signature, :public
 
       def initialize(unsigned:, signature:, public_:)
-        @unsigned:, @signature:, @public_ = unsigned, signature, public_
+        @unsigned, @signature, @public_ = unsigned, signature, public_
       end
 
       def to_h

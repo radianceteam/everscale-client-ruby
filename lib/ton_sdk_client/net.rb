@@ -227,8 +227,8 @@ module TonSdk
       AGGREGATION_FN_VALUES = [
         :count,
         :min,
-        :max
-        :sum
+        :max,
+        :sum,
         :average
       ]
 
