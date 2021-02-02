@@ -5,7 +5,7 @@ module TonSdk
     # types
     #
 
-    module NetErrorCodes
+    module ErrorCode
       QUERY_FAILED = 601
       SUBSCRIBE_FAILED = 602
       WAIT_FOR_FAILED = 603
@@ -18,6 +18,8 @@ module TonSdk
       WEBSOCKET_DISCONNECTED = 610
       NOT_SUPPORTED = 611
       NO_ENDPOINTS_PROVIDED = 612
+      GRAPHQL_WEBSOCKET_INIT_ERROR = 613,
+      NETWORK_MODULE_RESUMED = 614
     end
 
     class OrderBy
@@ -182,9 +184,6 @@ module TonSdk
       def to_h = { endpoints: @endpoints }
     end
 
-
-
-
     class ParamsOfBatchQuery
       attr_reader :operations
 
@@ -224,6 +223,33 @@ module TonSdk
       end
     end
 
+    class FieldAggregation
+      AGGREGATION_FN_VALUES = [
+        :count,
+        :min,
+        :max
+        :sum
+        :average
+      ]
+
+      attr_reader :field, :fn
+
+      def initialize(field:, fn:)
+        unless AGGREGATION_FN_VALUES.include?(fn)
+          raise ArgumentError.new("aggregate function #{fn} doesn't exist; existing values: #{AGGREGATION_FN_VALUES}")
+        end
+        @field = field
+        @fn = fn
+      end
+
+      def to_h
+        {
+          field: @field,
+          fn: @fn.to_s.upcase
+        }
+      end
+    end
+
     class ResultOfAggregateCollection
       attr_reader :values
 
@@ -233,6 +259,7 @@ module TonSdk
 
       def to_h = { values: @values }
     end
+
 
 
     #

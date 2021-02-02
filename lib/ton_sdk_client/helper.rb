@@ -8,7 +8,7 @@ module TonSdk
     end
 
 
-    # converts a string with capitalized letters
+    # converts a capital-case string
     # into a symbol
     # AaaBbbCcc --> :aaa_bbb_ccc
     def self.capitalized_case_str_to_snake_case_sym(str)

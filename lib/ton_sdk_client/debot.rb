@@ -8,11 +8,14 @@ module TonSdk
     # types
     #
 
-    module DebotErrorCodes
-      DEBOT_START_FAILED = 801
-      DEBOT_FETCH_FAILED = 802
-      DEBOT_EXECUTION_FAILED = 803
-      DEBOT_INVALID_HANDLE = 804
+    module ErrorCode
+      START_FAILED = 801
+      FETCH_FAILED = 802
+      EXECUTION_FAILED = 803
+      INVALID_HANDLE = 804
+      INVALID_JSON_PARAMS = 805
+      INVALID_FUNCTION_ID = 806
+      INVALID_ABI = 807
     end
 
     class DebotAction
@@ -83,7 +86,7 @@ module TonSdk
         :invoke_debot,
         :send
       ]
-      attr_reader :type_, :msg, :context_id, :action, :prompt, :debot_addr
+      attr_reader :type_, :msg, :context_id, :action, :prompt, :debot_addr, :message
 
       def initialize(
         type_:,
