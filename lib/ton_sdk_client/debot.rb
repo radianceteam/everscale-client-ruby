@@ -215,7 +215,7 @@ module TonSdk
     # functions
     #
 
-    def self.start(ctx, pr_s, app_browser_obj)
+    def self.start(ctx, params, app_browser_obj)
       # TODO
       # 1) the handlers in 'start' and 'fetch' are identical
       # verify that it works and get rid of repetition
@@ -251,11 +251,11 @@ module TonSdk
             Client::AppRequestResult(type_: :error, text: e.message)
           end
 
-          pr_s = Client::ParamsOfResolveAppRequest.new(
+          params = Client::ParamsOfResolveAppRequest.new(
             app_request_id: data["app_request_id"],
             result: app_req_res
           )
-          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
+          TonSdk::Client.resolve_app_request(c_ctx, params)
 
         when "GetSigningBox"
           new_obj = ParamsOfAppDebotBrowser.from_json(data)
@@ -267,11 +267,11 @@ module TonSdk
             Client::AppRequestResult(type_: :error, text: e.message)
           end
 
-          pr_s = Client::ParamsOfResolveAppRequest.new(
+          params = Client::ParamsOfResolveAppRequest.new(
             app_request_id: data["app_request_id"],
             result: app_req_res
           )
-          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
+          TonSdk::Client.resolve_app_request(c_ctx, params)
 
         when "InvokeDebot"
           new_obj = ParamsOfAppDebotBrowser.from_json(data)
@@ -283,11 +283,11 @@ module TonSdk
             Client::AppRequestResult(type_: :error, text: e.message)
           end
 
-          pr_s = Client::ParamsOfResolveAppRequest.new(
+          params = Client::ParamsOfResolveAppRequest.new(
             app_request_id: data["app_request_id"],
             result: app_req_res
           )
-          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
+          TonSdk::Client.resolve_app_request(c_ctx, params)
 
         else
           # TODO log 'unknown option'
@@ -297,7 +297,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "debot.start",
-        pr_s.to_h.to_json,
+        params.to_h.to_json,
         debot_app_response_handler: app_resp_handler,
         single_thread_only: false
       ) do |resp|
@@ -311,7 +311,7 @@ module TonSdk
       end
     end
 
-    def self.fetch(ctx, pr_s, app_browser_obj)
+    def self.fetch(ctx, params, app_browser_obj)
       # TODO
       # 1) the handlers in 'start' and 'fetch' are identical
       # verify that it works and get rid of repetition
@@ -347,11 +347,11 @@ module TonSdk
             Client::AppRequestResult(type_: :error, text: e.message)
           end
 
-          pr_s = Client::ParamsOfResolveAppRequest.new(
+          params = Client::ParamsOfResolveAppRequest.new(
             app_request_id: data["app_request_id"],
             result: app_req_res
           )
-          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
+          TonSdk::Client.resolve_app_request(c_ctx, params)
 
         when "GetSigningBox"
           new_obj = ParamsOfAppDebotBrowser.from_json(data)
@@ -363,11 +363,11 @@ module TonSdk
             Client::AppRequestResult(type_: :error, text: e.message)
           end
 
-          pr_s = Client::ParamsOfResolveAppRequest.new(
+          params = Client::ParamsOfResolveAppRequest.new(
             app_request_id: data["app_request_id"],
             result: app_req_res
           )
-          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
+          TonSdk::Client.resolve_app_request(c_ctx, params)
 
         when "InvokeDebot"
           new_obj = ParamsOfAppDebotBrowser.from_json(data)
@@ -379,11 +379,11 @@ module TonSdk
             Client::AppRequestResult(type_: :error, text: e.message)
           end
 
-          pr_s = Client::ParamsOfResolveAppRequest.new(
+          params = Client::ParamsOfResolveAppRequest.new(
             app_request_id: data["app_request_id"],
             result: app_req_res
           )
-          TonSdk::Client.resolve_app_request(c_ctx, pr_s)
+          TonSdk::Client.resolve_app_request(c_ctx, params)
 
         else
           # TODO log 'unknown option'
@@ -393,7 +393,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "debot.fetch",
-        pr_s.to_h.to_json,
+        params.to_h.to_json,
         debot_app_response_handler: app_resp_handler,
         single_thread_only: false
       ) do |resp|
@@ -407,8 +407,8 @@ module TonSdk
       end
     end
 
-    def self.execute(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "debot.execute", pr_s.to_h.to_json) do |resp|
+    def self.execute(ctx, params)
+      Interop::request_to_native_lib(ctx, "debot.execute", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
@@ -419,8 +419,8 @@ module TonSdk
       end
     end
 
-    def self.remove(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "debot.remove", pr_s.to_h.to_json) do |resp|
+    def self.remove(ctx, params)
+      Interop::request_to_native_lib(ctx, "debot.remove", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
@@ -431,8 +431,8 @@ module TonSdk
       end
     end
 
-    def self.send(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "debot.send", pr_s.to_h.to_json) do |resp|
+    def self.send(ctx, params)
+      Interop::request_to_native_lib(ctx, "debot.send", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil

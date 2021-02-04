@@ -779,8 +779,8 @@ module TonSdk
     # functions
     #
 
-    def self.encode_message_body(ctx, pr1)
-      pr_json = pr1.to_h.to_json
+    def self.encode_message_body(ctx, params)
+      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(ctx, "abi.encode_message_body", pr_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
@@ -794,8 +794,8 @@ module TonSdk
       end
     end
 
-    def self.attach_signature_to_message_body(ctx, pr1)
-      pr_json = pr1.to_h.to_json
+    def self.attach_signature_to_message_body(ctx, params)
+      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(ctx, "abi.attach_signature_to_message_body", pr_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
@@ -807,8 +807,8 @@ module TonSdk
       end
     end
 
-    def self.encode_message(ctx, pr1)
-      pr_json = pr1.to_h.to_json
+    def self.encode_message(ctx, params)
+      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(ctx, "abi.encode_message", pr_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
@@ -825,8 +825,8 @@ module TonSdk
       end
     end
 
-    def self.attach_signature(ctx, pr1)
-      pr_json = pr1.to_h.to_json
+    def self.attach_signature(ctx, params)
+      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(ctx, "abi.attach_signature", pr_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
@@ -840,8 +840,8 @@ module TonSdk
       end
     end
 
-    def self.decode_message(ctx, pr1)
-      pr_json = pr1.to_h.to_json
+    def self.decode_message(ctx, params)
+      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(ctx, "abi.decode_message", pr_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
@@ -853,8 +853,8 @@ module TonSdk
       end
     end
 
-    def self.decode_message_body(ctx, pr1)
-      pr_json = pr1.to_h.to_json
+    def self.decode_message_body(ctx, params)
+      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(ctx, "abi.decode_message_body", pr_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
@@ -866,8 +866,8 @@ module TonSdk
       end
     end
 
-    def self.encode_account(ctx, pr1)
-      pr_json = pr1.to_h.to_json
+    def self.encode_account(ctx, params)
+      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(ctx, "abi.encode_account", pr_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(

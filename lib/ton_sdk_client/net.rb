@@ -266,11 +266,11 @@ module TonSdk
     # functions
     #
 
-    def self.query_collection(ctx, pr1)
+    def self.query_collection(ctx, params)
       Interop::request_to_native_lib(
         ctx,
         "net.query_collection",
-        pr1.to_h.to_json,
+        params.to_h.to_json,
         single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -283,11 +283,11 @@ module TonSdk
       end
     end
 
-    def self.wait_for_collection(ctx, pr1)
+    def self.wait_for_collection(ctx, params)
       Interop::request_to_native_lib(
         ctx,
         "net.wait_for_collection",
-        pr1.to_h.to_json,
+        params.to_h.to_json,
         single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -300,8 +300,8 @@ module TonSdk
       end
     end
 
-    def self.unsubscribe(ctx, pr1)
-      Interop::request_to_native_lib(ctx, "net.unsubscribe", pr1.to_h.to_json) do |resp|
+    def self.unsubscribe(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.unsubscribe", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ""
@@ -312,11 +312,11 @@ module TonSdk
       end
     end
 
-    def self.subscribe_collection(ctx, pr1, custom_response_handler = nil, &block)
+    def self.subscribe_collection(ctx, params, custom_response_handler = nil, &block)
       Interop::request_to_native_lib(
         ctx,
         "net.subscribe_collection",
-        pr1.to_h.to_json,
+        params.to_h.to_json,
         custom_response_handler: custom_response_handler,
         single_thread_only: false
       ) do |resp|
@@ -330,8 +330,8 @@ module TonSdk
       end
     end
 
-    def self.query(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "net.query", pr_s.to_h.to_json) do |resp|
+    def self.query(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.query", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfQuery.new(resp.result["result"])
@@ -362,8 +362,8 @@ module TonSdk
       end
     end
 
-    def self.find_last_shard_block(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "net.find_last_shard_block", pr_s.to_h.to_json) do |resp|
+    def self.find_last_shard_block(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.find_last_shard_block", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfFindLastShardBlock.new(resp.result["block_id"])
@@ -386,8 +386,8 @@ module TonSdk
       end
     end
 
-    def self.set_endpoints(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "net.set_endpoints", pr_s.to_h.to_json) do |resp|
+    def self.set_endpoints(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.set_endpoints", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
@@ -399,8 +399,8 @@ module TonSdk
     end
   end
 
-  def self.batch_query(ctx, pr_s)
-    Interop::request_to_native_lib(ctx, "net.batch_query", pr_s.to_h.to_json) do |resp|
+  def self.batch_query(ctx, params)
+    Interop::request_to_native_lib(ctx, "net.batch_query", params.to_h.to_json) do |resp|
       if resp.success?
         yield NativeLibResponsetResult.new(
           result: ResultOfBatchQuery.new(resp.result["results"])
@@ -411,8 +411,8 @@ module TonSdk
     end
   end
 
-  def self.aggregate_collection(ctx, pr_s)
-    Interop::request_to_native_lib(ctx, "net.aggregate_collection", pr_s.to_h.to_json) do |resp|
+  def self.aggregate_collection(ctx, params)
+    Interop::request_to_native_lib(ctx, "net.aggregate_collection", params.to_h.to_json) do |resp|
       if resp.success?
         yield NativeLibResponsetResult.new(
           result: ResultOfAggregateCollection.new(resp.result["values"])

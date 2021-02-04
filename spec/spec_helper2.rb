@@ -43,12 +43,12 @@ def get_grams_from_giver(ctx, to_address)
     signer: TonSdk::Abi::Signer.new(type_: :none)
   )
 
-  pr_s = TonSdk::Processing::ParamsOfProcessMessage.new(
+  params = TonSdk::Processing::ParamsOfProcessMessage.new(
     message_encode_params: par_enc_msg,
     send_events: false
   )
 
-  TonSdk::Processing::process_message(ctx, pr_s) do |res|
+  TonSdk::Processing::process_message(ctx, params) do |res|
     if res.success?
       res.result.out_messages.map do |msg|
         Boc.parse_message(ctx, TonSdk::Boc::ParamsOfParse.new(msg))

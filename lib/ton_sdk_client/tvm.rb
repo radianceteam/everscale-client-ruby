@@ -177,8 +177,8 @@ module TonSdk
       end
     end
 
-    def self.run_executor(ctx, pr1)
-      pr_json = pr1.to_h.to_json
+    def self.run_executor(ctx, params)
+      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "tvm.run_executor",
@@ -201,8 +201,8 @@ module TonSdk
       end
     end
 
-    def self.run_tvm(ctx, pr1)
-      pr_json = pr1.to_h.to_json
+    def self.run_tvm(ctx, params)
+      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "tvm.run_tvm",
@@ -223,8 +223,8 @@ module TonSdk
       end
     end
 
-    def self.run_get(ctx, pr1)
-      pr_json = pr1.to_h.to_json
+    def self.run_get(ctx, params)
+      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "tvm.run_get",

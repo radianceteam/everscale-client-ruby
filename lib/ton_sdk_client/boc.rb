@@ -113,8 +113,8 @@ module TonSdk
     # functions
     #
 
-    def self.parse_message(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "boc.parse_message", pr_s.to_h.to_json) do |resp|
+    def self.parse_message(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.parse_message", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfParse.new(resp.result["parsed"])
@@ -125,8 +125,8 @@ module TonSdk
       end
     end
 
-    def self.parse_transaction(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "boc.parse_transaction", pr_s.to_h.to_json) do |resp|
+    def self.parse_transaction(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.parse_transaction", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfParse.new(resp.result["parsed"])
@@ -137,8 +137,8 @@ module TonSdk
       end
     end
 
-    def self.parse_account(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "boc.parse_account", pr_s.to_h.to_json) do |resp|
+    def self.parse_account(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.parse_account", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfParse.new(resp.result["parsed"])
@@ -149,8 +149,8 @@ module TonSdk
       end
     end
 
-    def self.parse_block(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "boc.parse_block", pr_s.to_h.to_json) do |resp|
+    def self.parse_block(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.parse_block", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfParse.new(resp.result["parsed"])
@@ -161,8 +161,8 @@ module TonSdk
       end
     end
 
-    def self.parse_shardstate(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "boc.parse_shardstate", pr_s.to_h.to_json) do |resp|
+    def self.parse_shardstate(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.parse_shardstate", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfParse.new(resp.result["parsed"])
@@ -173,8 +173,8 @@ module TonSdk
       end
     end
 
-    def self.get_blockchain_config(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", pr_s.to_h.to_json) do |resp|
+    def self.get_blockchain_config(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetBlockchainConfig.new(resp.result["config_boc"])
@@ -185,8 +185,8 @@ module TonSdk
       end
     end
 
-    def self.get_boc_hash(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "boc.get_boc_hash", pr_s.to_h.to_json) do |resp|
+    def self.get_boc_hash(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.get_boc_hash", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetBocHash.new(resp.result["hash"])
@@ -197,8 +197,8 @@ module TonSdk
       end
     end
 
-    def self.get_code_from_tvc(ctx, pr_s)
-      Interop::request_to_native_lib(ctx, "boc.get_code_from_tvc", pr_s.to_h.to_json) do |resp|
+    def self.get_code_from_tvc(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.get_code_from_tvc", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetCodeFromTvc.new(resp.result["code"])

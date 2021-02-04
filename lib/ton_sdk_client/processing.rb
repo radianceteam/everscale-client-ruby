@@ -178,15 +178,15 @@ module TonSdk
     # functions
     #
 
-    def self.send_message(ctx, pr1, custom_response_handler = nil)
-      if (pr1.send_events == true) && custom_response_handler.nil?
+    def self.send_message(ctx, params, custom_response_handler = nil)
+      if (params.send_events == true) && custom_response_handler.nil?
         raise ArgumentError.new("with `send_events` set to true, `custom_response_handler` may not be nil")
       end
 
       Interop::request_to_native_lib(
         ctx,
         "processing.send_message",
-        pr1.to_h.to_json,
+        params.to_h.to_json,
         custom_response_handler: custom_response_handler,
         single_thread_only: false
       ) do |resp|
@@ -201,15 +201,15 @@ module TonSdk
       end
     end
 
-    def self.wait_for_transaction(ctx, pr1, custom_response_handler = nil)
-      if (pr1.send_events == true) && custom_response_handler.nil?
+    def self.wait_for_transaction(ctx, params, custom_response_handler = nil)
+      if (params.send_events == true) && custom_response_handler.nil?
         raise ArgumentError.new("with `send_events` set to true, `custom_response_handler` may not be nil")
       end
 
       Interop::request_to_native_lib(
         ctx,
         "processing.wait_for_transaction",
-        pr1.to_h.to_json,
+        params.to_h.to_json,
         custom_response_handler: custom_response_handler,
         single_thread_only: false
       ) do |resp|
@@ -228,15 +228,15 @@ module TonSdk
       end
     end
 
-    def self.process_message(ctx, pr1, custom_response_handler = nil)
-      if (pr1.send_events == true) && custom_response_handler.nil?
+    def self.process_message(ctx, params, custom_response_handler = nil)
+      if (params.send_events == true) && custom_response_handler.nil?
         raise ArgumentError.new("with `send_events` set to true `custom_response_handler` may not be nil")
       end
 
       Interop::request_to_native_lib(
         ctx,
         "processing.process_message",
-        pr1.to_h.to_json,
+        params.to_h.to_json,
         custom_response_handler: custom_response_handler,
         single_thread_only: false
       ) do |resp|
