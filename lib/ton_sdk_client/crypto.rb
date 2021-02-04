@@ -4,6 +4,28 @@ module TonSdk
     #
     # types
     #
+    module ErrorCode
+      INVALID_PUBLICKEY = 100
+      INVALID_SECRETKEY = 101
+      INVALID_KEY = 102
+      INVALID_FACTORIZE_CHALLENGE = 106
+      INVALID_BIGINT = 107
+      SCRYPT_FAILED = 108,
+      INVALID_KEYSIZE = 109
+      NACL_SECRET_BOX_FAILED = 110,
+      NACL_BOX_FAILED = 111,
+      NACL_SIGN_FAILED = 112,
+      BIP39_INVALID_ENTROPY = 113
+      BIP39_INVALID_PHRASE = 114
+      BIP32_INVALID_KEY = 115
+      BIP32_INVALID_DERIVEPATH = 116
+      BIP39_INVALID_DICTIONARY = 117
+      BIP39_INVALID_WORDCOUNT = 118
+      MNEMONIC_GENERATION_FAILED = 119
+      MNEMONICFROMENTROPY_FAILED = 120
+      SIGNING_BOX_NOT_REGISTERED = 121
+      INVALID_SIGNATURE = 122
+    end
 
     class ParamsOfFactorize
       attr_reader :composite
@@ -12,11 +34,7 @@ module TonSdk
         @composite = a
       end
 
-      def to_h
-        {
-          composite: @composite
-        }
-      end
+      def to_h = { composite: @composite }
     end
 
     class ResultOfFactorize
@@ -60,11 +78,7 @@ module TonSdk
         @data = a
       end
 
-      def to_h
-        {
-          data: @data
-        }
-      end
+      def to_h = { data: @data }
     end
 
     class ResultOfTonCrc16
@@ -245,11 +259,7 @@ module TonSdk
         @secret = a
       end
 
-      def to_h
-        {
-          secret: @secret
-        }
-      end
+      def to_h = { secret: @secret }
     end
 
     class ParamsOfNaclSign
@@ -269,10 +279,10 @@ module TonSdk
     end
 
     class ResultOfNaclSign
-      attr_reader :secret
+      attr_reader :signed
 
       def initialize(a)
-        @secret = a
+        @signed = a
       end
     end
 
@@ -730,11 +740,33 @@ module TonSdk
         @pubkey = a
       end
 
+      def to_h = { pubkey: @pubkey }
+    end
+
+    class ParamsOfNaclSignDetachedVerify
+      attr_reader :unsigned, :signature, :public
+
+      def initialize(unsigned:, signature:, public_:)
+        @unsigned, @signature, @public_ = unsigned, signature, public_
+      end
+
       def to_h
         {
-          pubkey: @pubkey
+          unsigned: @unsigned,
+          signature: @signature,
+          public: @public_
         }
       end
+    end
+
+    class ResultOfNaclSignDetachedVerify 
+      attr_reader :succeeded
+
+      def initialize(a)
+        @succeeded = a
+      end
+
+      def to_h = { succeeded: @succeeded }
     end
 
 
@@ -1217,6 +1249,18 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfSigningBoxSign.new(resp.result["signature"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.nacl_sign_detached_verify(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "crypto.nacl_sign_detached_verify", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfNaclSignDetachedVerify.new(resp.result["succeeded"])
           )
         else
           yield resp

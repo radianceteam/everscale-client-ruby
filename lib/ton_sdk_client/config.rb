@@ -27,11 +27,12 @@ module TonSdk
     DEFAULT_WAIT_TIMEOUT = 40000
     DEFAULT_OUT_OF_SYNC_THRESHOLD = 15000
     DEFAULT_NETWORK_RETRIES_COUNT = 5
+    DEFAULT_MAX_RECONNECT_TIMEOUT = 2
 
     attr_reader :server_address, :endpoints, :network_retries_count,
       :message_retries_count, :message_processing_timeout,
       :wait_for_timeout, :out_of_sync_threshold, :reconnect_timeout,
-      :access_key
+      :access_key, :max_reconnect_timeout
 
     def initialize(
       server_address: "",
@@ -42,7 +43,8 @@ module TonSdk
       wait_for_timeout: DEFAULT_WAIT_TIMEOUT,
       out_of_sync_threshold: DEFAULT_OUT_OF_SYNC_THRESHOLD,
       reconnect_timeout: 0,
-      access_key: nil
+      access_key: nil,
+      max_reconnect_timeout: DEFAULT_MAX_RECONNECT_TIMEOUT
     )
       @server_address = server_address
       @endpoints = endpoints
@@ -53,6 +55,7 @@ module TonSdk
       @out_of_sync_threshold = out_of_sync_threshold
       @reconnect_timeout = reconnect_timeout
       @access_key = access_key
+      @max_reconnect_timeout = max_reconnect_timeout
     end
 
     def to_h
@@ -65,7 +68,8 @@ module TonSdk
         wait_for_timeout: @wait_for_timeout,
         out_of_sync_threshold: @out_of_sync_threshold,
         reconnect_timeout: @reconnect_timeout,
-        access_key: @access_key
+        access_key: @access_key,
+        max_reconnect_timeout: @max_reconnect_timeout
       }
     end
   end
@@ -77,11 +81,7 @@ module TonSdk
       @fish_param = a
     end
 
-    def to_h
-      {
-        fish_param: @fish_param
-      }
-    end
+    def to_h = { fish_param: @fish_param }
   end
 
   class AbiConfig
@@ -90,7 +90,8 @@ module TonSdk
 
     attr_reader :message_expiration_timeout, :message_expiration_timeout_grow_factor
 
-    def initialize(message_expiration_timeout: DEFAULT_EXPIRATION_TIMEOUT,
+    def initialize(
+      message_expiration_timeout: DEFAULT_EXPIRATION_TIMEOUT,
       message_expiration_timeout_grow_factor: DEFAULT_TIMEOUT_GROW_FACTOR
     )
       @message_expiration_timeout = message_expiration_timeout

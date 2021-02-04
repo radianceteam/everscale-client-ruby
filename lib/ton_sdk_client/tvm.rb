@@ -34,15 +34,15 @@ module TonSdk
         case @type_
         when :none
           {
-            type: Helper.sym_to_capitalized_camel_case_str(@type_),
+            type: Helper.sym_to_capitalized_case_str(@type_),
           }
         when :uninit
           {
-            type: Helper.sym_to_capitalized_camel_case_str(@type_),
+            type: Helper.sym_to_capitalized_case_str(@type_),
           }
         when :account
           {
-            type: Helper.sym_to_capitalized_camel_case_str(@type_),
+            type: Helper.sym_to_capitalized_case_str(@type_),
             boc: @boc,
             unlimited_balance: @unlimited_balance
           }

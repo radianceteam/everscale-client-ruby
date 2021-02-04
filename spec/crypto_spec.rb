@@ -27,7 +27,7 @@ describe TonSdk::Crypto do
     end
 
     it "#ton_crc16" do
-      b64_str = b64_from_hex("0123456789abcdef")
+      b64_str = TonSdk::Helper.base64_from_hex("0123456789abcdef")
       pr1 = TonSdk::Crypto::ParamsOfTonCrc16.new(b64_str)
       expect { |b| TonSdk::Crypto.ton_crc16(@c_ctx.context, pr1, &b) }.to yield_control
       TonSdk::Crypto.ton_crc16(@c_ctx.context, pr1) { |a| @res = a }
@@ -97,7 +97,7 @@ describe TonSdk::Crypto do
 
     it "#verify_signature" do
       pr1 = TonSdk::Crypto::ParamsOfVerifySignature.new(
-        signed: b64_from_hex("fb0cfe40eea5d6c960652e6ceb904da8a72ee2fcf6e05089cf835203179ff65bb48c57ecf31dcfcd26510bea67e64f3e6898b7c58300dc14338254268cade10354657374204d657373616765"),
+        signed: TonSdk::Helper.base64_from_hex("fb0cfe40eea5d6c960652e6ceb904da8a72ee2fcf6e05089cf835203179ff65bb48c57ecf31dcfcd26510bea67e64f3e6898b7c58300dc14338254268cade10354657374204d657373616765"),
         public_: "1869b7ef29d58026217e9cf163cbfbd0de889bdf1bf4daebf5433a312f5b8d6e"
       )
 
@@ -262,6 +262,33 @@ describe TonSdk::Crypto do
 
       expect(@res4.success?).to eq true
       expect(@res4.result.handle).to_not eq nil
+    end
+
+    it "#nacl" do
+      # 1
+      pr1 = TonSdk::Crypto::ParamsOfNaclSignKeyPairFromSecret.new("8fb4f2d256e57138fb310b0a6dac5bbc4bee09eb4821223a720e5b8e1f3dd674")
+      TonSdk::Crypto::nacl_sign_keypair_from_secret_key(@c_ctx.context, pr1) { |a| @res = a }
+      expect(@res.success?).to eq true
+      expect(@res.result.public_).to eq "aa5533618573860a7e1bf19f34bd292871710ed5b2eafa0dcdbb33405f2231c6"
+
+
+      # 2
+      pr2 = TonSdk::Crypto::ParamsOfNaclSign.new(
+        unsigned: Base64::strict_encode64("Test Message"),
+        secret: "56b6a77093d6fdf14e593f36275d872d75de5b341942376b2a08759f3cbae78f1869b7ef29d58026217e9cf163cbfbd0de889bdf1bf4daebf5433a312f5b8d6e"
+      )
+      TonSdk::Crypto::nacl_sign(@c_ctx.context, pr2) { |a| @res2 = a }
+      expect(@res2.success?).to eq true
+      expect(@res2.result.signed).to eq "+wz+QO6l1slgZS5s65BNqKcu4vz24FCJz4NSAxef9lu0jFfs8x3PzSZRC+pn5k8+aJi3xYMA3BQzglQmjK3hA1Rlc3QgTWVzc2FnZQ=="
+
+      # 3
+      pr3 = TonSdk::Crypto::ParamsOfNaclSignOpen.new(
+        signed: TonSdk::Helper.base64_from_hex("fb0cfe40eea5d6c960652e6ceb904da8a72ee2fcf6e05089cf835203179ff65bb48c57ecf31dcfcd26510bea67e64f3e6898b7c58300dc14338254268cade10354657374204d657373616765"),
+        public_: "1869b7ef29d58026217e9cf163cbfbd0de889bdf1bf4daebf5433a312f5b8d6e"
+      )
+      TonSdk::Crypto::nacl_sign_open(@c_ctx.context, pr3) { |a| @res3 = a }
+      expect(@res3.success?).to eq true
+      expect("Test Message").to eq Base64.decode64(@res3.result.unsigned)
     end
   end
 end

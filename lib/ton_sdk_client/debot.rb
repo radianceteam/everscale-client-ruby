@@ -1,18 +1,21 @@
 module TonSdk
 
   # NOTE
-  # as of 15 jan 2021, in the main repository this module is still unstable
+  # as of 3 feb 2021, in the main repository this module is still unstable
   module Debot
 
     #
     # types
     #
 
-    module DebotErrorCodes
-      DEBOT_START_FAILED = 801
-      DEBOT_FETCH_FAILED = 802
-      DEBOT_EXECUTION_FAILED = 803
-      DEBOT_INVALID_HANDLE = 804
+    module ErrorCode
+      START_FAILED = 801
+      FETCH_FAILED = 802
+      EXECUTION_FAILED = 803
+      INVALID_HANDLE = 804
+      INVALID_JSON_PARAMS = 805
+      INVALID_FUNCTION_ID = 806
+      INVALID_ABI = 807
     end
 
     class DebotAction
@@ -59,7 +62,7 @@ module TonSdk
         @address = a
       end
 
-      def to_h() = { address: @address }
+      def to_h = { address: @address }
     end
 
     class RegisteredDebot
@@ -69,7 +72,7 @@ module TonSdk
         @debot_handle = a
       end
 
-      def to_h() = { debot_handle: @debot_handle }
+      def to_h = { debot_handle: @debot_handle }
     end
 
     class ParamsOfAppDebotBrowser
@@ -80,11 +83,20 @@ module TonSdk
         :show_action,
         :input,
         :get_signing_box,
-        :invoke_debot
+        :invoke_debot,
+        :send
       ]
-      attr_reader :type_, :msg, :context_id, :action, :prompt, :debot_addr
+      attr_reader :type_, :msg, :context_id, :action, :prompt, :debot_addr, :message
 
-      def initialize(type_:, msg: nil, context_id: nil, action: nil, prompt: nil, debot_addr: nil)
+      def initialize(
+        type_:,
+        msg: nil,
+        context_id: nil,
+        action: nil,
+        prompt: nil,
+        debot_addr: nil,
+        message: nil
+      )
         unless TYPE_VALUES.include?(type_)
           raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPE_VALUES}")
         end
@@ -94,16 +106,18 @@ module TonSdk
         @action = action
         @prompt = prompt
         @debot_addr = debot_addr
+        @message = message
       end
 
       def to_h
         {
-          type: Helper.sym_to_capitalized_camel_case_str(@type_),
+          type: Helper.sym_to_capitalized_case_str(@type_),
           msg: @msg,
           context_id: @context_id,
           action: @action,
           prompt: @prompt,
-          debot_addr: @debot_addr
+          debot_addr: @debot_addr,
+          message: @message
         }
       end
 
@@ -122,21 +136,13 @@ module TonSdk
 
       private
 
-      def self.parse_type(s)
-        case s
-        when 'Log', 'Switch', 'Input'
-          s_dc.downcase.to_sym
-        when 'SwitchCompleted'
-          :switch_completed
-        when 'ShowAction'
-          :show_action
-        when 'GetSigningBox'
-          :get_signing_box
-        when 'InvokeDebot'
-          :invoke_debot
-        else
-          raise ArgumentError.new("unknown type: #{s}; known ones: #{TYPE_VALUES}")
+      def self.parse_type(type_str)
+        types_str = TYPE_VALUES.map(Helper.capitalized_case_str_to_snake_case_sym)
+        unless types_str.include?(type_str)
+          raise ArgumentError.new("type #{type_str} is unknown; known types: #{types_str}")
         end
+
+        Helper.capitalized_case_str_to_snake_case_sym(type_str)
       end
     end
 
@@ -166,7 +172,7 @@ module TonSdk
         @address = a
       end
 
-      def to_h() = { address: @address }
+      def to_h = { address: @address }
     end
 
     class ParamsOfExecute
@@ -185,6 +191,25 @@ module TonSdk
       end
     end
 
+    class ParamsOfSend
+      attr_reader :debot_handle, :source, :func_id, :params
+
+      def initialize(debot_handle:, source:, func_id:, params:)
+        @debot_handle = debot_handle
+        @source = source
+        @func_id = func_id
+        @params = params
+      end
+
+      def to_h
+        {
+          debot_handle: @debot_handle,
+          source: @source,
+          func_id: @func_id,
+          params: @params
+        }
+      end
+    end
 
     #
     # functions
@@ -396,6 +421,18 @@ module TonSdk
 
     def self.remove(ctx, pr_s)
       Interop::request_to_native_lib(ctx, "debot.remove", pr_s.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: nil
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.send(ctx, pr_s)
+      Interop::request_to_native_lib(ctx, "debot.send", pr_s.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil

@@ -15,8 +15,6 @@ def get_now_for_async_operation = Process.clock_gettime(Process::CLOCK_MONOTONIC
 
 def get_timeout_for_async_operation = Process.clock_gettime(Process::CLOCK_MONOTONIC) + ASYNC_OPERATION_TIMEOUT_SECONDS
 
-def b64_from_hex(hex_digest) = [[hex_digest].pack("H*")].pack("m0")
-
 def load_abi(name:, version:)
   cont_json = File.read("#{TESTS_DATA_DIR}/contracts/#{version}/#{name}.abi.json")
   TonSdk::Abi::Abi.new(
