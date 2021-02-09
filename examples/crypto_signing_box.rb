@@ -40,34 +40,36 @@ TonSdk::Crypto.generate_random_sign_keys(@c_ctx.context) do |res|
     puts "  public: #{res.result.public_}"
     puts "  secret: #{res.result.secret}"
     puts "\r\n"
+    @res = res
+  else
+    puts "generate_random_sign_keys error #{res.error}"
+  end
+end
 
+sleep(1)
 
-    reg_sb_mock = RegisterSigningBoxParamsMock.new(
-      public_: res.result.public_,
-      private_: res.result.secret
-    )
+reg_sb_mock = RegisterSigningBoxParamsMock.new(
+  public_: @res.result.public_,
+  private_: @res.result.secret
+)
 
-    TonSdk::Crypto.register_signing_box(@c_ctx.context, reg_sb_mock) do |res|
-      if res.success?
-        sb_handle = res.result.handle
-        puts "signinx box handle: #{sb_handle}"
+TonSdk::Crypto.register_signing_box(@c_ctx.context, app_obj: reg_sb_mock) do |res|
+  if res.success?
+    sb_handle = res.result.handle
+    puts "signinx box handle: #{sb_handle}"
 
-        TonSdk::Crypto.signing_box_get_public_key(
-          @c_ctx.context,
-          TonSdk::Crypto::RegisteredSigningBox.new(sb_handle)
-        ) do |res2|
-          if res2.success?
-            puts "signing_box_get_public_key: #{res2.result}"
-          else
-            puts "signing_box_get_public_key error #{res2.error}"
-          end
-        end
+    TonSdk::Crypto.signing_box_get_public_key(
+      @c_ctx.context,
+      TonSdk::Crypto::RegisteredSigningBox.new(sb_handle)
+    ) do |res2|
+      if res2.success?
+        puts "signing_box_get_public_key: #{res2.result}"
       else
-        puts "register_signing_box error #{res.error}"
+        puts "signing_box_get_public_key error #{res2.error}"
       end
     end
   else
-    puts "generate_random_sign_keys error #{res.error}"
+    puts "register_signing_box error #{res.error}"
   end
 end
 

@@ -72,14 +72,14 @@ module TonSdk
       def to_h
         abi_val = @abi.nil? ? nil : @abi.to_h
         exe_opt_val = @execution_options.nil? ? nil : @execution_options.to_h
-        boc_cache_val = @boc_cache.nil? nil : @boc_cache.to_h
+        boc_cache_val = @boc_cache.nil? ? nil : @boc_cache.to_h
 
         {
           message: @message,
           account: @account.to_h,
           execution_options: exe_opt_val,
           abi: abi_val,
-          skip_transaction_check: @skip_transaction_check
+          skip_transaction_check: @skip_transaction_check,
           boc_cache: boc_cache_val,
           return_updated_account: @return_updated_account
         }
@@ -114,7 +114,7 @@ module TonSdk
       def to_h
         abi_val = @abi.nil? ? nil : @abi.to_h
         exe_opt_val = @execution_options.nil? ? nil : @execution_options.to_h
-        boc_cache_val = @boc_cache.nil? nil : @boc_cache.to_h
+        boc_cache_val = @boc_cache.nil? ? nil : @boc_cache.to_h
 
         {
           message: @message,

@@ -1219,11 +1219,35 @@ module TonSdk
       end
     end
 
-    def self.register_signing_box(ctx, params, is_single_thread_only: false)
+
+    # TODO
+    def self.register_signing_box(ctx, app_obj:, is_single_thread_only: false)
+      client_callback = Proc.new do |type_, x|
+        app_res = app_obj.request(x["request_data"])
+        app_req_result = case app_res
+        in [:success, result]
+          TonSdk::Client::AppRequestResult.new(
+            type_: :ok,
+            result: result
+          )
+        in [:error, text]
+          TonSdk::Client::AppRequestResult.new(
+            type_: :error,
+            text: text
+          )
+        end
+
+        params = TonSdk::Client::ParamsOfResolveAppRequest.new(
+          app_request_id: x["app_request_id"],
+          result: app_req_result
+        )
+        TonSdk::Client.resolve_app_request(ctx, params)
+      end
+
       Interop::request_to_native_lib(
         ctx,
         "crypto.register_signing_box",
-        params.to_h.to_json,
+        nil,
         is_single_thread_only: is_single_thread_only
       ) do |resp|
         if resp.success?
