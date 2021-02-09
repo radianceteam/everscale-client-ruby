@@ -1127,7 +1127,6 @@ module TonSdk
       end
     end
 
-
     def self.mnemonic_derive_sign_keys(ctx, params)
       pr_json = params.to_h.to_json
       Interop::request_to_native_lib(ctx, "crypto.mnemonic_derive_sign_keys", pr_json) do |resp|
@@ -1219,8 +1218,6 @@ module TonSdk
       end
     end
 
-
-    # TODO
     def self.register_signing_box(ctx, app_obj:, is_single_thread_only: false)
       client_callback = Proc.new do |type_, x|
         app_res = app_obj.request(x["request_data"])
@@ -1288,7 +1285,6 @@ module TonSdk
         end
       end
     end
-
 
     def self.signing_box_sign(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.signing_box_sign", params.to_h.to_json) do |resp|
