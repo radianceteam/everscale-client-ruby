@@ -31,12 +31,8 @@ module TonSdk
       end
 
       def to_h
-        case @type_
-        when :none
-          {
-            type: Helper.sym_to_capitalized_case_str(@type_),
-          }
-        when :uninit
+        h1 = case @type_
+        when :none, :uninit
           {
             type: Helper.sym_to_capitalized_case_str(@type_),
           }
@@ -51,19 +47,32 @@ module TonSdk
     end
 
     class ParamsOfRunExecutor
-      attr_reader :message, :account, :execution_options, :abi, :skip_transaction_check
+      attr_reader :message, :account, :execution_options, :abi, :skip_transaction_check,
+                    :boc_cache, :return_updated_account
 
-      def initialize(message:, account:, execution_options: nil, abi: nil, skip_transaction_check: nil)
+      def initialize(
+        message:,
+        account:,
+        execution_options: nil,
+        abi: nil,
+        skip_transaction_check: nil,
+        boc_cache: nil,
+        return_updated_account: nil
+      )
+
         @message = message
         @account = account
         @execution_options = execution_options
         @abi = abi
         @skip_transaction_check = skip_transaction_check
+        @boc_cache = boc_cache
+        @return_updated_account = return_updated_account
       end
 
       def to_h
         abi_val = @abi.nil? ? nil : @abi.to_h
         exe_opt_val = @execution_options.nil? ? nil : @execution_options.to_h
+        boc_cache_val = @boc_cache.nil? nil : @boc_cache.to_h
 
         {
           message: @message,
@@ -71,6 +80,8 @@ module TonSdk
           execution_options: exe_opt_val,
           abi: abi_val,
           skip_transaction_check: @skip_transaction_check
+          boc_cache: boc_cache_val,
+          return_updated_account: @return_updated_account
         }
       end
     end
@@ -88,24 +99,30 @@ module TonSdk
     end
 
     class ParamsOfRunTvm
-      attr_reader :message, :account, :execution_options, :abi
+      attr_reader :message, :account, :execution_options, :abi,
+                    :boc_cache, :return_updated_account
 
-      def initialize(message:, account:, execution_options: nil, abi: nil)
+      def initialize(message:, account:, execution_options: nil, abi: nil, boc_cache: nil, return_updated_account: nil)
         @message = message
         @account = account
         @execution_options = execution_options
         @abi = abi
+        @boc_cache = boc_cache
+        @return_updated_account = return_updated_account
       end
 
       def to_h
         abi_val = @abi.nil? ? nil : @abi.to_h
         exe_opt_val = @execution_options.nil? ? nil : @execution_options.to_h
+        boc_cache_val = @boc_cache.nil? nil : @boc_cache.to_h
 
         {
           message: @message,
           account: @account,
           execution_options: exe_opt_val,
-          abi: abi_val
+          abi: abi_val,
+          boc_cache: boc_cache_val,
+          return_updated_account: @return_updated_account
         }
       end
     end
@@ -183,7 +200,7 @@ module TonSdk
         ctx,
         "tvm.run_executor",
         pr_json,
-        single_thread_only: false
+        is_single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
@@ -207,7 +224,7 @@ module TonSdk
         ctx,
         "tvm.run_tvm",
         pr_json,
-        single_thread_only: false
+        is_single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
@@ -229,7 +246,7 @@ module TonSdk
         ctx,
         "tvm.run_get",
         pr_json,
-        single_thread_only: false
+        is_single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(

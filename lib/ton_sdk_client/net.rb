@@ -271,7 +271,7 @@ module TonSdk
         ctx,
         "net.query_collection",
         params.to_h.to_json,
-        single_thread_only: false
+        is_single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
@@ -288,7 +288,7 @@ module TonSdk
         ctx,
         "net.wait_for_collection",
         params.to_h.to_json,
-        single_thread_only: false
+        is_single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
@@ -312,13 +312,13 @@ module TonSdk
       end
     end
 
-    def self.subscribe_collection(ctx, params, custom_response_handler = nil, &block)
+    def self.subscribe_collection(ctx, params, client_callback: nil)
       Interop::request_to_native_lib(
         ctx,
         "net.subscribe_collection",
         params.to_h.to_json,
-        custom_response_handler: custom_response_handler,
-        single_thread_only: false
+        client_callback: client_callback,
+        is_single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
