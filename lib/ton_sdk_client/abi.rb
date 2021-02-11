@@ -773,7 +773,52 @@ module TonSdk
       end
     end
 
+    class ParamsOfEncodeInternalMessage
+      attr_reader :abi, :address, :deploy_set, :call_set, :value, :bounce, :enable_ihr
 
+      def initialize(abi:, address: nil, deploy_set: nil, call_set: nil, value:, bounce: nil, enable_ihr: nil)
+        @abi = abi
+        @address = address
+        @deploy_set = deploy_set
+        @call_set = call_set
+        @value = value
+        @bounce = bounce
+        @enable_ihr = enable_ihr
+      end
+
+      def to_h
+        depl_set_val = @deploy_set.nil? ? nil : @deploy_set.to_h
+        cl_set_val = @call_set.nil? ? nil : @call_set.to_h
+
+        {
+          abi: @abi,
+          address: @address,
+          deploy_set: depl_set_val,
+          call_set: cl_set_val,
+          value: @value,
+          bounce: @bounce,
+          enable_ihr: @enable_ihr
+        }
+      end
+    end
+
+    class ResultOfEncodeInternalMessage
+      attr_reader :message, :address, :message_id
+
+      def initialize(message:, address:, message_id:)
+        @message = message
+        @address = address
+        @message_id = message_id
+      end
+
+      def to_h
+        {
+          message: @message,
+          address: @address,
+          message_id: @message_id
+        }
+      end
+    end
 
     #
     # functions
@@ -874,6 +919,23 @@ module TonSdk
             result: ResultOfEncodeAccount.new(
               account: resp.result["account"],
               id_: resp.result["id"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.encode_internal_message(ctx, params)
+      pr_json = params.to_h.to_json
+      Interop::request_to_native_lib(ctx, "abi.encode_internal_message", pr_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfEncodeInternalMessage.new(
+              message: resp.result["message"],
+              address: resp.result["address"],
+              message_id: resp.result["message_id"]
             )
           )
         else

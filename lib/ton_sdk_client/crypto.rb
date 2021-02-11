@@ -863,8 +863,8 @@ module TonSdk
       end
     end
 
-    def self.generate_random_sign_keys(ctx)
-      Interop::request_to_native_lib(ctx, "crypto.generate_random_sign_keys", "") do |resp|
+    def self.generate_random_sign_keys(ctx, is_single_thread_only: false)
+      Interop::request_to_native_lib(ctx, "crypto.generate_random_sign_keys", nil, is_single_thread_only: is_single_thread_only) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: KeyPair.new(
@@ -1127,7 +1127,6 @@ module TonSdk
       end
     end
 
-
     def self.mnemonic_derive_sign_keys(ctx, params)
       pr_json = params.to_h.to_json
       Interop::request_to_native_lib(ctx, "crypto.mnemonic_derive_sign_keys", pr_json) do |resp|
@@ -1219,8 +1218,35 @@ module TonSdk
       end
     end
 
-    def self.register_signing_box(ctx, params)
-      Interop::request_to_native_lib(ctx, "crypto.register_signing_box", params.to_h.to_json) do |resp|
+    def self.register_signing_box(ctx, app_obj:, is_single_thread_only: false)
+      client_callback = Proc.new do |type_, x|
+        app_res = app_obj.request(x["request_data"])
+        app_req_result = case app_res
+        in [:success, result]
+          TonSdk::Client::AppRequestResult.new(
+            type_: :ok,
+            result: result
+          )
+        in [:error, text]
+          TonSdk::Client::AppRequestResult.new(
+            type_: :error,
+            text: text
+          )
+        end
+
+        params = TonSdk::Client::ParamsOfResolveAppRequest.new(
+          app_request_id: x["app_request_id"],
+          result: app_req_result
+        )
+        TonSdk::Client.resolve_app_request(ctx, params)
+      end
+
+      Interop::request_to_native_lib(
+        ctx,
+        "crypto.register_signing_box",
+        nil,
+        is_single_thread_only: is_single_thread_only
+      ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: RegisteredSigningBox.new(resp.result["handle"])
@@ -1243,8 +1269,13 @@ module TonSdk
       end
     end
 
-    def self.signing_box_get_public_key(ctx, params)
-      Interop::request_to_native_lib(ctx, "crypto.signing_box_get_public_key", params.to_h.to_json) do |resp|
+    def self.signing_box_get_public_key(ctx, params, is_single_thread_only: false)
+      Interop::request_to_native_lib(
+        ctx,
+        "crypto.signing_box_get_public_key",
+        params.to_h.to_json,
+        is_single_thread_only: is_single_thread_only
+      ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfSigningBoxGetPublicKey.new(resp.result["pubkey"])
@@ -1254,7 +1285,6 @@ module TonSdk
         end
       end
     end
-
 
     def self.signing_box_sign(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.signing_box_sign", params.to_h.to_json) do |resp|

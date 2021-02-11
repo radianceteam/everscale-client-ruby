@@ -7,7 +7,11 @@ module TonSdk
   module Interop
     extend FFI::Library
 
-    logger = Logger.new(STDOUT)
+    class << self
+      attr_reader :logger
+    end
+
+    @logger = Logger.new(STDOUT)
 
     class TcStringData < FFI::Struct
       layout :content, :pointer,
@@ -69,6 +73,7 @@ module TonSdk
       APP_REQUEST = 3
       APP_NOTIFY = 4
       CUSTOM = 100
+      MAX = 999
     end
 
 
@@ -128,17 +133,16 @@ module TonSdk
       ctx,
       function_name,
       function_params_json = nil,
-      custom_response_handler: nil,
-      debot_app_response_handler: nil,
-      single_thread_only: true
+      client_callback: nil,
+      is_single_thread_only: trfue
     )
       function_name_tc_str = TcStringData.from_string(function_name)
       function_params_json_str = function_params_json || ""
       function_params_json_tc_str = TcStringData.from_string(function_params_json_str)
 
-      sm = Concurrent::Semaphore.new(1)
-      if single_thread_only == true
-        sm.acquire()
+      @sm = Concurrent::Semaphore.new(1)
+      if is_single_thread_only == true
+        @sm.acquire()
       end
 
 
@@ -165,6 +169,7 @@ module TonSdk
 
         begin
           case response_type
+
           when TcResponseCodes::SUCCESS
             if block_given?
               yield NativeLibResponsetResult.new(result: tc_data_json_content)
@@ -178,23 +183,19 @@ module TonSdk
           when TcResponseCodes::NOP
             nil
 
-          when TcResponseCodes::APP_REQUEST, TcResponseCodes::APP_NOTIFY
-            if !debot_app_response_handler.nil?
-              debot_app_response_handler.call(tc_data_json_content)
+          when TcResponseCodes::APP_REQUEST
+            if !client_callback.nil?
+              client_callback.call(:request, tc_data_json_content)
             end
 
-          # TODO
-          # think of a return value, namely, calling a block via 'yield',
-          # for the cases when response_type isn't equal to 'SUCCESS' or 'ERROR';
-          # as for the time being, it'll be called with success and "" (empty string) as a value
-
-          when TcResponseCodes::CUSTOM
-            if block_given?
-              yield NativeLibResponsetResult.new(result: "")
+          when TcResponseCodes::APP_NOTIFY
+            if !client_callback.nil?
+              client_callback.call(:notify, tc_data_json_content)
             end
 
-            if !custom_response_handler.nil?
-              custom_response_handler.call(tc_data_json_content)
+          when TcResponseCodes::CUSTOM..TcResponseCodes::MAX
+            if !client_callback.nil?
+              client_callback.call(:custom, tc_data_json_content)
             end
 
           else
@@ -202,19 +203,22 @@ module TonSdk
           end
 
         rescue => e
-          logger.error(e)
+          @logger.error(e)
         ensure
-          if single_thread_only == true
-            sm.release()
+          if is_single_thread_only == true
+            @sm.release()
           end
         end
       end
 
-      if single_thread_only == true
-        sm.acquire()
+
+
+      if is_single_thread_only == true
+        @sm.acquire()
       end
 
       @@request_counter.increment()
+      nil
     end
 
     def self.request_to_native_lib_sync(ctx, function_name, function_params_json)

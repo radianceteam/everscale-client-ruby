@@ -107,6 +107,96 @@ module TonSdk
       end
     end
 
+    class ParamsOfBocCacheGet
+      attr_reader :boc_ref
+
+      def initialize(a)
+        @boc_ref = a
+      end
+
+      def to_h = { boc_ref: @boc_ref }
+    end
+
+    class ResultOfBocCacheGet
+      attr_reader :boc
+
+      def initialize(a)
+        @boc = a
+      end
+    end
+
+    class BocCacheType
+      TYPES = [
+        :pinned,
+        :unpinned
+      ]
+      attr_reader :type_, :pin
+
+      def initialize(type_:, pin:)
+        unless TYPES.include?(type_)
+          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
+        end
+        @type_ = type_
+        @pin = pin
+      end
+
+      def to_h
+        h1 = {
+          type: Helper.sym_to_capitalized_case_str(@type_)
+        }
+
+        h2 = if @type_ == :pinned
+          {
+            pin: @pin
+          }
+        else
+          { }
+        end
+
+        h1.merge(h2)
+      end
+    end
+
+    class ParamsOfBocCacheSet
+      attr_reader :boc, :cache_type
+
+      def initialize(boc:, cache_type:)
+        @boc = boc
+        @cache_type = cache_type
+      end
+
+      def to_h
+        {
+          boc: @boc,
+          cache_type: @cache_type.to_h
+        }
+      end
+    end
+
+    class ResultOfBocCacheGet
+      attr_reader :boc_ref
+
+      def initialize(a)
+        @boc_ref = a
+      end
+    end
+
+    class ParamsOfBocCacheUnpin
+      attr_reader :boc, :boc_ref
+
+      def initialize(boc:, boc_ref:)
+        @boc = boc
+        @boc_ref = boc_ref
+      end
+
+      def to_h
+        {
+          boc: @boc,
+          boc_ref: @boc_ref
+        }
+      end
+    end
+
 
 
     #
@@ -202,6 +292,46 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetCodeFromTvc.new(resp.result["code"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.cache_get(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.cache_get", params.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfBocCacheGet.new(
+              boc: resp.result["boc"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.cache_set(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.cache_set", params.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfBocCacheSet.new(
+              boc_ref: resp.result["boc_ref"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.cache_unpin(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.cache_unpin", params.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: nil
           )
         else
           yield resp

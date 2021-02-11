@@ -299,7 +299,7 @@ module TonSdk
         "debot.start",
         params.to_h.to_json,
         debot_app_response_handler: app_resp_handler,
-        single_thread_only: false
+        is_single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
@@ -395,7 +395,7 @@ module TonSdk
         "debot.fetch",
         params.to_h.to_json,
         debot_app_response_handler: app_resp_handler,
-        single_thread_only: false
+        is_single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
