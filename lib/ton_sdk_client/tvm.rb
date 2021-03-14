@@ -123,11 +123,18 @@ module TonSdk
     class ParamsOfRunGet
       attr_reader :account, :function_name, :input, :execution_options
 
-      def initialize(account:, function_name:, input: nil, execution_options: nil)
+      def initialize(
+        account:,
+        function_name:,
+        input: nil,
+        execution_options: nil,
+        tuple_list_as_array: nil
+      )
         @account = account
         @function_name = function_name
         @input = input
         @execution_options = execution_options
+        @tuple_list_as_array = tuple_list_as_array
       end
 
       def to_h
@@ -137,7 +144,8 @@ module TonSdk
           account: @account,
           function_name: @function_name,
           input: @input,
-          execution_options: exe_opt_val
+          execution_options: exe_opt_val,
+          tuple_list_as_array: @tuple_list_as_array
         }
       end
     end
