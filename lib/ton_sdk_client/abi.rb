@@ -773,7 +773,6 @@ module TonSdk
       end
     end
 
-
     class ParamsOfEncodeInternalMessage
       attr_reader :abi, :address, :src_address, :deploy_set, :call_set,
                     :value, :bounce, :enable_ihr
@@ -800,9 +799,13 @@ module TonSdk
     end
 
     class ResultOfEncodeInternalMessage
-        # message: string,
-        # address: string,
-        # message_id: string
+      attr_reader :message, :address, :message_id
+
+      def initialize(message:, address:, message_id)
+        @message = message
+        @address = address
+        @message_id = message_id
+      end
     end
 
 
