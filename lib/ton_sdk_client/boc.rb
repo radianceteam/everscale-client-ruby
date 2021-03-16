@@ -107,6 +107,80 @@ module TonSdk
       end
     end
 
+    class ParamsOfEncodeBoc
+      attr_reader :builder, :boc_cache
+
+      def initialize(builder:, boc_cache: nil)
+        @builder = builder
+        @boc_cache = boc_cache
+      end
+
+      def to_h
+        {
+          builder: @builder.to_h,
+          boc_cache?: @boc_cache.to_h || nil
+        }
+      end
+    end
+
+    class ResultOfEncodeBoc
+      attr_reader :boc
+
+      def initialize(a)
+        @boc = a
+      end
+    end
+
+    class BocCacheType
+     attr_reader :type_, :pin
+
+      def new_with_type_pinned(pin: nil)
+        @type_ = :pinned
+        @pin = pin
+      end
+
+      def new_with_type_unpinned
+        @type_ = :unpinned
+      end
+    end
+
+    class BocCacheType
+     attr_reader :type_, :pin
+
+      def new_with_type_pinned(pin: nil)
+        @type_ = :pinned
+        @pin = pin
+      end
+
+      def new_with_type_unpinned
+        @type_ = :unpinned
+      end
+    end
+
+    class BuilderOp
+     attr_reader :type_, :pin
+
+      def new_with_type_integer(size:, value:)
+        @type_ = :integer
+        @size = :size
+        @value = value
+      end
+
+      def new_with_type_bit_string(value:)
+        @type_ = :bit_string
+        @value = value
+      end
+
+      def new_with_type_cell(builder:)
+        @type_ = :cell
+        @builder = builder
+      end
+
+      def new_with_type_cell_boc(boc:)
+        @type_ = :cell_boc
+        @boc = boc
+      end
+    end
 
 
     #
@@ -202,6 +276,19 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetCodeFromTvc.new(resp.result["code"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+
+    def self.encode_boc(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.encode_boc", params.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfEncodeBoc.new(resp.result["boc"])
           )
         else
           yield resp

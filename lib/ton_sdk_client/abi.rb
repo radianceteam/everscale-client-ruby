@@ -796,6 +796,19 @@ module TonSdk
         @bounce = bounce
         @enable_ihr = enable_ihr
       end
+
+      def to_h
+        {
+          abi: @abi.to_h || nil,
+          address: @address,
+          src_address: @src_address,
+          deploy_set: @deploy_set.to_h || nil,
+          call_set: @call_set.to_h || nil,
+          value: @value,
+          bounce: @bounce,
+          enable_ihr: @enable_ihr
+        }
+      end
     end
 
     class ResultOfEncodeInternalMessage
