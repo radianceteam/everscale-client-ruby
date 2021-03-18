@@ -158,7 +158,7 @@ module TonSdk
     end
 
     class BuilderOp
-     attr_reader :type_, :pin
+     attr_reader :type_, :size, :value, :builder, :boc
 
       def new_with_type_integer(size:, value:)
         @type_ = :integer
