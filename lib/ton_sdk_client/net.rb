@@ -184,6 +184,38 @@ module TonSdk
       def to_h = { endpoints: @endpoints }
     end
 
+
+
+    # TODO
+    class ParamsOfQueryOperation
+      attr_reader :type_, :params
+
+      def new_with_type_query_collection(params)
+        @type_ = :query_collection
+        @params = params
+      end
+
+      def new_with_type_wait_for_collection(params)
+        @type_ = :wait_for_collection
+        @params = params
+      end
+      
+      def new_with_type_aggregate_collection(params)
+        @type_ = :aggregate_collection
+        @params = params
+      end
+
+      def to_h
+        tp = {
+          type: Helper.sym_to_capitalized_case_str(@type_)
+        }
+
+        param_keys = @params.to_h
+        tp.merge(param_keys)
+      end
+    end
+
+
     class ParamsOfBatchQuery
       attr_reader :operations
 
@@ -191,7 +223,7 @@ module TonSdk
         @operations = a
       end
 
-      def to_h = { operations: @operations }
+      def to_h = { operations: @operations.compact.map(&:to_h) }
     end
 
     class ResultOfBatchQuery
