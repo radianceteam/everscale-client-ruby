@@ -40,7 +40,7 @@ module TonSdk
     class ParamsOfQueryCollection
       attr_reader :collection, :filter, :result, :order, :limit
 
-      def initialize(collection: , filter: nil, result: , order: nil, limit: nil)
+      def initialize(collection: , filter: nil, result: , order: [], limit: nil)
         @collection = collection
         @filter = filter
         @result = result
@@ -184,9 +184,6 @@ module TonSdk
       def to_h = { endpoints: @endpoints }
     end
 
-
-
-    # TODO
     class ParamsOfQueryOperation
       attr_reader :type_, :params
 
@@ -215,7 +212,6 @@ module TonSdk
       end
     end
 
-
     class ParamsOfBatchQuery
       attr_reader :operations
 
@@ -235,7 +231,6 @@ module TonSdk
 
       def to_h = { results: @results }
     end
-
 
     class ParamsOfAggregateCollection
       attr_reader :collection, :filter, :fields
