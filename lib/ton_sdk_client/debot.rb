@@ -16,6 +16,9 @@ module TonSdk
       INVALID_JSON_PARAMS = 805
       INVALID_FUNCTION_ID = 806
       INVALID_ABI = 807
+      GET_METHOD_FAILED = 808
+      INVALID_MSG = 809
+      EXTERNAL_CALL_FAILED = 810
     end
 
     class DebotAction
