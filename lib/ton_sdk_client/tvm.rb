@@ -59,7 +59,6 @@ module TonSdk
         boc_cache: nil,
         return_updated_account: nil
       )
-
         @message = message
         @account = account
         @execution_options = execution_options

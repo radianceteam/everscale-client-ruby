@@ -774,11 +774,12 @@ module TonSdk
     end
 
     class ParamsOfEncodeInternalMessage
-      attr_reader :abi, :address, :deploy_set, :call_set, :value, :bounce, :enable_ihr
+      attr_reader :abi, :address, :src_address, :deploy_set, :call_set, :value, :bounce, :enable_ihr
 
-      def initialize(abi:, address: nil, deploy_set: nil, call_set: nil, value:, bounce: nil, enable_ihr: nil)
+      def initialize(abi:, address: nil, src_address: nil, deploy_set: nil, call_set: nil, value:, bounce: nil, enable_ihr: nil)
         @abi = abi
         @address = address
+        @src_address = src_address
         @deploy_set = deploy_set
         @call_set = call_set
         @value = value
@@ -787,14 +788,12 @@ module TonSdk
       end
 
       def to_h
-        depl_set_val = @deploy_set.nil? ? nil : @deploy_set.to_h
-        cl_set_val = @call_set.nil? ? nil : @call_set.to_h
-
         {
           abi: @abi,
           address: @address,
-          deploy_set: depl_set_val,
-          call_set: cl_set_val,
+          src_address: @src_address,
+          deploy_set: @deploy_set.nil? ? nil : @deploy_set.to_h,
+          call_set: @call_set.nil? ? nil : @call_set.to_h,
           value: @value,
           bounce: @bounce,
           enable_ihr: @enable_ihr
