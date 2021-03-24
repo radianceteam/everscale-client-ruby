@@ -79,6 +79,8 @@ module TonSdk
     end
 
     class ParamsOfAppDebotBrowser
+
+      # todo remove?
       TYPE_VALUES = [
         :log,
         :switch,
@@ -89,26 +91,45 @@ module TonSdk
         :invoke_debot,
         :send
       ]
+
       attr_reader :type_, :msg, :context_id, :action, :prompt, :debot_addr, :message
 
-      def initialize(
-        type_:,
-        msg: nil,
-        context_id: nil,
-        action: nil,
-        prompt: nil,
-        debot_addr: nil,
-        message: nil
-      )
-        unless TYPE_VALUES.include?(type_)
-          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPE_VALUES}")
-        end
-        @type_ = type_
+      def new_with_type_log(msg)
+        @type_ = :log
         @msg = msg
+      end
+
+      def new_with_type_switch(context_id)
+        @type_ = :switch
         @context_id = context_id
+      end
+
+      def new_with_type_switch_completed
+        @type_ = :switch_completed
+      end
+
+      def new_with_type_show_action(action)
+        @type_ = :show_action
         @action = action
+      end
+
+      def new_with_type_input(prompt)
+        @type_ = :input
         @prompt = prompt
+      end
+
+      def new_with_type_get_signing_box
+        @type_ = :get_signing_box
+      end
+
+      def new_with_type_invoke_debot(debot_addr, action)
+        @type_ = :invoke_debot
         @debot_addr = debot_addr
+        @action = action
+      end
+
+      def new_with_type_send(message)
+        @type_ = :send
         @message = message
       end
 
