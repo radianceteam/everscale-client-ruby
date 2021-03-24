@@ -120,8 +120,8 @@ module TonSdk
     class ResultOfBocCacheGet
       attr_reader :boc
 
-      def initialize(a)
-        @boc = a
+      def initialize(boc: nil)
+        @boc = boc
       end
     end
 
@@ -130,14 +130,16 @@ module TonSdk
         :pinned,
         :unpinned
       ]
+
       attr_reader :type_, :pin
 
-      def initialize(type_:, pin:)
-        unless TYPES.include?(type_)
-          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
-        end
-        @type_ = type_
+      def new_with_type_pinned(pin)
+        @type_ = :pinned
         @pin = pin
+      end
+
+      def new_with_type_unpinned
+        @type_ = :unpinned
       end
 
       def to_h
@@ -184,7 +186,7 @@ module TonSdk
     class ParamsOfBocCacheUnpin
       attr_reader :boc, :boc_ref
 
-      def initialize(boc:, boc_ref:)
+      def initialize(boc:, boc_ref: nil)
         @boc = boc
         @boc_ref = boc_ref
       end
