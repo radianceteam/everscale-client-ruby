@@ -216,21 +216,17 @@ module TonSdk
     end
 
     class ParamsOfSend
-      attr_reader :debot_handle, :source, :func_id, :params
+      attr_reader :debot_handle, :message
 
-      def initialize(debot_handle:, source:, func_id:, params:)
+      def initialize(debot_handle:, message:)
         @debot_handle = debot_handle
-        @source = source
-        @func_id = func_id
-        @params = params
+        @message = message
       end
 
       def to_h
         {
           debot_handle: @debot_handle,
-          source: @source,
-          func_id: @func_id,
-          params: @params
+          message: @message
         }
       end
     end
