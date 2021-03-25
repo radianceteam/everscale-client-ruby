@@ -776,7 +776,16 @@ module TonSdk
     class ParamsOfEncodeInternalMessage
       attr_reader :abi, :address, :src_address, :deploy_set, :call_set, :value, :bounce, :enable_ihr
 
-      def initialize(abi:, address: nil, src_address: nil, deploy_set: nil, call_set: nil, value:, bounce: nil, enable_ihr: nil)
+      def initialize(
+        abi:,
+        address: nil,
+        src_address: nil,
+        deploy_set: nil,
+        call_set: nil,
+        value:,
+        bounce: nil,
+        enable_ihr: nil
+      )
         @abi = abi
         @address = address
         @src_address = src_address
@@ -818,6 +827,7 @@ module TonSdk
         }
       end
     end
+
 
     #
     # functions

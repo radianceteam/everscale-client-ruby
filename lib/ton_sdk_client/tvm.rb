@@ -20,12 +20,16 @@ module TonSdk
       TYPES = [:none, :uninit, :account]
       attr_reader :type_, :boc, :unlimited_balance
 
-      def initialize(type_:, boc: nil, unlimited_balance: nil)
-        unless TYPES.include?(type_)
-          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
-        end
+      def new_with_type_none
+        @type_ = :none
+      end
 
-        @type_ = type_
+      def new_with_type_uninit
+        @type_ = :uninit
+      end
+
+      def new_with_type_account(boc:, unlimited_balance: nil)
+        @type_ = :account
         @boc = boc
         @unlimited_balance = unlimited_balance
       end
