@@ -1,16 +1,15 @@
 # TON SDK client in Ruby and for Ruby
 
 [![Gem Version](https://badge.fury.io/rb/ton_sdk_client.png)](https://badge.fury.io/rb/ton_sdk_client)
-[![TON SDK version](https://img.shields.io/badge/TON%20SDK%20version-1.7.0-green)](https://github.com/tonlabs/TON-SDK/tree/1.7.0)
+[![TON SDK version](https://img.shields.io/badge/TON%20SDK%20version-1.9.0-green)](https://github.com/tonlabs/TON-SDK/tree/1.9.0)
 
 Ruby gem-client bindings for [TON SDK](https://github.com/tonlabs/TON-SDK) which allows one to communicate with [FreeTON](https://freeton.org) blockchain in Ruby.
 
-Note that there're 3 types of versions:
+Note that there're 2 types of versions:
   * `TonSdk::VERSION` - the version of the gem
-  * `TonSdk::NATIVE_LIB_VERSION` - the version of native library (dll, dylib, so) shipped with SDK
-  * `TonSdk::SDK_VERSION` - the version of SDK
+  * `TonSdk::NATIVE_SDK_VERSION` - the version of the original SDK
 
-and they don't necessarily match each other.
+and they don't necessarily have to match each other.
 
 
 
@@ -185,7 +184,7 @@ factorize
 
 * MacOS Catalina 10.15.5
 * Arch Linux x86_64
-* TON client native library: `TonSdk::NATIVE_LIB_VERSION`
+* TON client native library: `TonSdk::NATIVE_SDK_VERSION`
 
 
 ## References
