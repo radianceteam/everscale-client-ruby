@@ -1,5 +1,12 @@
 # Changelog
 
+1.9.x
+-----
+* TON SDK version: 1.9.0
+* remove TonSdk::NATIVE_LIB_VERSION, rename TonSdk::SDK_VERSION to TonSdk::NATIVE_SDK_VERSION
+* the changes are according the ones of TON SDK
+
+
 1.7.x
 -----
 * TON SDK version: 1.7.0
