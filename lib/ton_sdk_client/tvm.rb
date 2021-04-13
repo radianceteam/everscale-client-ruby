@@ -5,6 +5,23 @@ module TonSdk
     # types
     #
 
+    module ErrorCode
+      CANNOT_READ_TRANSACTION = 401
+      CANNOT_READ_BLOCKCHAIN_CONFIG = 402
+      TRANSACTION_ABORTED = 403
+      INTERNAL_ERROR = 404
+      ACTION_PHASE_FAILED = 405
+      ACCOUNT_CODE_MISSING = 406
+      LOW_BALANCE = 407
+      ACCOUNT_FROZEN_OR_DELETED = 408
+      ACCOUNT_MISSING = 409
+      UNKNOWN_EXECUTION_ERROR = 410
+      INVALID_INPUT_STACK = 411
+      INVALID_ACCOUNT_BOC = 412
+      INVALID_MESSAGE_TYPE = 413
+      CONTRACT_EXECUTION_ERROR = 414
+    end
+
     class ExecutionOptions
       attr_reader :blockchain_config, :block_time, :block_lt, :transaction_lt
 
