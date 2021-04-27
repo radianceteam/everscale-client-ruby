@@ -19,6 +19,8 @@ module TonSdk
       GET_METHOD_FAILED = 808
       INVALID_MSG = 809
       EXTERNAL_CALL_FAILED = 810
+      BROWSER_CALLBACK_FAILED = 811
+      OPERATION_REJECTED = 812
     end
 
     class DebotAction
