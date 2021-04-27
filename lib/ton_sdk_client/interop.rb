@@ -134,7 +134,7 @@ module TonSdk
       function_name,
       function_params_json = nil,
       client_callback: nil,
-      is_single_thread_only: trfue
+      is_single_thread_only: true
     )
       function_name_tc_str = TcStringData.from_string(function_name)
       function_params_json_str = function_params_json || ""

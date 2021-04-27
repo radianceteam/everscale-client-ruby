@@ -199,6 +199,51 @@ module TonSdk
       end
     end
 
+    class ParamsOfEncodeBoc
+      attr_reader :builder, :boc_cache
+
+      def initialize(builder:, boc_cache: nil)
+        @builder = builder
+        @boc_cache = boc_cache
+      end
+
+      def to_h
+        {
+          boc: @boc,
+          boc_ref: @boc_ref
+        }
+      end
+    end
+
+    class ResultOfEncodeBoc
+      attr_reader :boc
+
+      def initialize(a)
+        @boc = a
+      end
+    end
+
+    class ParamsOfGetBlockchainConfig
+      attr_reader :block_boc
+
+      def initialize(a)
+        @block_boc = a
+      end
+
+      def to_h
+        {
+          block_boc: @block_boc
+        }
+      end
+    end
+
+    class ResultOfGetBlockchainConfig
+      attr_reader :config_boc
+
+      def initialize(a)
+        @config_boc = a
+      end
+    end
 
 
     #
@@ -334,6 +379,34 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.encode_boc(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.encode_boc", params.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfEncodeBoc.new(
+              resp.result["boc"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.get_blockchain_config(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", params.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfGetBlockchainConfig.new(
+              resp.result["config_boc"]
+            )
           )
         else
           yield resp

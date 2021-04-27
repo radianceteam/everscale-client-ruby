@@ -19,6 +19,8 @@ module TonSdk
       GET_METHOD_FAILED = 808
       INVALID_MSG = 809
       EXTERNAL_CALL_FAILED = 810
+      BROWSER_CALLBACK_FAILED = 811
+      OPERATION_REJECTED = 812
     end
 
     class DebotAction
@@ -171,21 +173,25 @@ module TonSdk
     end
 
     class ResultOfAppDebotBrowser
-      TYPE_VALUES = [
-        :input,
-        :get_signing_box,
-        :invoke_debot
-      ]
+      attr_reader :type_, :value, :signing_box, :is_approved
 
-      attr_reader :type_, :value, :signing_box
+      def new_with_type_input(a)
+        @type_ = :input
+        @value = a
+      end
 
-      def initialize(type_:, value: nil, signing_box: nil)
-        unless TYPE_VALUES.include?(type_)
-          raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPE_VALUES}")
-        end
-        @type_ = type_
-        @value = value
+      def new_with_type_get_signing_box(a)
+        @type_ = :get_signing_box
         @signing_box = signing_box
+      end
+
+      def new_with_type_invoke_debot
+        @type_ = :invoke_debot
+      end
+
+      def new_with_type_approve(a)
+        @type_ = :approve
+        @is_approved = a
       end
     end
 

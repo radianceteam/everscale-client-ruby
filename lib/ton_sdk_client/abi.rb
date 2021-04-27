@@ -777,7 +777,7 @@ module TonSdk
       attr_reader :abi, :address, :src_address, :deploy_set, :call_set, :value, :bounce, :enable_ihr
 
       def initialize(
-        abi:,
+        abi: nil,
         address: nil,
         src_address: nil,
         deploy_set: nil,
@@ -798,7 +798,7 @@ module TonSdk
 
       def to_h
         {
-          abi: @abi,
+          abi: @abi.nil? ? nil : @abi.to_h,
           address: @address,
           src_address: @src_address,
           deploy_set: @deploy_set.nil? ? nil : @deploy_set.to_h,
