@@ -44,57 +44,24 @@ module TonSdk
       INTERNAL_ERROR = 33
     end
 
-    class ResultOfVersion
-      attr_reader :version
+    ResultOfVersion = Struct.new(:version)
 
-      def initialize(a)
-        @version = a
-      end
-    end
+    ResultOfGetApiReference = Struct.new(:api)
 
-    class ResultOfGetApiReference
-      attr_reader :api
-
-      def initialize(a)
-        @api = a
-      end
-    end
-
-    class BuildInfoDependency
-      attr_reader :name, :git_commit
-
-      def initialize(name:, git_commit:)
-        @name = name
-        @git_commit = git_commit
-      end
-
+    BuildInfoDependency = Struct.new(:name, :git_commit) do
       def self.from_json(j)
         return nil if j.nil?
 
         self.new(
-          name: j["name"],
-          git_commit: j["git_commit"]
+          j["name"],
+          j["git_commit"]
         )
       end
     end
 
-    class ResultOfBuildInfo
-      attr_reader :build_number, :dependencies
+    ResultOfBuildInfo = Struct.new(:build_number, :dependencies)
 
-      def initialize(build_number:, dependencies:)
-        @build_number = build_number
-        @dependencies = dependencies
-      end
-    end
-
-    class ParamsOfAppRequest
-      attr_reader :app_request_id, :request_data
-
-      def initialize(app_request_id:, request_data:)
-        @app_request_id = app_request_id
-        @request_data = request_data
-      end
-    end
+    ParamsOfAppRequest = Struct.new(:app_request_id, :request_data)
 
     class AppRequestResult
       TYPES = [:ok, :error]
@@ -128,14 +95,7 @@ module TonSdk
       end
     end
 
-    class ParamsOfResolveAppRequest
-      attr_reader :app_request_id, :result
-
-      def initialize(app_request_id:, result:)
-        @app_request_id = app_request_id
-        @result = result
-      end
-
+    ParamsOfResolveAppRequest = Struct.new(:app_request_id, :result) do
       def to_h
         {
           app_request_id: @app_request_id,
@@ -183,8 +143,8 @@ module TonSdk
           dp_s = resp.result["dependencies"].map { |x| BuildInfoDependency.from_json(x) }
           yield NativeLibResponsetResult.new(
             result: ResultOfBuildInfo.new(
-              build_number: resp.result["build_number"],
-              dependencies: dp_s
+              resp.result["build_number"],
+              dp_s
             )
           )
         else
