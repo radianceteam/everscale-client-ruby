@@ -48,7 +48,7 @@ module TonSdk
 
     ResultOfGetApiReference = Struct.new(:api)
 
-    BuildInfoDependency = Struct.new(:name, :git_commit) do
+    BuildInfoDependency = Struct.new(:name, :git_commit, keyword_init: true) do
       def self.from_json(j)
         return nil if j.nil?
 
@@ -59,9 +59,8 @@ module TonSdk
       end
     end
 
-    ResultOfBuildInfo = Struct.new(:build_number, :dependencies)
-
-    ParamsOfAppRequest = Struct.new(:app_request_id, :request_data)
+    ResultOfBuildInfo = Struct.new(:build_number, :dependencies, keyword_init: true)
+    ParamsOfAppRequest = Struct.new(:app_request_id, :request_data, keyword_init: true)
 
     class AppRequestResult
       TYPES = [:ok, :error]
@@ -95,7 +94,7 @@ module TonSdk
       end
     end
 
-    ParamsOfResolveAppRequest = Struct.new(:app_request_id, :result) do
+    ParamsOfResolveAppRequest = Struct.new(:app_request_id, :result, keyword_init: true) do
       def to_h
         {
           app_request_id: @app_request_id,
@@ -143,8 +142,8 @@ module TonSdk
           dp_s = resp.result["dependencies"].map { |x| BuildInfoDependency.from_json(x) }
           yield NativeLibResponsetResult.new(
             result: ResultOfBuildInfo.new(
-              resp.result["build_number"],
-              dp_s
+              build_number: resp.result["build_number"],
+              dependencies: dp_s
             )
           )
         else

@@ -32,14 +32,7 @@ module TonSdk
       end
     end
 
-    class ParamsOfConvertAddress
-      attr_reader :address, :output_format
-
-      def initialize(address:, output_format:)
-        @address = address
-        @output_format = output_format
-      end
-
+    ParamsOfConvertAddress = Struct.new(:address, :output_format)
       def to_h
         {
           address: @address,
@@ -50,14 +43,7 @@ module TonSdk
 
     ResultOfConvertAddress = Struct.new(:address)
 
-    class ParamsOfCalcStorageFee
-      attr_reader :account, :period
-
-      def initialize(account:, period:)
-        @account = account
-        @period = period
-      end
-
+    ParamsOfCalcStorageFee = Struct.new(:account, :period)
       def to_h
         {
           account: @account,
@@ -86,18 +72,8 @@ module TonSdk
 
     ResultOfCompressZstd = Struct.new(:compressed)
 
-    class ParamsOfDecompressZstd
-      attr_reader :compressed
-
-      def initialize(a)
-        @compressed = a
-      end
-
-      def to_h
-        {
-          compressed: @compressed
-        }
-      end
+    class ParamsOfDecompressZstd = Struct.new(:compressed)
+      def to_h = { compressed: @compressed }
     end
 
     ResultOfDecompressZstd = Struct.new(:decompressed)
