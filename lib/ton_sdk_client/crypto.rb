@@ -37,13 +37,7 @@ module TonSdk
       def to_h = { composite: @composite }
     end
 
-    class ResultOfFactorize
-      attr_reader :factors
-
-      def initialize(a)
-        @factors = a
-      end
-    end
+    ResultOfFactorize = Struct.new(:factors)
 
     class ParamsOfModularPower
       attr_reader :base, :exponent, :modulus
@@ -63,53 +57,19 @@ module TonSdk
       end
     end
 
-    class ResultOfModularPower
-      attr_reader :modular_power
+    ResultOfModularPower = Struct.new(:modular_power)
 
-      def initialize(a)
-        @modular_power = a
-      end
-    end
-
-    class ParamsOfTonCrc16
-      attr_reader :data
-
-      def initialize(a)
-        @data = a
-      end
-
+    ParamsOfTonCrc16 = Struct.new(:data) do
       def to_h = { data: @data }
     end
 
-    class ResultOfTonCrc16
-      attr_reader :crc
+    ResultOfTonCrc16 = Struct.new(:crc)
 
-      def initialize(a)
-        @crc = a
-      end
+    ParamsOfGenerateRandomBytes = Struct.new(:length) do
+      def to_h = { length: @length }
     end
 
-    class ParamsOfGenerateRandomBytes
-      attr_reader :length
-
-      def initialize(a)
-        @length = a
-      end
-
-      def to_h
-        {
-          length: @length
-        }
-      end
-    end
-
-    class ResultOfGenerateRandomBytes
-      attr_reader :bytes
-
-      def initialize(a)
-        @bytes = a
-      end
-    end
+    ResultOfGenerateRandomBytes = Struct.new(:bytes)
 
     class ParamsOfConvertPublicKeyToTonSafeFormat
       attr_reader :public_key
