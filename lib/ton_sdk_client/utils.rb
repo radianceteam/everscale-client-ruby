@@ -56,6 +56,30 @@ module TonSdk
       end
     end
 
+    class ParamsOfCalcStorageFee
+      attr_reader :account, :period
+
+      def initialize(account:, period:)
+        @account = account
+        @period = period
+      end
+
+      def to_h
+        {
+          account: @account,
+          period: @period
+        }
+      end
+    end
+
+    class ResultOfCalcStorageFee
+      attr_reader :fee
+
+      def initialize(a)
+        @fee = a
+      end
+    end
+
 
     #
     # functions
@@ -66,6 +90,19 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: Utils::ResultOfConvertAddress.new(resp.result["address"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+
+    def self.calc_storage_fee(ctx, prm)
+      Interop::request_to_native_lib(ctx, "utils.calc_storage_fee", prm.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: Utils::ResultOfCalcStorageFee.new(resp.result["fee"])
           )
         else
           yield resp
