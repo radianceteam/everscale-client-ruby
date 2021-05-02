@@ -23,13 +23,7 @@ module TonSdk
       end
     end
 
-    class ResultOfSendMessage
-      attr_reader :shard_block_id
-
-      def initialize(a)
-        @shard_block_id = a
-      end
-
+    ResultOfSendMessage = Struct.new(:shard_block_id) do
       def to_h
         {
           shard_block_id: @shard_block_id
@@ -157,14 +151,7 @@ module TonSdk
       end
     end
 
-    class ParamsOfProcessMessage
-      attr_reader :message_encode_params, :send_events
-
-      def initialize(message_encode_params:, send_events:)
-        @message_encode_params = message_encode_params
-        @send_events = send_events
-      end
-
+    ParamsOfProcessMessage = Struct.new(:message_encode_params, :send_events) do
       def to_h
         {
           message_encode_params: @message_encode_params.to_h,

@@ -10,11 +10,11 @@ module TonSdk
       INVALID_KEY = 102
       INVALID_FACTORIZE_CHALLENGE = 106
       INVALID_BIGINT = 107
-      SCRYPT_FAILED = 108,
+      SCRYPT_FAILED = 108
       INVALID_KEYSIZE = 109
-      NACL_SECRET_BOX_FAILED = 110,
-      NACL_BOX_FAILED = 111,
-      NACL_SIGN_FAILED = 112,
+      NACL_SECRET_BOX_FAILED = 110
+      NACL_BOX_FAILED = 111
+      NACL_SIGN_FAILED = 112
       BIP39_INVALID_ENTROPY = 113
       BIP39_INVALID_PHRASE = 114
       BIP32_INVALID_KEY = 115
@@ -27,27 +27,13 @@ module TonSdk
       INVALID_SIGNATURE = 122
     end
 
-    class ParamsOfFactorize
-      attr_reader :composite
-
-      def initialize(a)
-        @composite = a
-      end
-
+    ParamsOfFactorize = Struct.new(:composite) do
       def to_h = { composite: @composite }
     end
 
     ResultOfFactorize = Struct.new(:factors)
 
-    class ParamsOfModularPower
-      attr_reader :base, :exponent, :modulus
-
-      def initialize(base:, exponent:, modulus:)
-        @base = base
-        @exponent = exponent
-        @modulus = modulus
-      end
-
+    ParamsOfModularPower = Struct.new(:base, :exponent, :modulus) do
       def to_h
         {
           base: @base,
@@ -97,14 +83,7 @@ module TonSdk
 
     ResultOfSign = Struct.new(:signed, :signature)
 
-    class ParamsOfVerifySignature
-      attr_reader :signed, :public_
-
-      def initialize(signed:, public_:)
-        @signed = signed
-        @public_ = public_
-      end
-
+    ParamsOfVerifySignature = Struct.new(:signed, :public_)
       def to_h
         {
           signed: @signed,
@@ -113,48 +92,15 @@ module TonSdk
       end
     end
 
-    class ResultOfVerifySignature
-      attr_reader :unsigned
+    ResultOfVerifySignature = Struct.new(:unsigned)
 
-      def initialize(a)
-        @unsigned = a
-      end
+    ParamsOfHash = Struct.new(:data) do
+      def to_h = { data: @data }
     end
 
-    class ParamsOfHash
-      attr_reader :data
+    ResultOfHash = Struct.new(:hash)
 
-      def initialize(a)
-        @data = a
-      end
-
-      def to_h
-        {
-          data: @data
-        }
-      end
-    end
-
-    class ResultOfHash
-      attr_reader :hash
-
-      def initialize(a)
-        @hash = a
-      end
-    end
-
-    class ParamsOfScrypt
-      attr_reader :password, :salt, :log_n, :r, :p_, :dk_len
-
-      def initialize(password:, salt:, log_n:, r:, p_:, dk_len:)
-        @password = password
-        @salt = salt
-        @log_n = log_n
-        @r = r
-        @p_ = p_
-        @dk_len = dk_len
-      end
-
+    ParamsOfScrypt = Struct.new(:password, :salt, :log_n, :r, :p_, :dk_len) do
       def to_h
         {
           password: @password,
@@ -167,32 +113,12 @@ module TonSdk
       end
     end
 
-    class ResultOfScrypt
-      attr_reader :key
-
-      def initialize(a)
-        @key = a
-      end
-    end
-
-    class ParamsOfNaclSignKeyPairFromSecret
-      attr_reader :secret
-
-      def initialize(a)
-        @secret = a
-      end
-
+    ResultOfScrypt = Struct.new(:key)
+    ParamsOfNaclSignKeyPairFromSecret = Struct.new(:secret) do
       def to_h = { secret: @secret }
     end
 
-    class ParamsOfNaclSign
-      attr_reader :unsigned, :secret
-
-      def initialize(unsigned:, secret:)
-        @unsigned = unsigned
-        @secret = secret
-      end
-
+    ParamsOfNaclSign = Struct.new(:unsigned, :secret)
       def to_h
         {
           unsigned: @unsigned,

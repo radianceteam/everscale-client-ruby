@@ -228,7 +228,7 @@ module TonSdk
       def to_h = { values: @values }
     end
 
-    ParamsOfQueryCounterparties = Struct.new(:account, :result, :first, :after) do
+    ParamsOfQueryCounterparties = Struct.new(:account, :result, :first, :after, keyword_init: true) do
       def initialize(account:, result:, first: nil, after: nil)
         super
       end
