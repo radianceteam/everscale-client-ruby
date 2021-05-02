@@ -28,11 +28,13 @@ module TonSdk
     DEFAULT_OUT_OF_SYNC_THRESHOLD = 15000
     DEFAULT_NETWORK_RETRIES_COUNT = 5
     DEFAULT_MAX_RECONNECT_TIMEOUT = 2
+    DEFAULT_SENDING_ENDPOINT_COUNT = 2
 
     attr_reader :server_address, :endpoints, :network_retries_count,
       :message_retries_count, :message_processing_timeout,
       :wait_for_timeout, :out_of_sync_threshold, :reconnect_timeout,
-      :access_key, :max_reconnect_timeout
+      :access_key, :max_reconnect_timeout,
+      :sending_endpoint_count
 
     def initialize(
       server_address: "",
@@ -44,7 +46,8 @@ module TonSdk
       out_of_sync_threshold: DEFAULT_OUT_OF_SYNC_THRESHOLD,
       reconnect_timeout: 0,
       access_key: nil,
-      max_reconnect_timeout: DEFAULT_MAX_RECONNECT_TIMEOUT
+      max_reconnect_timeout: DEFAULT_MAX_RECONNECT_TIMEOUT,
+      sending_endpoint_count: DEFAULT_SENDING_ENDPOINT_COUNT
     )
       @server_address = server_address
       @endpoints = endpoints
@@ -56,6 +59,7 @@ module TonSdk
       @reconnect_timeout = reconnect_timeout
       @access_key = access_key
       @max_reconnect_timeout = max_reconnect_timeout
+      @sending_endpoint_count = sending_endpoint_count
     end
 
     def to_h
@@ -69,18 +73,13 @@ module TonSdk
         out_of_sync_threshold: @out_of_sync_threshold,
         reconnect_timeout: @reconnect_timeout,
         access_key: @access_key,
-        max_reconnect_timeout: @max_reconnect_timeout
+        max_reconnect_timeout: @max_reconnect_timeout,
+        sending_endpoint_count: @sending_endpoint_count
       }
     end
   end
 
-  class CryptoConfig
-    attr_reader :fish_param
-
-    def initialize(a)
-      @fish_param = a
-    end
-
+  CryptoConfig = Struct.new(:fish_param) do
     def to_h = { fish_param: @fish_param }
   end
 
