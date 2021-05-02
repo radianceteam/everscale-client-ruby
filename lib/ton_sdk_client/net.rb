@@ -18,7 +18,7 @@ module TonSdk
       WEBSOCKET_DISCONNECTED = 610
       NOT_SUPPORTED = 611
       NO_ENDPOINTS_PROVIDED = 612
-      GRAPHQL_WEBSOCKET_INIT_ERROR = 613,
+      GRAPHQL_WEBSOCKET_INIT_ERROR = 613
       NETWORK_MODULE_RESUMED = 614
     end
 
@@ -68,12 +68,14 @@ module TonSdk
       end
     end
 
-    class ResultOfQueryCollection
-      attr_reader :result
+    ResultOfQueryCollection = Struct.new(:result)
 
-      def initialize(a)
-        @result = a
-      end
+    ResultOfWaitForCollection = Struct.new(:result)
+
+    ResultOfQuery = Struct.new(:result)
+
+    ResultOfBatchQuery = Struct.new(:results) do
+      def to_h = { results: @results }
     end
 
     class ParamsOfWaitForCollection
@@ -96,14 +98,6 @@ module TonSdk
       end
     end
 
-    class ResultOfWaitForCollection
-      attr_reader :result
-
-      def initialize(a)
-        @result = a
-      end
-    end
-
     class ParamsOfSubscribeCollection
       attr_reader :collection, :filter, :result
 
@@ -122,22 +116,13 @@ module TonSdk
       end
     end
 
-    class ResultOfSubscribeCollection
-      attr_reader :handle
-
-      def initialize(a)
-        @handle = a
-      end
-
+    ResultOfSubscribeCollection = Struct.new(:handle) do
       def to_h = { handle: @handle }
     end
 
-    class ParamsOfQuery
-      attr_reader :query, :variables
-
+    ParamsOfQuery = Struct.new(:query, :variables) do
       def initialize(query:, variables: nil)
-        @query = query
-        @variables = variables
+        super
       end
 
       def to_h
@@ -148,39 +133,13 @@ module TonSdk
       end
     end
 
-    class ResultOfQuery
-      attr_reader :result
-
-      def initialize(a)
-        @result = a
-      end
-    end
-
-    class ParamsOfFindLastShardBlock
-      attr_reader :address
-
-      def initialize(a)
-        @address = a
-      end
-
+    ParamsOfFindLastShardBlock = Struct.new(:address) do
       def to_h = { address: @address }
     end
 
-    class ResultOfFindLastShardBlock
-      attr_reader :block_id
+    ResultOfFindLastShardBlock = Struct.new(:block_id)
 
-      def initialize(a)
-        @block_id = a
-      end
-    end
-
-    class EndpointsSet
-      attr_reader :endpoints
-
-      def initialize(a)
-        @endpoints = a
-      end
-
+    EndpointsSet = Struct.new(:endpoints) do
       def to_h = { endpoints: @endpoints }
     end
 
@@ -212,24 +171,12 @@ module TonSdk
       end
     end
 
-    class ParamsOfBatchQuery
-      attr_reader :operations
-
-      def initialize(a)
-        @operations = a
+    ParamsOfBatchQuery = Struct.new(:operations) do
+      def to_h
+        {
+          operations: @operations.compact.map(&:to_h)
+        }
       end
-
-      def to_h = { operations: @operations.compact.map(&:to_h) }
-    end
-
-    class ResultOfBatchQuery
-      attr_reader :results
-
-      def initialize(a)
-        @results = a
-      end
-
-      def to_h = { results: @results }
     end
 
     class ParamsOfAggregateCollection
@@ -277,16 +224,24 @@ module TonSdk
       end
     end
 
-    class ResultOfAggregateCollection
-      attr_reader :values
-
-      def initialize(a)
-        @values = a
-      end
-
+    ResultOfAggregateCollection = Struct.new(:values) do
       def to_h = { values: @values }
     end
 
+    ParamsOfQueryCounterparties = Struct.new(:account, :result, :first, :after) do
+      def initialize(account:, result:, first: nil, after: nil)
+        super
+      end
+
+      def to_h
+        {
+          account: @account,
+          result: @result,
+          first: @first,
+          after: @after
+        }
+      end
+    end
 
 
     #
@@ -443,6 +398,18 @@ module TonSdk
       if resp.success?
         yield NativeLibResponsetResult.new(
           result: ResultOfAggregateCollection.new(resp.result["values"])
+        )
+      else
+        yield resp
+      end
+    end
+  end
+
+  def self.query_counterparties(ctx, params)
+    Interop::request_to_native_lib(ctx, "net.query_counterparties", params.to_h.to_json) do |resp|
+      if resp.success?
+        yield NativeLibResponsetResult.new(
+          result: ResultOfQueryCollection.new(resp.result["result"])
         )
       else
         yield resp
