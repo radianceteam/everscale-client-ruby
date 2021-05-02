@@ -32,14 +32,7 @@ module TonSdk
       end
     end
 
-    class ParamsOfConvertAddress
-      attr_reader :address, :output_format
-
-      def initialize(address:, output_format:)
-        @address = address
-        @output_format = output_format
-      end
-
+    ParamsOfConvertAddress = Struct.new(:address, :output_format) do
       def to_h
         {
           address: @address,
@@ -48,22 +41,9 @@ module TonSdk
       end
     end
 
-    class ResultOfConvertAddress
-      attr_reader :address
+    ResultOfConvertAddress = Struct.new(:address)
 
-      def initialize(a)
-        @address = a
-      end
-    end
-
-    class ParamsOfCalcStorageFee
-      attr_reader :account, :period
-
-      def initialize(account:, period:)
-        @account = account
-        @period = period
-      end
-
+    ParamsOfCalcStorageFee = Struct.new(:account, :period) do
       def to_h
         {
           account: @account,
@@ -72,13 +52,24 @@ module TonSdk
       end
     end
 
-    class ResultOfCalcStorageFee
-      attr_reader :fee
+    ResultOfCalcStorageFee = Struct.new(:fee)
 
-      def initialize(a)
-        @fee = a
+    ParamsOfCompressZstd = Struct.new(:uncompressed, :level) do
+      def to_h
+        {
+          uncompressed: @uncompressed,
+          level: @level
+        }
       end
     end
+
+    ResultOfCompressZstd = Struct.new(:compressed)
+
+    ParamsOfDecompressZstd = Struct.new(:compressed) do
+      def to_h = { compressed: @compressed }
+    end
+
+    ResultOfDecompressZstd = Struct.new(:decompressed)
 
 
     #
@@ -97,12 +88,35 @@ module TonSdk
       end
     end
 
-
     def self.calc_storage_fee(ctx, prm)
       Interop::request_to_native_lib(ctx, "utils.calc_storage_fee", prm.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: Utils::ResultOfCalcStorageFee.new(resp.result["fee"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.compress_zstd(ctx, prm)
+      Interop::request_to_native_lib(ctx, "utils.compress_zstd", prm.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: Utils::ResultOfCompressZstd.new(resp.result["compressed"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.decompress_zstd(ctx, prm)
+      Interop::request_to_native_lib(ctx, "utils.decompress_zstd", prm.to_h.to_json) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: Utils::ParamsOfDecompressZstd.new(resp.result["decompressed"])
           )
         else
           yield resp

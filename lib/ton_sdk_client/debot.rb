@@ -1,7 +1,7 @@
 module TonSdk
 
   # NOTE
-  # as of 3 feb 2021, in the main repository this module is still unstable
+  # as of 28 apr 2021, in the main repository this module is still unstable
   module Debot
 
     #
@@ -23,18 +23,7 @@ module TonSdk
       OPERATION_REJECTED = 812
     end
 
-    class DebotAction
-      attr_reader :description, :name, :action_type, :to, :attributes, :misc
-
-      def initialize(description:, name:, action_type:, to:, attributes:, misc:)
-        @description = description
-        @name = name
-        @action_type = action_type
-        @to = to
-        @attributes = attributes
-        @misc = misc
-      end
-
+    DebotAction = Struct.new(:description, :name, :action_type, :to, :attributes, :misc) do
       def to_h
         {
           description: @description,
@@ -60,23 +49,11 @@ module TonSdk
       end
     end
 
-    class ParamsOfStart
-      attr_reader :address
-
-      def initialize(a)
-        @address = a
-      end
-
-      def to_h = { address: @address }
+    ParamsOfStart = Struct.new(:debot_handle) do
+      def to_h = { debot_handle: @debot_handle }
     end
 
-    class RegisteredDebot
-      attr_reader :debot_handle
-
-      def initialize(a)
-        @debot_handle = a
-      end
-
+    RegisteredDebot = Struct.new(:debot_handle) do
       def to_h = { debot_handle: @debot_handle }
     end
 
@@ -195,24 +172,11 @@ module TonSdk
       end
     end
 
-    class ParamsOfFetch
-      attr_reader :address
-
-      def initialize(a)
-        @address = a
-      end
-
+    ParamsOfFetch = Struct.new(:address) do
       def to_h = { address: @address }
     end
 
-    class ParamsOfExecute
-      attr_reader :debot_handle, :action
-
-      def initialize(debot_handle:, action:)
-        @debot_handle = debot_handle
-        @action = action
-      end
-
+    ParamsOfExecute = Struct.new(:debot_handle, :action) do
       def to_h
         {
           debot_handle: @debot_handle,
@@ -221,14 +185,7 @@ module TonSdk
       end
     end
 
-    class ParamsOfSend
-      attr_reader :debot_handle, :message
-
-      def initialize(debot_handle:, message:)
-        @debot_handle = debot_handle
-        @message = message
-      end
-
+    ParamsOfSend = Struct.new(:debot_handle, :message) do
       def to_h
         {
           debot_handle: @debot_handle,
@@ -237,99 +194,35 @@ module TonSdk
       end
     end
 
+    ParamsOfInit = Struct.new(:address)
+
+    DebotInfo = Struct.new(
+      :name,
+      :version,
+      :publisher,
+      :key,
+      :author,
+      :support,
+      :hello,
+      :language,
+      :dabi,
+      :icon,
+      :interfaces,
+      keyword_init: true
+    )
+
+    ResultOfFetch = Struct.new(:info)
+
+
     #
     # functions
     #
 
-    def self.start(ctx, params, app_browser_obj)
-      # TODO
-      # 1) the handlers in 'start' and 'fetch' are identical
-      # verify that it works and get rid of repetition
-
-      # 2) this all can be replaced with 'app_browser_obj.request(...)' and 
-      # 'app_browser_obj.notify(...)' calls, possibly
-
-      app_resp_handler = Proc.new do |data|
-        req_data = data["request_data"]
-        case data["type"]
-        when "Log"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          app_browser_obj.log(new_obj.msg)
-
-        when "Switch"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          app_browser_obj.switch_to(new_obj.context_id)
-
-        when "SwitchCompleted"
-          app_browser_obj.switch_completed()
-
-        when "ShowAction"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          app_browser_obj.show_action(new_obj.action)
-
-        when "Input"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          # TODO possibly in a new thread or fiber
-          app_req_res = begin
-            res = app_browser_obj.input(new_obj.prompt)
-            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :input, value: res))
-          rescue Exception => e
-            Client::AppRequestResult(type_: :error, text: e.message)
-          end
-
-          params = Client::ParamsOfResolveAppRequest.new(
-            app_request_id: data["app_request_id"],
-            result: app_req_res
-          )
-          TonSdk::Client.resolve_app_request(c_ctx, params)
-
-        when "GetSigningBox"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          # TODO possibly in a new thread or fiber
-          app_req_res = begin
-            res = app_browser_obj.get_signing_box()
-            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :get_signing_box, signing_box: res))
-          rescue Exception => e
-            Client::AppRequestResult(type_: :error, text: e.message)
-          end
-
-          params = Client::ParamsOfResolveAppRequest.new(
-            app_request_id: data["app_request_id"],
-            result: app_req_res
-          )
-          TonSdk::Client.resolve_app_request(c_ctx, params)
-
-        when "InvokeDebot"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          # TODO possibly in a new thread or fiber
-          app_req_res = begin
-            res = app_browser_obj.invoke_debot(new_obj.debot_addr, new_obj.action)
-            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :invoke_debot))
-          rescue Exception => e
-            Client::AppRequestResult(type_: :error, text: e.message)
-          end
-
-          params = Client::ParamsOfResolveAppRequest.new(
-            app_request_id: data["app_request_id"],
-            result: app_req_res
-          )
-          TonSdk::Client.resolve_app_request(c_ctx, params)
-
-        else
-          # TODO log 'unknown option'
-        end
-      end
-
-      Interop::request_to_native_lib(
-        ctx,
-        "debot.start",
-        params.to_h.to_json,
-        debot_app_response_handler: app_resp_handler,
-        is_single_thread_only: false
-      ) do |resp|
+    def self.init(ctx, params, app_browser_obj)
+      Interop::request_to_native_lib(ctx, "debot.init", params.to_h.to_json) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: RegisteredDebot.new(resp.result["debot_handle"])
+            result: nil
           )
         else
           yield resp
@@ -337,95 +230,34 @@ module TonSdk
       end
     end
 
-    def self.fetch(ctx, params, app_browser_obj)
-      # TODO
-      # 1) the handlers in 'start' and 'fetch' are identical
-      # verify that it works and get rid of repetition
-
-      # 2) this all can be replaced with 'app_browser_obj.request(...)' and 
-      # 'app_browser_obj.notify(...)' calls, possibly
-
-      app_resp_handler = Proc.new do |data|
-        req_data = data["request_data"]
-        case data["type"]
-        when "Log"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          app_browser_obj.log(new_obj.msg)
-
-        when "Switch"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          app_browser_obj.switch_to(new_obj.context_id)
-
-        when "SwitchCompleted"
-          app_browser_obj.switch_completed()
-
-        when "ShowAction"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          app_browser_obj.show_action(new_obj.action)
-
-        when "Input"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          # TODO possibly in a new thread or fiber
-          app_req_res = begin
-            res = app_browser_obj.input(new_obj.prompt)
-            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :input, value: res))
-          rescue Exception => e
-            Client::AppRequestResult(type_: :error, text: e.message)
-          end
-
-          params = Client::ParamsOfResolveAppRequest.new(
-            app_request_id: data["app_request_id"],
-            result: app_req_res
-          )
-          TonSdk::Client.resolve_app_request(c_ctx, params)
-
-        when "GetSigningBox"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          # TODO possibly in a new thread or fiber
-          app_req_res = begin
-            res = app_browser_obj.get_signing_box()
-            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :get_signing_box, signing_box: res))
-          rescue Exception => e
-            Client::AppRequestResult(type_: :error, text: e.message)
-          end
-
-          params = Client::ParamsOfResolveAppRequest.new(
-            app_request_id: data["app_request_id"],
-            result: app_req_res
-          )
-          TonSdk::Client.resolve_app_request(c_ctx, params)
-
-        when "InvokeDebot"
-          new_obj = ParamsOfAppDebotBrowser.from_json(data)
-          # TODO possibly in a new thread or fiber
-          app_req_res = begin
-            res = app_browser_obj.invoke_debot(new_obj.debot_addr, new_obj.action)
-            Client::AppRequestResult(type_: :ok, result: ResultOfAppDebotBrowser.new(type_: :invoke_debot))
-          rescue Exception => e
-            Client::AppRequestResult(type_: :error, text: e.message)
-          end
-
-          params = Client::ParamsOfResolveAppRequest.new(
-            app_request_id: data["app_request_id"],
-            result: app_req_res
-          )
-          TonSdk::Client.resolve_app_request(c_ctx, params)
-
-        else
-          # TODO log 'unknown option'
-        end
-      end
-
+    def self.start(ctx, params)
       Interop::request_to_native_lib(
         ctx,
-        "debot.fetch",
+        "debot.start",
         params.to_h.to_json,
-        debot_app_response_handler: app_resp_handler,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: RegisteredDebot.new(resp.result["debot_handle"])
+            result: nil
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.fetch(ctx, params)
+      Interop::request_to_native_lib(
+        ctx,
+        "debot.fetch",
+        params.to_h.to_json,
+        is_single_thread_only: false
+      ) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            # TODO: parse DebotInfo
+            result: ResultOfFetch.new(resp.result["info"])
           )
         else
           yield resp

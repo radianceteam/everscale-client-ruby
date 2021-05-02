@@ -37,13 +37,7 @@ module TonSdk
       def to_h = { composite: @composite }
     end
 
-    class ResultOfFactorize
-      attr_reader :factors
-
-      def initialize(a)
-        @factors = a
-      end
-    end
+    ResultOfFactorize = Struct.new(:factors)
 
     class ParamsOfModularPower
       attr_reader :base, :exponent, :modulus
@@ -63,84 +57,27 @@ module TonSdk
       end
     end
 
-    class ResultOfModularPower
-      attr_reader :modular_power
+    ResultOfModularPower = Struct.new(:modular_power)
 
-      def initialize(a)
-        @modular_power = a
-      end
-    end
-
-    class ParamsOfTonCrc16
-      attr_reader :data
-
-      def initialize(a)
-        @data = a
-      end
-
+    ParamsOfTonCrc16 = Struct.new(:data) do
       def to_h = { data: @data }
     end
 
-    class ResultOfTonCrc16
-      attr_reader :crc
+    ResultOfTonCrc16 = Struct.new(:crc)
 
-      def initialize(a)
-        @crc = a
-      end
+    ParamsOfGenerateRandomBytes = Struct.new(:length) do
+      def to_h = { length: @length }
     end
 
-    class ParamsOfGenerateRandomBytes
-      attr_reader :length
+    ResultOfGenerateRandomBytes = Struct.new(:bytes)
 
-      def initialize(a)
-        @length = a
-      end
-
-      def to_h
-        {
-          length: @length
-        }
-      end
+    ParamsOfConvertPublicKeyToTonSafeFormat  = Struct.new(:public_key) do
+      def to_h = { public_key: @public_key }
     end
 
-    class ResultOfGenerateRandomBytes
-      attr_reader :bytes
+    ResultOfConvertPublicKeyToTonSafeFormat = Struct.new(:ton_public_key)
 
-      def initialize(a)
-        @bytes = a
-      end
-    end
-
-    class ParamsOfConvertPublicKeyToTonSafeFormat
-      attr_reader :public_key
-
-      def initialize(a)
-        @public_key = a
-      end
-
-      def to_h
-        {
-          public_key: @public_key
-        }
-      end
-    end
-
-    class ResultOfConvertPublicKeyToTonSafeFormat
-      attr_reader :ton_public_key
-
-      def initialize(a)
-        @ton_public_key = a
-      end
-    end
-
-    class KeyPair
-      attr_reader :public_, :secret
-
-      def initialize(public_: , secret:)
-        @public_ = public_
-        @secret = secret
-      end
-
+    KeyPair = Struct.new(:public_, :secret) do
       def to_h
         {
           public: @public_,
@@ -149,14 +86,7 @@ module TonSdk
       end
     end
 
-    class ParamsOfSign
-      attr_reader :unsigned, :keys
-
-      def initialize(unsigned:, keys:)
-        @unsigned = unsigned
-        @keys = keys
-      end
-
+    ParamsOfSign = Struct.new(:unsigned, :keys) do
       def to_h
         {
           unsigned: @unsigned,
@@ -165,14 +95,7 @@ module TonSdk
       end
     end
 
-    class ResultOfSign
-      attr_reader :signed, :signature
-
-      def initialize(signed:, signature:)
-        @signed = signed
-        @signature = signature
-      end
-    end
+    ResultOfSign = Struct.new(:signed, :signature)
 
     class ParamsOfVerifySignature
       attr_reader :signed, :public_

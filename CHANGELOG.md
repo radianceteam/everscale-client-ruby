@@ -1,5 +1,17 @@
 # Changelog
 
+1.12.x
+-----
+* TON SDK version: 1.12.0
+* internal refactoring
+* the changes are according the ones of TON SDK
+
+1.11.x
+-----
+* TON SDK version: 1.11.0
+* the changes are according the ones of TON SDK
+
+
 1.10.x
 -----
 * TON SDK version: 1.10.0
