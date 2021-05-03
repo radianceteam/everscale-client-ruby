@@ -23,7 +23,7 @@ module TonSdk
       OPERATION_REJECTED = 812
     end
 
-    DebotAction = Struct.new(:description, :name, :action_type, :to, :attributes, :misc) do
+    DebotAction = Struct.new(:description, :name, :action_type, :to, :attributes, :misc, keyword_init: true) do
       def to_h
         {
           description: @description,

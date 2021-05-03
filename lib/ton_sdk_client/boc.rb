@@ -5,33 +5,13 @@ module TonSdk
     # types
     #
 
-    class ParamsOfParse
-      attr_reader :boc
-
-      def initialize(a)
-        @boc = a
-      end
-
+    ParamsOfParse = Struct.new(:boc) do
       def to_h = { boc: @boc }
     end
 
-    class ResultOfParse
-      attr_reader :parsed
+    ResultOfParse = Struct.new(:parsed)
 
-      def initialize(a)
-        @parsed = a
-      end
-    end
-
-    class ParamsOfParseShardstate
-      attr_reader :boc, :id, :workchain_id
-
-      def initialize(boc:, id_:, workchain_id:)
-        @boc = boc
-        @id_ = id_
-        @workchain_id = workchain_id
-      end
-
+    ParamsOfParseShardstate = Struct.new(:boc, :id, :workchain_id) do
       def to_h
         {
           boc: @boc,
@@ -41,35 +21,13 @@ module TonSdk
       end
     end
 
-    class ParamsOfGetBlockchainConfig
-      attr_reader :block_boc
-
-      def initialize(a)
-        @block_boc = a
-      end
-
-      def to_h
-        {
-          block_boc: @block_boc
-        }
-      end
+    ParamsOfGetBlockchainConfig = Struct.new(:block_boc) do
+      def to_h = { block_boc: @block_boc }
     end
 
-    class ResultOfGetBlockchainConfig
-      attr_reader :config_boc
+    ResultOfGetBlockchainConfig = Struct.new(:config_boc)
 
-      def initialize(a)
-        @config_boc = a
-      end
-    end
-
-    class ParamsOfGetBocHash
-      attr_reader :boc
-
-      def initialize(a)
-        @boc = a
-      end
-
+    ParamsOfGetBocHash = Struct.new(:boc) do
       def to_h
         {
           boc: @boc
@@ -77,53 +35,19 @@ module TonSdk
       end
     end
 
-    class ResultOfGetBocHash
-      attr_reader :hash
+    ResultOfGetBocHash = Struct.new(:hash)
 
-      def initialize(a)
-        @hash = a
-      end
+    ParamsOfGetCodeFromTvc = Struct.new(:hash) do
+      def to_h = { tvc: @tvc }
     end
 
-    class ParamsOfGetCodeFromTvc
-      attr_reader :tvc
+    ResultOfGetCodeFromTvc = Struct.new(:code)
 
-      def initialize(a)
-        @tvc = a
-      end
-
-      def to_h
-        {
-          tvc: @tvc
-        }
-      end
-    end
-
-    class ResultOfGetCodeFromTvc
-      attr_reader :code
-
-      def initialize(a)
-        @code = a
-      end
-    end
-
-    class ParamsOfBocCacheGet
-      attr_reader :boc_ref
-
-      def initialize(a)
-        @boc_ref = a
-      end
-
+    ParamsOfBocCacheGet = Struct.new(:boc_ref) do
       def to_h = { boc_ref: @boc_ref }
     end
 
-    class ResultOfBocCacheGet
-      attr_reader :boc
-
-      def initialize(boc: nil)
-        @boc = boc
-      end
-    end
+    ResultOfBocCacheGet = Struct.new(:boc)
 
     class BocCacheType
       TYPES = [
@@ -159,14 +83,7 @@ module TonSdk
       end
     end
 
-    class ParamsOfBocCacheSet
-      attr_reader :boc, :cache_type
-
-      def initialize(boc:, cache_type:)
-        @boc = boc
-        @cache_type = cache_type
-      end
-
+    ParamsOfBocCacheSet = Struct.new(:boc, :cache_type) do
       def to_h
         {
           boc: @boc,
@@ -175,22 +92,9 @@ module TonSdk
       end
     end
 
-    class ResultOfBocCacheGet
-      attr_reader :boc_ref
+    ResultOfBocCacheSet = Struct.new(:boc_ref)
 
-      def initialize(a)
-        @boc_ref = a
-      end
-    end
-
-    class ParamsOfBocCacheUnpin
-      attr_reader :boc, :boc_ref
-
-      def initialize(boc:, boc_ref: nil)
-        @boc = boc
-        @boc_ref = boc_ref
-      end
-
+    ParamsOfBocCacheUnpin = Struct.new(:boc, :boc_ref) do
       def to_h
         {
           boc: @boc,
@@ -199,14 +103,7 @@ module TonSdk
       end
     end
 
-    class ParamsOfEncodeBoc
-      attr_reader :builder, :boc_cache
-
-      def initialize(builder:, boc_cache: nil)
-        @builder = builder
-        @boc_cache = boc_cache
-      end
-
+    ParamsOfEncodeBoc = Struct.new(:builder, :boc_cache) do
       def to_h
         {
           boc: @boc,
@@ -215,35 +112,8 @@ module TonSdk
       end
     end
 
-    class ResultOfEncodeBoc
-      attr_reader :boc
+    ResultOfEncodeBoc = Struct.new(:boc)
 
-      def initialize(a)
-        @boc = a
-      end
-    end
-
-    class ParamsOfGetBlockchainConfig
-      attr_reader :block_boc
-
-      def initialize(a)
-        @block_boc = a
-      end
-
-      def to_h
-        {
-          block_boc: @block_boc
-        }
-      end
-    end
-
-    class ResultOfGetBlockchainConfig
-      attr_reader :config_boc
-
-      def initialize(a)
-        @config_boc = a
-      end
-    end
 
 
     #

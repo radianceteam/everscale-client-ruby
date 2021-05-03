@@ -10,11 +10,11 @@ module TonSdk
       INVALID_KEY = 102
       INVALID_FACTORIZE_CHALLENGE = 106
       INVALID_BIGINT = 107
-      SCRYPT_FAILED = 108,
+      SCRYPT_FAILED = 108
       INVALID_KEYSIZE = 109
-      NACL_SECRET_BOX_FAILED = 110,
-      NACL_BOX_FAILED = 111,
-      NACL_SIGN_FAILED = 112,
+      NACL_SECRET_BOX_FAILED = 110
+      NACL_BOX_FAILED = 111
+      NACL_SIGN_FAILED = 112
       BIP39_INVALID_ENTROPY = 113
       BIP39_INVALID_PHRASE = 114
       BIP32_INVALID_KEY = 115
@@ -27,27 +27,13 @@ module TonSdk
       INVALID_SIGNATURE = 122
     end
 
-    class ParamsOfFactorize
-      attr_reader :composite
-
-      def initialize(a)
-        @composite = a
-      end
-
+    ParamsOfFactorize = Struct.new(:composite) do
       def to_h = { composite: @composite }
     end
 
     ResultOfFactorize = Struct.new(:factors)
 
-    class ParamsOfModularPower
-      attr_reader :base, :exponent, :modulus
-
-      def initialize(base:, exponent:, modulus:)
-        @base = base
-        @exponent = exponent
-        @modulus = modulus
-      end
-
+    ParamsOfModularPower = Struct.new(:base, :exponent, :modulus) do
       def to_h
         {
           base: @base,
@@ -97,14 +83,7 @@ module TonSdk
 
     ResultOfSign = Struct.new(:signed, :signature)
 
-    class ParamsOfVerifySignature
-      attr_reader :signed, :public_
-
-      def initialize(signed:, public_:)
-        @signed = signed
-        @public_ = public_
-      end
-
+    ParamsOfVerifySignature = Struct.new(:signed, :public_) do
       def to_h
         {
           signed: @signed,
@@ -113,48 +92,15 @@ module TonSdk
       end
     end
 
-    class ResultOfVerifySignature
-      attr_reader :unsigned
+    ResultOfVerifySignature = Struct.new(:unsigned)
 
-      def initialize(a)
-        @unsigned = a
-      end
+    ParamsOfHash = Struct.new(:data) do
+      def to_h = { data: @data }
     end
 
-    class ParamsOfHash
-      attr_reader :data
+    ResultOfHash = Struct.new(:hash)
 
-      def initialize(a)
-        @data = a
-      end
-
-      def to_h
-        {
-          data: @data
-        }
-      end
-    end
-
-    class ResultOfHash
-      attr_reader :hash
-
-      def initialize(a)
-        @hash = a
-      end
-    end
-
-    class ParamsOfScrypt
-      attr_reader :password, :salt, :log_n, :r, :p_, :dk_len
-
-      def initialize(password:, salt:, log_n:, r:, p_:, dk_len:)
-        @password = password
-        @salt = salt
-        @log_n = log_n
-        @r = r
-        @p_ = p_
-        @dk_len = dk_len
-      end
-
+    ParamsOfScrypt = Struct.new(:password, :salt, :log_n, :r, :p_, :dk_len) do
       def to_h
         {
           password: @password,
@@ -167,32 +113,13 @@ module TonSdk
       end
     end
 
-    class ResultOfScrypt
-      attr_reader :key
+    ResultOfScrypt = Struct.new(:key)
 
-      def initialize(a)
-        @key = a
-      end
-    end
-
-    class ParamsOfNaclSignKeyPairFromSecret
-      attr_reader :secret
-
-      def initialize(a)
-        @secret = a
-      end
-
+    ParamsOfNaclSignKeyPairFromSecret = Struct.new(:secret) do
       def to_h = { secret: @secret }
     end
 
-    class ParamsOfNaclSign
-      attr_reader :unsigned, :secret
-
-      def initialize(unsigned:, secret:)
-        @unsigned = unsigned
-        @secret = secret
-      end
-
+    ParamsOfNaclSign = Struct.new(:unsigned, :secret) do
       def to_h
         {
           unsigned: @unsigned,
@@ -201,13 +128,7 @@ module TonSdk
       end
     end
 
-    class ResultOfNaclSign
-      attr_reader :signed
-
-      def initialize(a)
-        @signed = a
-      end
-    end
+    ResultOfNaclSign = Struct.new(:signed)
 
     class ParamsOfNaclSignOpen
       attr_reader :signed, :public_
@@ -225,21 +146,9 @@ module TonSdk
       end
     end
 
-    class ResultOfNaclSignOpen
-      attr_reader :unsigned
+    ResultOfNaclSignOpen = Struct.new(:unsigned)
 
-      def initialize(a)
-        @unsigned = a
-      end
-    end
-
-    class ResultOfNaclSignDetached
-      attr_reader :signature
-
-      def initialize(a)
-        @signature = a
-      end
-    end
+    ResultOfNaclSignDetached = Struct.new(:signature)
 
     class ParamsOfNaclBoxKeyPairFromSecret
       attr_reader :secret
@@ -275,13 +184,7 @@ module TonSdk
       end
     end
 
-    class ResultOfNaclBox
-      attr_reader :encrypted
-
-      def initialize(a)
-        @encrypted = a
-      end
-    end
+    ResultOfNaclBox = Struct.new(:encrypted)
 
     class ParamsOfNaclBoxOpen
       attr_reader :encrypted, :nonce, :their_public, :secret
@@ -303,13 +206,7 @@ module TonSdk
       end
     end
 
-    class ResultOfNaclBoxOpen
-      attr_reader :decrypted
-
-      def initialize(a)
-        @decrypted = a
-      end
-    end
+    ResultOfNaclBoxOpen = Struct.new(:decrypted)
 
     class ParamsOfNaclSecretBox
       attr_reader :decrypted, :nonce, :key
@@ -361,13 +258,7 @@ module TonSdk
       end
     end
 
-    class ResultOfMnemonicWords
-      attr_reader :words
-
-      def initialize(a)
-        @words = a
-      end
-    end
+    ResultOfMnemonicWords = Struct.new(:words)
 
     class ParamsOfMnemonicFromRandom
       attr_reader :dictionary, :word_count
@@ -385,13 +276,7 @@ module TonSdk
       end
     end
 
-    class ResultOfMnemonicFromRandom
-      attr_reader :phrase
-
-      def initialize(a)
-        @phrase = a
-      end
-    end
+    ResultOfMnemonicFromRandom = Struct.new(:phrase)
 
     class ParamsOfMnemonicFromEntropy
       attr_reader :entropy, :dictionary, :word_count
@@ -411,13 +296,7 @@ module TonSdk
       end
     end
 
-    class ResultOfMnemonicFromEntropy
-      attr_reader :phrase
-
-      def initialize(a)
-        @phrase = a
-      end
-    end
+    ResultOfMnemonicFromEntropy = Struct.new(:phrase)
 
     class ParamsOfMnemonicVerify
       attr_reader :phrase, :dictionary, :word_count
@@ -437,13 +316,7 @@ module TonSdk
       end
     end
 
-    class ResultOfMnemonicVerify
-      attr_reader :valid
-
-      def initialize(a)
-        @valid = a
-      end
-    end
+    ResultOfMnemonicVerify = Struct.new(:valid)
 
     class ParamsOfMnemonicDeriveSignKeys
       attr_reader :phrase, :path, :dictionary, :word_count

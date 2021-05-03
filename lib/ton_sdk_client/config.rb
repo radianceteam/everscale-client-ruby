@@ -22,65 +22,77 @@ module TonSdk
   end
 
   class NetworkConfig
-    DEFAULT_RETRIES_COUNT = 5
-    DEFAULT_PROCESSING_TIMEOUT = 40000
+    DEFAULT_NETWORK_RETRIES_COUNT = 5
+    DEFAULT_MAX_RECONNECT_TIMEOUT = 120000
+    DEFAULT_RECONNECT_TIMEOUT = 1000
+    DEFAULT_MESSAGE_RETRIES_COUNT = 5
+
+    DEFAULT_MESSAGE_PROCESSING_TIMEOUT = 40000
     DEFAULT_WAIT_TIMEOUT = 40000
     DEFAULT_OUT_OF_SYNC_THRESHOLD = 15000
-    DEFAULT_NETWORK_RETRIES_COUNT = 5
-    DEFAULT_MAX_RECONNECT_TIMEOUT = 2
+    DEFAULT_SENDING_ENDPOINT_COUNT = 2
 
     attr_reader :server_address, :endpoints, :network_retries_count,
       :message_retries_count, :message_processing_timeout,
       :wait_for_timeout, :out_of_sync_threshold, :reconnect_timeout,
-      :access_key, :max_reconnect_timeout
+      :max_reconnect_timeout,
+      :sending_endpoint_count,
+      :access_key
 
     def initialize(
       server_address: "",
       endpoints: [],
+
       network_retries_count: DEFAULT_NETWORK_RETRIES_COUNT,
-      message_retries_count: DEFAULT_RETRIES_COUNT,
-      message_processing_timeout: DEFAULT_PROCESSING_TIMEOUT,
+      max_reconnect_timeout: DEFAULT_MAX_RECONNECT_TIMEOUT,
+      reconnect_timeout: DEFAULT_RECONNECT_TIMEOUT,
+      message_retries_count: DEFAULT_MESSAGE_RETRIES_COUNT,
+
+      message_processing_timeout: DEFAULT_MESSAGE_PROCESSING_TIMEOUT,
       wait_for_timeout: DEFAULT_WAIT_TIMEOUT,
       out_of_sync_threshold: DEFAULT_OUT_OF_SYNC_THRESHOLD,
-      reconnect_timeout: 0,
-      access_key: nil,
-      max_reconnect_timeout: DEFAULT_MAX_RECONNECT_TIMEOUT
+      sending_endpoint_count: DEFAULT_SENDING_ENDPOINT_COUNT,
+
+      access_key: nil
     )
+
       @server_address = server_address
       @endpoints = endpoints
+
       @network_retries_count = network_retries_count
+      @max_reconnect_timeout = max_reconnect_timeout
+      @reconnect_timeout = reconnect_timeout
       @message_retries_count = message_retries_count
+
       @message_processing_timeout = message_processing_timeout
       @wait_for_timeout = wait_for_timeout
       @out_of_sync_threshold = out_of_sync_threshold
-      @reconnect_timeout = reconnect_timeout
+      @sending_endpoint_count = sending_endpoint_count
+
       @access_key = access_key
-      @max_reconnect_timeout = max_reconnect_timeout
     end
 
     def to_h
       {
         server_address: @server_address,
         endpoints: @endpoints,
+
         network_retries_count: @network_retries_count,
+        max_reconnect_timeout: @max_reconnect_timeout,
+        reconnect_timeout: @reconnect_timeout,
         message_retries_count: @message_retries_count,
+
         message_processing_timeout: @message_processing_timeout,
         wait_for_timeout: @wait_for_timeout,
         out_of_sync_threshold: @out_of_sync_threshold,
-        reconnect_timeout: @reconnect_timeout,
-        access_key: @access_key,
-        max_reconnect_timeout: @max_reconnect_timeout
+        sending_endpoint_count: @sending_endpoint_count,
+
+        access_key: @access_key
       }
     end
   end
 
-  class CryptoConfig
-    attr_reader :fish_param
-
-    def initialize(a)
-      @fish_param = a
-    end
-
+  CryptoConfig = Struct.new(:fish_param) do
     def to_h = { fish_param: @fish_param }
   end
 
