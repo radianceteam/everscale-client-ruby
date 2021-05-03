@@ -47,7 +47,7 @@ module TonSdk
       def to_h = { boc_ref: @boc_ref }
     end
 
-    ResultOfBocCacheGet = Struct.new(:boc) do
+    ResultOfBocCacheGet = Struct.new(:boc)
 
     class BocCacheType
       TYPES = [
@@ -92,7 +92,7 @@ module TonSdk
       end
     end
 
-    ResultOfBocCacheGet = Struct.new(:boc_ref)
+    ResultOfBocCacheSet = Struct.new(:boc_ref)
 
     ParamsOfBocCacheUnpin = Struct.new(:boc, :boc_ref) do
       def to_h
@@ -114,11 +114,6 @@ module TonSdk
 
     ResultOfEncodeBoc = Struct.new(:boc)
 
-    ParamsOfGetBlockchainConfig = Struct.new(:block_boc) do
-      def to_h = { block_boc: @block_boc }
-    end
-
-    ResultOfGetBlockchainConfig = Struct.new(:config_boc)
 
 
     #

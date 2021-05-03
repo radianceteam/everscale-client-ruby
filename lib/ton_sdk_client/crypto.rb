@@ -83,7 +83,7 @@ module TonSdk
 
     ResultOfSign = Struct.new(:signed, :signature)
 
-    ParamsOfVerifySignature = Struct.new(:signed, :public_)
+    ParamsOfVerifySignature = Struct.new(:signed, :public_) do
       def to_h
         {
           signed: @signed,
@@ -114,11 +114,12 @@ module TonSdk
     end
 
     ResultOfScrypt = Struct.new(:key)
+
     ParamsOfNaclSignKeyPairFromSecret = Struct.new(:secret) do
       def to_h = { secret: @secret }
     end
 
-    ParamsOfNaclSign = Struct.new(:unsigned, :secret)
+    ParamsOfNaclSign = Struct.new(:unsigned, :secret) do
       def to_h
         {
           unsigned: @unsigned,
