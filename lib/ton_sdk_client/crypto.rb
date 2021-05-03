@@ -128,13 +128,7 @@ module TonSdk
       end
     end
 
-    class ResultOfNaclSign
-      attr_reader :signed
-
-      def initialize(a)
-        @signed = a
-      end
-    end
+    ResultOfNaclSign = Struct.new(:signed)
 
     class ParamsOfNaclSignOpen
       attr_reader :signed, :public_
@@ -152,21 +146,9 @@ module TonSdk
       end
     end
 
-    class ResultOfNaclSignOpen
-      attr_reader :unsigned
+    ResultOfNaclSignOpen = Struct.new(:unsigned)
 
-      def initialize(a)
-        @unsigned = a
-      end
-    end
-
-    class ResultOfNaclSignDetached
-      attr_reader :signature
-
-      def initialize(a)
-        @signature = a
-      end
-    end
+    ResultOfNaclSignDetached = Struct.new(:signature)
 
     class ParamsOfNaclBoxKeyPairFromSecret
       attr_reader :secret
@@ -202,13 +184,7 @@ module TonSdk
       end
     end
 
-    class ResultOfNaclBox
-      attr_reader :encrypted
-
-      def initialize(a)
-        @encrypted = a
-      end
-    end
+    ResultOfNaclBox = Struct.new(:encrypted)
 
     class ParamsOfNaclBoxOpen
       attr_reader :encrypted, :nonce, :their_public, :secret
@@ -230,13 +206,7 @@ module TonSdk
       end
     end
 
-    class ResultOfNaclBoxOpen
-      attr_reader :decrypted
-
-      def initialize(a)
-        @decrypted = a
-      end
-    end
+    ResultOfNaclBoxOpen = Struct.new(:decrypted)
 
     class ParamsOfNaclSecretBox
       attr_reader :decrypted, :nonce, :key
@@ -288,13 +258,7 @@ module TonSdk
       end
     end
 
-    class ResultOfMnemonicWords
-      attr_reader :words
-
-      def initialize(a)
-        @words = a
-      end
-    end
+    ResultOfMnemonicWords = Struct.new(:words)
 
     class ParamsOfMnemonicFromRandom
       attr_reader :dictionary, :word_count
@@ -312,13 +276,7 @@ module TonSdk
       end
     end
 
-    class ResultOfMnemonicFromRandom
-      attr_reader :phrase
-
-      def initialize(a)
-        @phrase = a
-      end
-    end
+    ResultOfMnemonicFromRandom = Struct.new(:phrase)
 
     class ParamsOfMnemonicFromEntropy
       attr_reader :entropy, :dictionary, :word_count
@@ -338,13 +296,7 @@ module TonSdk
       end
     end
 
-    class ResultOfMnemonicFromEntropy
-      attr_reader :phrase
-
-      def initialize(a)
-        @phrase = a
-      end
-    end
+    ResultOfMnemonicFromEntropy = Struct.new(:phrase)
 
     class ParamsOfMnemonicVerify
       attr_reader :phrase, :dictionary, :word_count
@@ -364,13 +316,7 @@ module TonSdk
       end
     end
 
-    class ResultOfMnemonicVerify
-      attr_reader :valid
-
-      def initialize(a)
-        @valid = a
-      end
-    end
+    ResultOfMnemonicVerify = Struct.new(:valid)
 
     class ParamsOfMnemonicDeriveSignKeys
       attr_reader :phrase, :path, :dictionary, :word_count
