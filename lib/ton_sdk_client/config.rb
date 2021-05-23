@@ -31,12 +31,16 @@ module TonSdk
     DEFAULT_WAIT_TIMEOUT = 40000
     DEFAULT_OUT_OF_SYNC_THRESHOLD = 15000
     DEFAULT_SENDING_ENDPOINT_COUNT = 2
+    DEFAULT_MAX_LATENCY = 60000
+    DEFAULT_LATENCY_DETECTION_INTERVAL = 60000
 
     attr_reader :server_address, :endpoints, :network_retries_count,
       :message_retries_count, :message_processing_timeout,
       :wait_for_timeout, :out_of_sync_threshold, :reconnect_timeout,
       :max_reconnect_timeout,
       :sending_endpoint_count,
+      :latency_detection_interval,
+      :max_latency,
       :access_key
 
     def initialize(
@@ -53,6 +57,9 @@ module TonSdk
       out_of_sync_threshold: DEFAULT_OUT_OF_SYNC_THRESHOLD,
       sending_endpoint_count: DEFAULT_SENDING_ENDPOINT_COUNT,
 
+      latency_detection_interval: DEFAULT_LATENCY_DETECTION_INTERVAL,
+      max_latency: DEFAULT_MAX_LATENCY,
+
       access_key: nil
     )
 
@@ -68,6 +75,9 @@ module TonSdk
       @wait_for_timeout = wait_for_timeout
       @out_of_sync_threshold = out_of_sync_threshold
       @sending_endpoint_count = sending_endpoint_count
+
+      @latency_detection_interval = latency_detection_interval
+      @max_latency = max_latency
 
       @access_key = access_key
     end
@@ -86,6 +96,9 @@ module TonSdk
         wait_for_timeout: @wait_for_timeout,
         out_of_sync_threshold: @out_of_sync_threshold,
         sending_endpoint_count: @sending_endpoint_count,
+
+        latency_detection_interval: @latency_detection_interval,
+        max_latency: @max_latency,
 
         access_key: @access_key
       }
