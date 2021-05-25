@@ -50,19 +50,16 @@ module TonSdk
     ResultOfBocCacheGet = Struct.new(:boc)
 
     class BocCacheType
-      TYPES = [
-        :pinned,
-        :unpinned
-      ]
+      private_class_method :new
 
       attr_reader :type_, :pin
 
-      def new_with_type_pinned(pin)
+      def self.new_with_type_pinned(pin)
         @type_ = :pinned
         @pin = pin
       end
 
-      def new_with_type_unpinned
+      def self.new_with_type_unpinned
         @type_ = :unpinned
       end
 

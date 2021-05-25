@@ -34,18 +34,20 @@ module TonSdk
     end
 
     class AccountForExecutor
+      private_class_method :new
+
       TYPES = [:none, :uninit, :account]
       attr_reader :type_, :boc, :unlimited_balance
 
-      def new_with_type_none
+      def self.new_with_type_none
         @type_ = :none
       end
 
-      def new_with_type_uninit
+      def self.new_with_type_uninit
         @type_ = :uninit
       end
 
-      def new_with_type_account(boc:, unlimited_balance: nil)
+      def self.new_with_type_account(boc:, unlimited_balance: nil)
         @type_ = :account
         @boc = boc
         @unlimited_balance = unlimited_balance

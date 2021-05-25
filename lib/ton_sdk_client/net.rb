@@ -144,19 +144,21 @@ module TonSdk
     end
 
     class ParamsOfQueryOperation
+      private_class_method :new
+
       attr_reader :type_, :params
 
-      def new_with_type_query_collection(params)
+      def self.new_with_type_query_collection(params)
         @type_ = :query_collection
         @params = params
       end
 
-      def new_with_type_wait_for_collection(params)
+      def self.new_with_type_wait_for_collection(params)
         @type_ = :wait_for_collection
         @params = params
       end
       
-      def new_with_type_aggregate_collection(params)
+      def self.new_with_type_aggregate_collection(params)
         @type_ = :aggregate_collection
         @params = params
       end
