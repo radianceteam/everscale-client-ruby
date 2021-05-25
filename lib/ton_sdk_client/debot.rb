@@ -53,8 +53,12 @@ module TonSdk
       def to_h = { debot_handle: @debot_handle }
     end
 
-    RegisteredDebot = Struct.new(:debot_handle) do
-      def to_h = { debot_handle: @debot_handle }
+    RegisteredDebot = Struct.new(:debot_handle, :debot_abi, :info) do
+      def to_h = {
+        debot_handle: @debot_handle,
+        debot_abi: @debot_abi,
+        info: @info.to_h
+      }
     end
 
     class ParamsOfAppDebotBrowser
@@ -200,7 +204,7 @@ module TonSdk
       :name,
       :version,
       :publisher,
-      :key,
+      :caption,
       :author,
       :support,
       :hello,
@@ -209,9 +213,34 @@ module TonSdk
       :icon,
       :interfaces,
       keyword_init: true
-    )
+    ) do
+      def initialize(
+        name: nil,
+        version: nil,
+        publisher: nil,
+        caption: nil,
+        author: nil,
+        support: nil,
+        hello: nil,
+        language: nil,
+        dabi: nil,
+        icon: nil,
+        interfaces: []
+      )
+        super
+      end
+    end
 
     ResultOfFetch = Struct.new(:info)
+
+    Spending = Struct.new(:amount, :dst)
+
+    DebotActivity = Struct.new(:type_, :msg, :dst, :out, :fee, :setcode, :signkey, :signing_box_handle, keyword_init: true) do
+      def initialize(type_: :transaction, msg:, dst:, out:, fee:, setcode:, signkey:, signing_box_handle)
+        super
+      end
+    end
+
 
 
     #
