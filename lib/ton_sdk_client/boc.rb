@@ -5,47 +5,25 @@ module TonSdk
     # types
     #
 
-    ParamsOfParse = Struct.new(:boc) do
-      def to_h = { boc: @boc }
-    end
+    ParamsOfParse = Struct.new(:boc)
 
     ResultOfParse = Struct.new(:parsed)
 
-    ParamsOfParseShardstate = Struct.new(:boc, :id, :workchain_id) do
-      def to_h
-        {
-          boc: @boc,
-          id: @id_,
-          workchain_id: @workchain_id
-        }
-      end
-    end
+    ParamsOfParseShardstate = Struct.new(:boc, :id_, :workchain_id, keyword_init: true)
 
-    ParamsOfGetBlockchainConfig = Struct.new(:block_boc) do
-      def to_h = { block_boc: @block_boc }
-    end
+    ParamsOfGetBlockchainConfig = Struct.new(:block_boc)
 
     ResultOfGetBlockchainConfig = Struct.new(:config_boc)
 
-    ParamsOfGetBocHash = Struct.new(:boc) do
-      def to_h
-        {
-          boc: @boc
-        }
-      end
-    end
+    ParamsOfGetBocHash = Struct.new(:boc)
 
     ResultOfGetBocHash = Struct.new(:hash)
 
-    ParamsOfGetCodeFromTvc = Struct.new(:hash) do
-      def to_h = { tvc: @tvc }
-    end
+    ParamsOfGetCodeFromTvc = Struct.new(:hash)
 
     ResultOfGetCodeFromTvc = Struct.new(:code)
 
-    ParamsOfBocCacheGet = Struct.new(:boc_ref) do
-      def to_h = { boc_ref: @boc_ref }
-    end
+    ParamsOfBocCacheGet = Struct.new(:boc_ref)
 
     ResultOfBocCacheGet = Struct.new(:boc)
 
@@ -91,23 +69,9 @@ module TonSdk
 
     ResultOfBocCacheSet = Struct.new(:boc_ref)
 
-    ParamsOfBocCacheUnpin = Struct.new(:boc, :boc_ref) do
-      def to_h
-        {
-          boc: @boc,
-          boc_ref: @boc_ref
-        }
-      end
-    end
+    ParamsOfBocCacheUnpin = Struct.new(:boc, :boc_ref)
 
-    ParamsOfEncodeBoc = Struct.new(:builder, :boc_cache) do
-      def to_h
-        {
-          boc: @boc,
-          boc_ref: @boc_ref
-        }
-      end
-    end
+    ParamsOfEncodeBoc = Struct.new(:builder, :boc_cache)
 
     ResultOfEncodeBoc = Struct.new(:boc)
 
