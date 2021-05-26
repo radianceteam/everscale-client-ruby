@@ -1,22 +1,11 @@
 module TonSdk
-  class ClientConfig
-    attr_reader :network, :crypto, :abi
-
-    def initialize(network: nil, crypto: nil, abi: nil)
-      if network.nil? && crypto.nil? && abi.nil?
-        raise ArgumentError.new("all 3 arguments may not be nil")
-      end
-
-      @network = network
-      @crypto = crypto
-      @abi = abi
-    end
-
+  ClientConfig = Struct.new(:network, :crypto, :abi, :boc, keyword_init: true) do
     def to_h
       {
-        network: @network.nil? ? nil : @network.to_h,
-        crypto: @crypto.nil? ? nil : @crypto.to_h,
-        abi: @abi.nil? ? nil : @abi.to_h
+        network: @network&.to_h,
+        crypto: @crypto&.to_h,
+        abi: @abi&.to_h,
+        boc: @boc&.to_h
       }
     end
   end
@@ -92,26 +81,35 @@ module TonSdk
     end
   end
 
-  CryptoConfig = Struct.new(:fish_param) do
-    def to_h = { fish_param: @fish_param }
+  CryptoConfig = Struct.new(:mnemonic_dictionary, :mnemonic_word_count, :hdkey_derivation_path, keyword_init: true) do
+    def to_h
+      {
+        mnemonic_dictionary: @mnemonic_dictionary,
+        mnemonic_word_count: @mnemonic_word_count,
+        hdkey_derivation_path: @hdkey_derivation_path
+      }
+    end
   end
 
   class AbiConfig
     DEFAULT_EXPIRATION_TIMEOUT = 40000
     DEFAULT_TIMEOUT_GROW_FACTOR = 1.5
 
-    attr_reader :message_expiration_timeout, :message_expiration_timeout_grow_factor
+    attr_reader :workchain, :message_expiration_timeout, :message_expiration_timeout_grow_factor
 
     def initialize(
+      workchain: nil,
       message_expiration_timeout: DEFAULT_EXPIRATION_TIMEOUT,
       message_expiration_timeout_grow_factor: DEFAULT_TIMEOUT_GROW_FACTOR
     )
+      @workchain = workchain
       @message_expiration_timeout = message_expiration_timeout
       @message_expiration_timeout_grow_factor = message_expiration_timeout_grow_factor
     end
 
     def to_h
       {
+        workchain: @workchain,
         message_expiration_timeout: @message_expiration_timeout,
         message_expiration_timeout_grow_factor: @message_expiration_timeout_grow_factor
       }

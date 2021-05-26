@@ -48,6 +48,8 @@ module TonSdk
 
     ResultOfGetApiReference = Struct.new(:api)
 
+    BocConfig = Struct.new(:cache_max_size)
+
     BuildInfoDependency = Struct.new(:name, :git_commit, keyword_init: true) do
       def self.from_json(j)
         return nil if j.nil?
