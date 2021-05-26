@@ -49,9 +49,7 @@ module TonSdk
       end
     end
 
-    ParamsOfStart = Struct.new(:debot_handle) do
-      def to_h = { debot_handle: @debot_handle }
-    end
+    ParamsOfStart = Struct.new(:debot_handle)
 
     RegisteredDebot = Struct.new(:debot_handle, :debot_abi, :info) do
       def to_h = {
@@ -209,9 +207,7 @@ module TonSdk
       end
     end
 
-    ParamsOfFetch = Struct.new(:address) do
-      def to_h = { address: @address }
-    end
+    ParamsOfFetch = Struct.new(:address)
 
     ParamsOfExecute = Struct.new(:debot_handle, :action) do
       def to_h
@@ -222,14 +218,7 @@ module TonSdk
       end
     end
 
-    ParamsOfSend = Struct.new(:debot_handle, :message) do
-      def to_h
-        {
-          debot_handle: @debot_handle,
-          message: @message
-        }
-      end
-    end
+    ParamsOfSend = Struct.new(:debot_handle, :message)
 
     ParamsOfInit = Struct.new(:address)
 

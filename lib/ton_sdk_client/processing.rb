@@ -23,13 +23,7 @@ module TonSdk
       end
     end
 
-    ResultOfSendMessage = Struct.new(:shard_block_id) do
-      def to_h
-        {
-          shard_block_id: @shard_block_id
-        }
-      end
-    end
+    ResultOfSendMessage = Struct.new(:shard_block_id)
 
     class ParamsOfWaitForTransaction
       attr_reader :abi, :message, :shard_block_id, :send_events

@@ -43,31 +43,15 @@ module TonSdk
 
     ResultOfConvertAddress = Struct.new(:address)
 
-    ParamsOfCalcStorageFee = Struct.new(:account, :period) do
-      def to_h
-        {
-          account: @account,
-          period: @period
-        }
-      end
-    end
+    ParamsOfCalcStorageFee = Struct.new(:account, :period)
 
     ResultOfCalcStorageFee = Struct.new(:fee)
 
-    ParamsOfCompressZstd = Struct.new(:uncompressed, :level) do
-      def to_h
-        {
-          uncompressed: @uncompressed,
-          level: @level
-        }
-      end
-    end
+    ParamsOfCompressZstd = Struct.new(:uncompressed, :level)
 
     ResultOfCompressZstd = Struct.new(:compressed)
 
-    ParamsOfDecompressZstd = Struct.new(:compressed) do
-      def to_h = { compressed: @compressed }
-    end
+    ParamsOfDecompressZstd = Struct.new(:compressed)
 
     ResultOfDecompressZstd = Struct.new(:decompressed)
 

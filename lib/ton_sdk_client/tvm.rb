@@ -183,13 +183,7 @@ module TonSdk
       end
     end
 
-    class ResultOfRunGet
-      attr_reader :output
-
-      def initialize(a)
-        @output = a
-      end
-    end
+    ResultOfRunGet = Struct.new(:output)
 
     class TransactionFees
       attr_reader :in_msg_fwd_fee, :storage_fee, :gas_fee, :out_msgs_fwd_fee,
@@ -217,6 +211,11 @@ module TonSdk
         }
       end
     end
+
+
+    #
+    # functions
+    #
 
     def self.run_executor(ctx, params)
       pr_json = params.to_h.to_json

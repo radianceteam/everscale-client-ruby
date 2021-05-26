@@ -74,62 +74,25 @@ module TonSdk
 
     ResultOfQuery = Struct.new(:result)
 
-    ResultOfBatchQuery = Struct.new(:results) do
-      def to_h = { results: @results }
-    end
+    ResultOfBatchQuery = Struct.new(:results)
 
-    class ParamsOfWaitForCollection
-      attr_reader :collection, :filter, :result, :timeout
-
+    ParamsOfWaitForCollection = Struct.new(:collection, :filter, :result, :timeout) do
       def initialize(collection:, filter: nil, result:, timeout: nil)
-        @collection = collection
-        @filter = filter
-        @result = result
-        @timeout = timeout
-      end
-
-      def to_h
-        {
-          collection: @collection,
-          filter: @filter,
-          result: @result,
-          timeout: @timeout
-        }
+        super
       end
     end
 
-    class ParamsOfSubscribeCollection
-      attr_reader :collection, :filter, :result
-
+    ParamsOfSubscribeCollection = Struct.new(:collection, :filter, :result)
       def initialize(collection:, filter: nil, result:)
-        @collection = collection
-        @filter = filter
-        @result = result
-      end
-
-      def to_h
-        {
-          collection: @collection,
-          filter: @filter,
-          result: @result
-        }
+        super
       end
     end
 
-    ResultOfSubscribeCollection = Struct.new(:handle) do
-      def to_h = { handle: @handle }
-    end
+    ResultOfSubscribeCollection = Struct.new(:handle)
 
     ParamsOfQuery = Struct.new(:query, :variables) do
       def initialize(query:, variables: nil)
         super
-      end
-
-      def to_h
-        {
-          query: @query,
-          variables: @variables
-        }
       end
     end
 
@@ -226,22 +189,11 @@ module TonSdk
       end
     end
 
-    ResultOfAggregateCollection = Struct.new(:values) do
-      def to_h = { values: @values }
-    end
+    ResultOfAggregateCollection = Struct.new(:values)
 
     ParamsOfQueryCounterparties = Struct.new(:account, :result, :first, :after, keyword_init: true) do
       def initialize(account:, result:, first: nil, after: nil)
         super
-      end
-
-      def to_h
-        {
-          account: @account,
-          result: @result,
-          first: @first,
-          after: @after
-        }
       end
     end
 
