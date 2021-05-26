@@ -82,7 +82,7 @@ module TonSdk
       end
     end
 
-    ParamsOfSubscribeCollection = Struct.new(:collection, :filter, :result)
+    ParamsOfSubscribeCollection = Struct.new(:collection, :filter, :result) do
       def initialize(collection:, filter: nil, result:)
         super
       end
@@ -96,15 +96,11 @@ module TonSdk
       end
     end
 
-    ParamsOfFindLastShardBlock = Struct.new(:address) do
-      def to_h = { address: @address }
-    end
+    ParamsOfFindLastShardBlock = Struct.new(:address)
 
     ResultOfFindLastShardBlock = Struct.new(:block_id)
 
-    EndpointsSet = Struct.new(:endpoints) do
-      def to_h = { endpoints: @endpoints }
-    end
+    EndpointsSet = Struct.new(:endpoints)
 
     class ParamsOfQueryOperation
       private_class_method :new
