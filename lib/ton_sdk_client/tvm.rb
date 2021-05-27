@@ -108,15 +108,9 @@ module TonSdk
       end
     end
 
-    class ResultOfRunExecutor
-      attr_reader :transaction, :out_messages, :decoded, :account, :fees
-
+    ResultOfRunExecutor = Struct.new(:transaction, :out_messages, :decoded, :account, :fees, keyword_init: true) do
       def initialize(transaction:, out_messages:, decoded: nil, account:, fees:)
-        @transaction = transaction
-        @out_messages = out_messages
-        @decoded = decoded
-        @account = account
-        @fees = fees
+        super
       end
     end
 
@@ -149,13 +143,9 @@ module TonSdk
       end
     end
 
-    class ResultOfRunTvm
-      attr_reader :out_messages, :decoded, :account
-
+    ResultOfRunTvm = Struct.new(:out_messages, :decoded, :account, keyword_init: true) do
       def initialize(out_messages:, decoded: nil, account:)
-        @out_messages = out_messages
-        @decoded = decoded
-        @account = account
+        super
       end
     end
 
@@ -171,13 +161,11 @@ module TonSdk
       end
 
       def to_h
-        exe_opt_val = @execution_options.nil? ? nil : @execution_options.to_h
-
         {
           account: @account,
           function_name: @function_name,
           input: @input,
-          execution_options: exe_opt_val,
+          execution_options: @execution_options&.to_h,
           tuple_list_as_array: @tuple_list_as_array
         }
       end
@@ -185,30 +173,23 @@ module TonSdk
 
     ResultOfRunGet = Struct.new(:output)
 
-    class TransactionFees
-      attr_reader :in_msg_fwd_fee, :storage_fee, :gas_fee, :out_msgs_fwd_fee,
-        :total_account_fees
-
-      def initialize(in_msg_fwd_fee:, storage_fee: , gas_fee:, out_msgs_fwd_fee:,
-        total_account_fees:, total_output:
+    TransactionFees = Struct.new(
+      :in_msg_fwd_fee,
+      :storage_fee,
+      :gas_fee,
+      :out_msgs_fwd_fee,
+      :total_account_fees,
+      keyword_init: true
+    ) do
+      def initialize(
+        in_msg_fwd_fee:,
+        storage_fee:,
+        gas_fee:,
+        out_msgs_fwd_fee:,
+        total_account_fees:,
+        total_output:
       )
-        @in_msg_fwd_fee = in_msg_fwd_fee
-        @storage_fee = storage_fee
-        @gas_fee = gas_fee
-        @out_msgs_fwd_fee = out_msgs_fwd_fee
-        @total_account_fees = total_account_fees
-        @total_output = total_output
-      end
-
-      def to_h
-        {
-          in_msg_fwd_fee: @in_msg_fwd_fee,
-          storage_fee: @storage_fee,
-          gas_fee: @gas_fee,
-          out_msgs_fwd_fee: @out_msgs_fwd_fee,
-          total_account_fees: @total_account_fees,
-          total_output: @total_output
-        }
+        super
       end
     end
 
