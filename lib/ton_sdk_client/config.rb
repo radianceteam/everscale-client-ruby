@@ -1,14 +1,5 @@
 module TonSdk
-  ClientConfig = Struct.new(:network, :crypto, :abi, :boc, keyword_init: true) do
-    def to_h
-      {
-        network: @network&.to_h,
-        crypto: @crypto&.to_h,
-        abi: @abi&.to_h,
-        boc: @boc&.to_h
-      }
-    end
-  end
+  ClientConfig = Struct.new(:network, :crypto, :abi, :boc, keyword_init: true)
 
   NetworkConfig = Struct.new(
     :server_address,
@@ -54,7 +45,6 @@ module TonSdk
     :message_expiration_timeout_grow_factor,
     keyword_init: true
   ) do
-
     def initialize(
       workchain: nil,
       message_expiration_timeout: 40000,
@@ -63,4 +53,6 @@ module TonSdk
       super
     end
   end
+
+  BocConfig = Struct.new(:cache_max_size)
 end

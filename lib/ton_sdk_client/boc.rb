@@ -6,23 +6,15 @@ module TonSdk
     #
 
     ParamsOfParse = Struct.new(:boc)
-
     ResultOfParse = Struct.new(:parsed)
-
     ParamsOfParseShardstate = Struct.new(:boc, :id_, :workchain_id, keyword_init: true)
-
     ParamsOfGetBlockchainConfig = Struct.new(:block_boc)
-
     ResultOfGetBlockchainConfig = Struct.new(:config_boc)
 
     ParamsOfGetBocHash = Struct.new(:boc)
-
     ResultOfGetBocHash = Struct.new(:hash)
-
     ParamsOfGetCodeFromTvc = Struct.new(:hash)
-
     ResultOfGetCodeFromTvc = Struct.new(:code)
-
     ParamsOfBocCacheGet = Struct.new(:boc_ref)
 
     ResultOfBocCacheGet = Struct.new(:boc)
@@ -68,11 +60,8 @@ module TonSdk
     end
 
     ResultOfBocCacheSet = Struct.new(:boc_ref)
-
     ParamsOfBocCacheUnpin = Struct.new(:boc, :boc_ref)
-
     ParamsOfEncodeBoc = Struct.new(:builder, :boc_cache)
-
     ResultOfEncodeBoc = Struct.new(:boc)
 
 

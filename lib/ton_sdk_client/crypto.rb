@@ -33,249 +33,68 @@ module TonSdk
 
     ResultOfFactorize = Struct.new(:factors)
 
-    ParamsOfModularPower = Struct.new(:base, :exponent, :modulus) do
-      def to_h
-        {
-          base: @base,
-          exponent: @exponent,
-          modulus: @modulus
-        }
-      end
-    end
-
+    ParamsOfModularPower = Struct.new(:base, :exponent, :modulus, keyword_init: true)
     ResultOfModularPower = Struct.new(:modular_power)
-
-    ParamsOfTonCrc16 = Struct.new(:data) do
-      def to_h = { data: @data }
-    end
-
+    ParamsOfTonCrc16 = Struct.new(:data)
     ResultOfTonCrc16 = Struct.new(:crc)
-
-    ParamsOfGenerateRandomBytes = Struct.new(:length) do
-      def to_h = { length: @length }
-    end
+    ParamsOfGenerateRandomBytes = Struct.new(:length)
 
     ResultOfGenerateRandomBytes = Struct.new(:bytes)
-
-    ParamsOfConvertPublicKeyToTonSafeFormat  = Struct.new(:public_key) do
-      def to_h = { public_key: @public_key }
-    end
-
+    ParamsOfConvertPublicKeyToTonSafeFormat  = Struct.new(:public_key)
     ResultOfConvertPublicKeyToTonSafeFormat = Struct.new(:ton_public_key)
-
-    KeyPair = Struct.new(:public_, :secret) do
-      def to_h
-        {
-          public: @public_,
-          secret: @secret
-        }
-      end
-    end
-
-    ParamsOfSign = Struct.new(:unsigned, :keys) do
-      def to_h
-        {
-          unsigned: @unsigned,
-          keys: @keys.to_h
-        }
-      end
-    end
+    KeyPair = Struct.new(:public_, :secret)
+    ParamsOfSign = Struct.new(:unsigned, :keys)
 
     ResultOfSign = Struct.new(:signed, :signature)
-
-    ParamsOfVerifySignature = Struct.new(:signed, :public_) do
-      def to_h
-        {
-          signed: @signed,
-          public: @public_
-        }
-      end
-    end
-
+    ParamsOfVerifySignature = Struct.new(:signed, :public_)
     ResultOfVerifySignature = Struct.new(:unsigned)
-
-    ParamsOfHash = Struct.new(:data) do
-      def to_h = { data: @data }
-    end
-
+    ParamsOfHash = Struct.new(:data)
     ResultOfHash = Struct.new(:hash)
 
-    ParamsOfScrypt = Struct.new(:password, :salt, :log_n, :r, :p_, :dk_len) do
-      def to_h
-        {
-          password: @password,
-          salt: @salt,
-          log_n: @log_n,
-          r: @r,
-          p: @p_,
-          dk_len: @dk_len
-        }
-      end
-    end
-
+    ParamsOfScrypt = Struct.new(:password, :salt, :log_n, :r, :p_, :dk_len)
     ResultOfScrypt = Struct.new(:key)
-
-    ParamsOfNaclSignKeyPairFromSecret = Struct.new(:secret) do
-      def to_h = { secret: @secret }
-    end
-
-    ParamsOfNaclSign = Struct.new(:unsigned, :secret) do
-      def to_h
-        {
-          unsigned: @unsigned,
-          secret: @secret
-        }
-      end
-    end
-
+    ParamsOfNaclSignKeyPairFromSecret = Struct.new(:secret)
+    ParamsOfNaclSign = Struct.new(:unsigned, :secret)
     ResultOfNaclSign = Struct.new(:signed)
 
-    class ParamsOfNaclSignOpen
-      attr_reader :signed, :public_
-
+    ParamsOfNaclSignOpen = Struct.new(:signed, :public_) do
       def initialize(signed:, public_:)
-        @signed = signed
-        @public_ = public_
-      end
-
-      def to_h
-        {
-          signed: @signed,
-          public: @public_
-        }
+        super
       end
     end
 
     ResultOfNaclSignOpen = Struct.new(:unsigned)
-
     ResultOfNaclSignDetached = Struct.new(:signature)
-
-    class ParamsOfNaclBoxKeyPairFromSecret
-      attr_reader :secret
-
-      def initialize(a)
-        @secret = a
-      end
-
-      def to_h
-        {
-          secret: @secret
-        }
-      end
-    end
-
-    class ParamsOfNaclBox
-      attr_reader :decrypted, :nonce, :their_public, :secret
-
+    ParamsOfNaclBoxKeyPairFromSecret = Struct.new(:secret)
+    ParamsOfNaclBox = Struct.new(:decrypted, :nonce, :their_public, :secret) do
       def initialize(decrypted:, nonce:, their_public:, secret:)
-        @decrypted = decrypted
-        @nonce = nonce
-        @their_public = their_public
-        @secret = secret
-      end
-
-      def to_h
-        {
-          decrypted: @decrypted,
-          nonce: @nonce,
-          their_public: @their_public,
-          secret: @secret
-        }
+        super
       end
     end
 
     ResultOfNaclBox = Struct.new(:encrypted)
-
-    class ParamsOfNaclBoxOpen
-      attr_reader :encrypted, :nonce, :their_public, :secret
-
+    ParamsOfNaclBoxOpen = Struct.new(:encrypted, :nonce, :their_public, :secret) do
       def initialize(encrypted:, nonce:, their_public:, secret:)
-        @encrypted = encrypted
-        @nonce = nonce
-        @their_public = their_public
-        @secret = secret
-      end
-
-      def to_h
-        {
-          encrypted: @encrypted,
-          nonce: @nonce,
-          their_public: @their_public,
-          secret: @secret
-        }
+        super
       end
     end
 
     ResultOfNaclBoxOpen = Struct.new(:decrypted)
-
-    class ParamsOfNaclSecretBox
-      attr_reader :decrypted, :nonce, :key
-
+    ParamsOfNaclSecretBox = Struct.new(:decrypted, :nonce, :key) do
       def initialize(decrypted:, nonce:, key:)
-        @decrypted = decrypted
-        @nonce = nonce
-        @key = key
-      end
-
-      def to_h
-        {
-          decrypted: @decrypted,
-          nonce: @nonce,
-          key: @key
-        }
+        super
       end
     end
 
-    class ParamsOfNaclSecretBoxOpen
-      attr_reader :encrypted, :nonce, :key
-
+    ParamsOfNaclSecretBoxOpen = Struct.new(:encrypted, :nonce, :key) do
       def initialize(encrypted:, nonce:, key:)
-        @encrypted = encrypted
-        @nonce = nonce
-        @key = key
-      end
-
-      def to_h
-        {
-          encrypted: @encrypted,
-          nonce: @nonce,
-          key: @key
-        }
+        super
       end
     end
 
-    class ParamsOfMnemonicWords
-      attr_reader :dictionary
-
-      def initialize(a: nil)
-        @dictionary = a
-      end
-
-      def to_h
-        {
-          dictionary: @dictionary
-        }
-      end
-    end
-
+    ParamsOfMnemonicWords = Struct.new(:dictionary)
     ResultOfMnemonicWords = Struct.new(:words)
-
-    class ParamsOfMnemonicFromRandom
-      attr_reader :dictionary, :word_count
-
-      def initialize(dictionary: nil, word_count: nil)
-        @dictionary = dictionary
-        @word_count = word_count
-      end
-
-      def to_h
-        {
-          dictionary: @dictionary,
-          word_count: @word_count
-        }
-      end
-    end
-
+    ParamsOfMnemonicFromRandom = Struct.new(:dictionary, :word_count)
     ResultOfMnemonicFromRandom = Struct.new(:phrase)
 
     class ParamsOfMnemonicFromEntropy
@@ -356,13 +175,8 @@ module TonSdk
       end
     end
 
-    class ResultOfHDKeyXPrvFromMnemonic
-      attr_reader :xprv
+    ResultOfHDKeyXPrvFromMnemonic = Struct.new(:xprv)
 
-      def initialize(a)
-        @xprv = a
-      end
-    end
 
     class ParamsOfHDKeyDeriveFromXPrv
       attr_reader :xprv, :child_index, :hardened
@@ -382,114 +196,27 @@ module TonSdk
       end
     end
 
-    class ResultOfHDKeyDeriveFromXPrv
-      attr_reader :xprv
+    ResultOfHDKeyDeriveFromXPrv = Struct.new(:xprv)
+    ParamsOfHDKeySecretFromXPrv = Struct.new(:xprv)
+    ResultOfHDKeySecretFromXPrv = Struct.new(:secret)
+    ParamsOfHDKeyPublicFromXPrv = Struct.new(:xprv)
+    ResultOfHDKeyPublicFromXPrv = Struct.new(:public_)
 
-      def initialize(a)
-        @xprv = a
-      end
-
-      def to_h
-        {
-          xprv: @xprv,
-          path: @path
-        }
-      end
-    end
-
-    class ParamsOfHDKeySecretFromXPrv
-      attr_reader :xprv
-
-      def initialize(a)
-        @xprv = a
-      end
-
-      def to_h
-        {
-          xprv: @xprv
-        }
-      end
-    end
-
-    class ResultOfHDKeySecretFromXPrv
-      attr_reader :secret
-
-      def initialize(a)
-        @secret = a
-      end
-    end
-
-    class ParamsOfHDKeyPublicFromXPrv
-      attr_reader :xprv
-
-      def initialize(a)
-        @xprv = a
-      end
-
-      def to_h
-        {
-          xprv: @xprv
-        }
-      end
-    end
-
-    class ResultOfHDKeyPublicFromXPrv
-      attr_reader :public_
-
-      def initialize(a)
-        @public_ = a
-      end
-    end
-
-    class ParamsOfHDKeyDeriveFromXPrvPath
-      attr_reader :xprv, :path
-
+    ParamsOfHDKeyDeriveFromXPrvPath = Struct.new(:xprv, :path) do
       def initialize(xprv:, path:)
-        @xprv = xprv
-        @path = path
-      end
-
-      def to_h
-        {
-          xprv: @xprv,
-          path: @path
-        }
+        super
       end
     end
 
-    class ResultOfHDKeyDeriveFromXPrvPath
-      attr_reader :xprv
+    ResultOfHDKeyDeriveFromXPrvPath = Struct.new(:xprv)
 
-      def initialize(a)
-        @xprv = a
-      end
-    end
-
-    class ParamsOfChaCha20
-      attr_reader :data, :key, :nonce
-
+    ParamsOfChaCha20 = Struct.new(:data, :key, :nonce) do
       def initialize(data:, key:, nonce:)
-        @data = data
-        @key = key
-        @nonce = nonce
-      end
-
-      def to_h
-        {
-          data: @data,
-          key: @key,
-          nonce: @nonce
-        }
+        super
       end
     end
 
-    class ResultOfChaCha20
-      attr_reader :data
-
-      def initialize(a)
-        @data = a
-      end
-    end
+    ResultOfChaCha20 = Struct.new(:data)
 
     class ParamsOfSigningBoxSign
       attr_reader :signing_box, :unsigned
@@ -515,29 +242,8 @@ module TonSdk
       end
     end
 
-    class RegisteredSigningBox
-      attr_reader :handle
-
-      def initialize(a)
-        @handle = a
-      end
-
-      def to_h
-        {
-          handle: @handle
-        }
-      end
-    end
-
-    class ResultOfSigningBoxGetPublicKey
-      attr_reader :pubkey
-
-      def initialize(a)
-        @pubkey = a
-      end
-
-      def to_h = { pubkey: @pubkey }
-    end
+    RegisteredSigningBox = Struct.new(:handle)
+    ResultOfSigningBoxGetPublicKey = Struct.new(:pubkey)
 
     class ParamsOfNaclSignDetachedVerify
       attr_reader :unsigned, :signature, :public

@@ -256,14 +256,9 @@ module TonSdk
       end
     end
 
-    class ResultOfEncodeMessage
-      attr_reader :message, :data_to_sign, :address, :message_id
-
+    ResultOfEncodeMessage = Struct.new(:message, :data_to_sign, :address, :message_id, keyword_init: true) do
       def initialize(message:, data_to_sign: nil, address:, message_id:)
-        @message = message
-        @data_to_sign = data_to_sign
-        @address = address
-        @message_id = message_id
+        super
       end
     end
 
