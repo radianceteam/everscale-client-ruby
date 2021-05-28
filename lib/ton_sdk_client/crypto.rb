@@ -51,7 +51,7 @@ module TonSdk
     ParamsOfHash = Struct.new(:data)
     ResultOfHash = Struct.new(:hash)
 
-    ParamsOfScrypt = Struct.new(:password, :salt, :log_n, :r, :p_, :dk_len)
+    ParamsOfScrypt = Struct.new(:password, :salt, :log_n, :r, :p_, :dk_len, keyword_init: true)
     ResultOfScrypt = Struct.new(:key)
     ParamsOfNaclSignKeyPairFromSecret = Struct.new(:secret)
     ParamsOfNaclSign = Struct.new(:unsigned, :secret)
@@ -94,7 +94,7 @@ module TonSdk
 
     ParamsOfMnemonicWords = Struct.new(:dictionary)
     ResultOfMnemonicWords = Struct.new(:words)
-    ParamsOfMnemonicFromRandom = Struct.new(:dictionary, :word_count)
+    ParamsOfMnemonicFromRandom = Struct.new(:dictionary, :word_count, keyword_init: true)
     ResultOfMnemonicFromRandom = Struct.new(:phrase)
 
     class ParamsOfMnemonicFromEntropy
@@ -177,7 +177,6 @@ module TonSdk
 
     ResultOfHDKeyXPrvFromMnemonic = Struct.new(:xprv)
 
-
     class ParamsOfHDKeyDeriveFromXPrv
       attr_reader :xprv, :child_index, :hardened
 
@@ -218,30 +217,13 @@ module TonSdk
 
     ResultOfChaCha20 = Struct.new(:data)
 
-    class ParamsOfSigningBoxSign
-      attr_reader :signing_box, :unsigned
-
+    class ParamsOfSigningBoxSign = Struct.new(:signing_box, :unsigned) do
       def initialize(signing_box:, unsigned:)
-        @signing_box = signing_box
-        @unsigned = unsigned
-      end
-
-      def to_h
-        {
-          signing_box: @signing_box,
-          unsigned: @unsigned
-        }
+        super
       end
     end
 
-    class ResultOfSigningBoxSign
-      attr_reader :signature
-
-      def initialize(a)
-        @signature = a
-      end
-    end
-
+    ResultOfSigningBoxSign = Struct.new(:signature)
     RegisteredSigningBox = Struct.new(:handle)
     ResultOfSigningBoxGetPublicKey = Struct.new(:pubkey)
 
@@ -261,15 +243,7 @@ module TonSdk
       end
     end
 
-    class ResultOfNaclSignDetachedVerify 
-      attr_reader :succeeded
-
-      def initialize(a)
-        @succeeded = a
-      end
-
-      def to_h = { succeeded: @succeeded }
-    end
+    ResultOfNaclSignDetachedVerify = Struct.new(:succeeded)
 
     class ParamsOfAppSigningBox
       TYPES = [

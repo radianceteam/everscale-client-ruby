@@ -1,5 +1,7 @@
 module TonSdk
   ClientConfig = Struct.new(:network, :crypto, :abi, :boc, keyword_init: true)
+  CryptoConfig = Struct.new(:mnemonic_dictionary, :mnemonic_word_count, :hdkey_derivation_path, keyword_init: true)
+  BocConfig = Struct.new(:cache_max_size)
 
   NetworkConfig = Struct.new(
     :server_address,
@@ -17,7 +19,6 @@ module TonSdk
     :access_key,
     keyword_init: true
   ) do
-
     def initialize(
       server_address: "",
       endpoints: [],
@@ -37,8 +38,6 @@ module TonSdk
     end
   end
 
-  CryptoConfig = Struct.new(:mnemonic_dictionary, :mnemonic_word_count, :hdkey_derivation_path, keyword_init: true)
-
   AbiConfig = Struct.new(
     :workchain,
     :message_expiration_timeout,
@@ -53,6 +52,4 @@ module TonSdk
       super
     end
   end
-
-  BocConfig = Struct.new(:cache_max_size)
 end

@@ -32,7 +32,7 @@ module TonSdk
       end
     end
 
-    ParamsOfConvertAddress = Struct.new(:address, :output_format) do
+    ParamsOfConvertAddress = Struct.new(:address, :output_format, keyword_init: true) do
       def to_h
         {
           address: @address,
@@ -42,17 +42,12 @@ module TonSdk
     end
 
     ResultOfConvertAddress = Struct.new(:address)
-
-    ParamsOfCalcStorageFee = Struct.new(:account, :period)
-
+    ParamsOfCalcStorageFee = Struct.new(:account, :period, keyword_init: true)
     ResultOfCalcStorageFee = Struct.new(:fee)
-
-    ParamsOfCompressZstd = Struct.new(:uncompressed, :level)
-
+    ParamsOfCompressZstd = Struct.new(:uncompressed, :level, keyword_init: true)
     ResultOfCompressZstd = Struct.new(:compressed)
 
     ParamsOfDecompressZstd = Struct.new(:compressed)
-
     ResultOfDecompressZstd = Struct.new(:decompressed)
 
 
