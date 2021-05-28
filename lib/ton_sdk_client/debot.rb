@@ -219,9 +219,7 @@ module TonSdk
     end
 
     ParamsOfSend = Struct.new(:debot_handle, :message)
-
     ParamsOfInit = Struct.new(:address)
-
     DebotInfo = Struct.new(
       :name,
       :version,
@@ -254,7 +252,6 @@ module TonSdk
     end
 
     ResultOfFetch = Struct.new(:info)
-
     Spending = Struct.new(:amount, :dst)
 
     class DebotActivity
@@ -285,7 +282,7 @@ module TonSdk
     #
 
     def self.init(ctx, params, app_browser_obj)
-      Interop::request_to_native_lib(ctx, "debot.init", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "debot.init", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
@@ -300,7 +297,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "debot.start",
-        params.to_h.to_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -317,7 +314,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "debot.fetch",
-        params.to_h.to_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -332,7 +329,7 @@ module TonSdk
     end
 
     def self.execute(ctx, params)
-      Interop::request_to_native_lib(ctx, "debot.execute", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "debot.execute", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
@@ -344,7 +341,7 @@ module TonSdk
     end
 
     def self.remove(ctx, params)
-      Interop::request_to_native_lib(ctx, "debot.remove", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "debot.remove", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
@@ -356,7 +353,7 @@ module TonSdk
     end
 
     def self.send(ctx, params)
-      Interop::request_to_native_lib(ctx, "debot.send", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "debot.send", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil

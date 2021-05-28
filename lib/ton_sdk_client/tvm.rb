@@ -199,11 +199,10 @@ module TonSdk
     #
 
     def self.run_executor(ctx, params)
-      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "tvm.run_executor",
-        pr_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -223,11 +222,10 @@ module TonSdk
     end
 
     def self.run_tvm(ctx, params)
-      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "tvm.run_tvm",
-        pr_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -245,11 +243,10 @@ module TonSdk
     end
 
     def self.run_get(ctx, params)
-      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "tvm.run_get",
-        pr_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?

@@ -94,6 +94,7 @@ module TonSdk
       end
     end
 
+    STATIC_INIT_SOURCE_TYPES = [:message, :state_init, :tvc]
     StateInitSource = Struct.new(
       :type_,
       :source,
@@ -105,9 +106,6 @@ module TonSdk
       :init_params,
       keyword_init: true
     ) do
-
-      TYPES = [:message, :state_init, :tvc]
-
       def initialize(
         type_:,
         source: nil,
@@ -118,8 +116,8 @@ module TonSdk
         public_key: nil,
         init_params: nil
       )
-        unless TYPES.include?(type_)
-          raise ArgumentError.new("unknown type: #{type_}; known types: #{TYPES}")
+        unless STATIC_INIT_SOURCE_TYPES.include?(type_)
+          raise ArgumentError.new("unknown type: #{type_}; known types: #{STATIC_INIT_SOURCE_TYPES}")
         end
         super
       end
@@ -146,7 +144,7 @@ module TonSdk
             init_params: @init_params.to_h
           }
         else
-          raise ArgumentError.new("unknown type: #{@type_}; known types: #{TYPES}")
+          raise ArgumentError.new("unknown type: #{@type_}; known types: #{STATIC_INIT_SOURCE_TYPES}")
         end
 
         h1.merge(h2)
@@ -159,6 +157,8 @@ module TonSdk
       end
     end
 
+
+    MESSAGE_SOURCE_TYPES = [:encoded, :encoding_params]
     MessageSource = Struct.new(
       :type_,
       :message,
@@ -170,8 +170,6 @@ module TonSdk
       :processing_try_index,
       keyword_init: true
     ) do
-      TYPES = [:encoded, :encoding_params]
-
       def initialize(
         type_:,
         message: nil,
@@ -182,8 +180,8 @@ module TonSdk
         signer:  nil,
         processing_try_index: 0
       )
-        unless TYPES.include?(type_)
-          raise ArgumentError.new("unknown type: #{type_}; known types: #{TYPES}")
+        unless MESSAGE_SOURCE_TYPES.include?(type_)
+          raise ArgumentError.new("unknown type: #{type_}; known types: #{MESSAGE_SOURCE_TYPES}")
         end
 
         super
@@ -664,8 +662,7 @@ module TonSdk
     #
 
     def self.encode_message_body(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.encode_message_body", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.encode_message_body", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeMessageBody.new(
@@ -679,8 +676,7 @@ module TonSdk
     end
 
     def self.attach_signature_to_message_body(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.attach_signature_to_message_body", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.attach_signature_to_message_body", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfAttachSignatureToMessageBody.new(resp.result["body"])
@@ -692,8 +688,7 @@ module TonSdk
     end
 
     def self.encode_message(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.encode_message", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.encode_message", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeMessage.new(
@@ -710,8 +705,7 @@ module TonSdk
     end
 
     def self.attach_signature(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.attach_signature", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.attach_signature", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfAttachSignature.new(
@@ -725,8 +719,7 @@ module TonSdk
     end
 
     def self.decode_message(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.decode_message", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.decode_message", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: DecodedMessageBody.from_json(resp.result)
@@ -738,8 +731,7 @@ module TonSdk
     end
 
     def self.decode_message_body(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.decode_message_body", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.decode_message_body", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: DecodedMessageBody.from_json(resp.result)
@@ -751,8 +743,7 @@ module TonSdk
     end
 
     def self.encode_account(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.encode_account", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.encode_account", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeAccount.new(
@@ -767,8 +758,7 @@ module TonSdk
     end
 
     def self.encode_internal_message(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.encode_internal_message", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.encode_internal_message", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeInternalMessage.new(

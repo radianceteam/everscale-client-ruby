@@ -152,7 +152,7 @@ module TonSdk
     end
 
     def self.resolve_app_request(ctx, params)
-      Interop::request_to_native_lib(ctx, "client.resolve_app_request", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "client.resolve_app_request", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ""
