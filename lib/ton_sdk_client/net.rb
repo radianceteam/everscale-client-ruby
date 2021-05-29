@@ -172,6 +172,59 @@ module TonSdk
 
     ResultOfGetEndpoints = Struct.new(:query, :endpoints, keyword_init: true)
 
+    TransactionNode = Struct.new(
+      :id_,
+      :in_msg,
+      :out_msgs,
+      :account_addr,
+      :total_fees,
+      :aborted,
+      :exit_code
+      keyword_init: true
+    ) do
+      def initialize(id_:, in_msg:, out_msgs:, account_addr:, total_fees:, aborted:, exit_code: nil)
+        super
+      end
+    end
+
+    MessageNode = Struct.new(
+      :id_,
+      :src_transaction_id,
+      :dst_transaction_id,
+      :src,
+      :dst,
+      :value,
+      :bounce,
+      :decoded_body,
+      keyword_init: true
+    ) do
+      def initialize(
+        id_:,
+        src_transaction_id: nil,
+        dst_transaction_id: nil,
+        src: nil,
+        dst: nil,
+        value: nil,
+        bounce:,
+        decoded_body: nil
+      )
+        super
+      end
+    end
+
+    ParamsOfQueryTransactionTree = Struct.new(:in_msg, :abi_registry, keyword_init: true) do
+      def initialize(in_msg:, abi_registry: [])
+        super
+      end
+
+      def to_h
+        h = super
+        h[:abi_registry] = self.abi_registry&.map(&:to_h)
+        h
+      end
+    end
+
+    ResultOfQueryTransactionTree = Struct.new(:messages, :transactions, keyword_init: true)
 
     #
     # functions
@@ -353,6 +406,21 @@ module TonSdk
           result: ResultOfGetEndpoints.new(
             query: resp.result["query"],
             endpoints: resp.result["endpoints"],
+          )
+        )
+      else
+        yield resp
+      end
+    end
+  end
+
+  def self.query_transaction_tree(ctx, params)
+    Interop::request_to_native_lib(ctx, "net.query_transaction_tree", params) do |resp|
+      if resp.success?
+        yield NativeLibResponsetResult.new(
+          result: ResultOfQueryTransactionTree.new(
+            messages: resp.result["messages"],
+            transactions: resp.result["transactions"],
           )
         )
       else

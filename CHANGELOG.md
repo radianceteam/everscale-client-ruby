@@ -1,5 +1,10 @@
 # Changelog
 
+1.16.x
+-----
+* TON SDK version: 1.16.0
+* the changes are according the ones of TON SDK
+
 1.15.x
 -----
 * TON SDK version: 1.15.0
