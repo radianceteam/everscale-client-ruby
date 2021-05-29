@@ -62,20 +62,20 @@ module TonSdk
     ResultOfWaitForCollection = Struct.new(:result)
     ResultOfQuery = Struct.new(:result)
     ResultOfBatchQuery = Struct.new(:results)
-    ParamsOfWaitForCollection = Struct.new(:collection, :filter, :result, :timeout) do
+    ParamsOfWaitForCollection = Struct.new(:collection, :filter, :result, :timeout, keyword_init: true) do
       def initialize(collection:, filter: nil, result:, timeout: nil)
         super
       end
     end
 
-    ParamsOfSubscribeCollection = Struct.new(:collection, :filter, :result) do
+    ParamsOfSubscribeCollection = Struct.new(:collection, :filter, :result, keyword_init: true) do
       def initialize(collection:, filter: nil, result:)
         super
       end
     end
 
     ResultOfSubscribeCollection = Struct.new(:handle)
-    ParamsOfQuery = Struct.new(:query, :variables) do
+    ParamsOfQuery = Struct.new(:query, :variables, keyword_init: true) do
       def initialize(query:, variables: nil)
         super
       end
@@ -102,6 +102,11 @@ module TonSdk
       
       def self.new_with_type_aggregate_collection(params)
         @type_ = :aggregate_collection
+        @params = params
+      end
+
+      def self.new_with_type_query_counterparties(params)
+        @type_ = :query_counterparties
         @params = params
       end
 
@@ -171,6 +176,60 @@ module TonSdk
     end
 
     ResultOfGetEndpoints = Struct.new(:query, :endpoints, keyword_init: true)
+
+    TransactionNode = Struct.new(
+      :id_,
+      :in_msg,
+      :out_msgs,
+      :account_addr,
+      :total_fees,
+      :aborted,
+      :exit_code,
+      keyword_init: true
+    ) do
+      def initialize(id_:, in_msg:, out_msgs:, account_addr:, total_fees:, aborted:, exit_code: nil)
+        super
+      end
+    end
+
+    MessageNode = Struct.new(
+      :id_,
+      :src_transaction_id,
+      :dst_transaction_id,
+      :src,
+      :dst,
+      :value,
+      :bounce,
+      :decoded_body,
+      keyword_init: true
+    ) do
+      def initialize(
+        id_:,
+        src_transaction_id: nil,
+        dst_transaction_id: nil,
+        src: nil,
+        dst: nil,
+        value: nil,
+        bounce:,
+        decoded_body: nil
+      )
+        super
+      end
+    end
+
+    ParamsOfQueryTransactionTree = Struct.new(:in_msg, :abi_registry, keyword_init: true) do
+      def initialize(in_msg:, abi_registry: [])
+        super
+      end
+
+      def to_h
+        h = super
+        h[:abi_registry] = self.abi_registry&.map(&:to_h)
+        h
+      end
+    end
+
+    ResultOfQueryTransactionTree = Struct.new(:messages, :transactions, keyword_init: true)
 
 
     #
@@ -334,6 +393,21 @@ module TonSdk
     end
   end
 
+  def self.get_endpoints(ctx, params)
+    Interop::request_to_native_lib(ctx, "net.get_endpoints", params) do |resp|
+      if resp.success?
+        yield NativeLibResponsetResult.new(
+          result: ResultOfGetEndpoints.new(
+            query: resp.result["query"],
+            endpoints: resp.result["endpoints"],
+          )
+        )
+      else
+        yield resp
+      end
+    end
+  end
+
   def self.query_counterparties(ctx, params)
     Interop::request_to_native_lib(ctx, "net.query_counterparties", params) do |resp|
       if resp.success?
@@ -346,13 +420,13 @@ module TonSdk
     end
   end
 
-  def self.get_endpoints(ctx, params)
-    Interop::request_to_native_lib(ctx, "net.get_endpoints", params) do |resp|
+  def self.query_transaction_tree(ctx, params)
+    Interop::request_to_native_lib(ctx, "net.query_transaction_tree", params) do |resp|
       if resp.success?
         yield NativeLibResponsetResult.new(
-          result: ResultOfGetEndpoints.new(
-            query: resp.result["query"],
-            endpoints: resp.result["endpoints"],
+          result: ResultOfQueryTransactionTree.new(
+            messages: resp.result["messages"],
+            transactions: resp.result["transactions"],
           )
         )
       else
