@@ -26,12 +26,12 @@ module TonSdk
     DebotAction = Struct.new(:description, :name, :action_type, :to, :attributes, :misc, keyword_init: true) do
       def to_h
         {
-          description: @description,
-          name: @name,
-          action_type: @action_type,
-          to: @to,
-          attributes: @attributes,
-          misc: @misc
+          description: self.description,
+          name: self.name,
+          action_type: self.action_type,
+          to: self.to,
+          attributes: self.attributes,
+          misc: self.misc
         }
       end
 
@@ -49,15 +49,18 @@ module TonSdk
       end
     end
 
-    ParamsOfStart = Struct.new(:debot_handle) do
-      def to_h = { debot_handle: @debot_handle }
-    end
+    ParamsOfStart = Struct.new(:debot_handle)
 
-    RegisteredDebot = Struct.new(:debot_handle) do
-      def to_h = { debot_handle: @debot_handle }
+    RegisteredDebot = Struct.new(:debot_handle, :debot_abi, :info) do
+      def to_h = {
+        debot_handle: @debot_handle,
+        debot_abi: @debot_abi,
+        info: @info.to_h
+      }
     end
 
     class ParamsOfAppDebotBrowser
+      private_class_method :new
 
       # todo remove?
       TYPE_VALUES = [
@@ -68,48 +71,54 @@ module TonSdk
         :input,
         :get_signing_box,
         :invoke_debot,
-        :send
+        :send,
+        :approve
       ]
 
-      attr_reader :type_, :msg, :context_id, :action, :prompt, :debot_addr, :message
+      attr_reader :type_, :msg, :context_id, :action, :prompt, :debot_addr, :message, :activity
 
-      def new_with_type_log(msg)
+      def self.new_with_type_log(msg)
         @type_ = :log
         @msg = msg
       end
 
-      def new_with_type_switch(context_id)
+      def self.new_with_type_switch(context_id)
         @type_ = :switch
         @context_id = context_id
       end
 
-      def new_with_type_switch_completed
+      def self.new_with_type_switch_completed
         @type_ = :switch_completed
       end
 
-      def new_with_type_show_action(action)
+      def self.new_with_type_show_action(action)
         @type_ = :show_action
         @action = action
       end
 
-      def new_with_type_input(prompt)
+      def self.new_with_type_input(prompt)
         @type_ = :input
         @prompt = prompt
       end
 
-      def new_with_type_get_signing_box
+      def self.new_with_type_get_signing_box
         @type_ = :get_signing_box
       end
 
-      def new_with_type_invoke_debot(debot_addr, action)
+      def self.new_with_type_invoke_debot(debot_addr, action)
         @type_ = :invoke_debot
         @debot_addr = debot_addr
         @action = action
       end
 
-      def new_with_type_send(message)
+      def self.new_with_type_send(message)
         @type_ = :send
         @message = message
+      end
+
+      def self.new_with_type_approve(activity)
+        @type_ = :approve
+        @activity = activity
       end
 
       def to_h
@@ -127,14 +136,38 @@ module TonSdk
       def self.from_json(j)
         return nil if j.nil?
 
-        self.new(
-          type_: self.parse_type(j["type"]),
-          msg: j["msg"],
-          context_id: j["context_id"],
-          action: DebotAction.from_json(j["action"]),
-          prompt: j["prompt"],
-          debot_addr: j["debot_addr"]
-        )
+        tp = self.parse_type(j["type"])
+        case tp
+        when :log
+          self.new_with_type_log(j["msg"])
+
+        when :switch
+          self.new_with_type_switch(j["context_id"])
+
+        when :switch_completed
+          self.new_with_type_switch_completed
+
+        when :show_action
+          self.new_with_type_show_action(DebotAction.from_json(j["action"]))
+
+        when :input
+          self.new_with_type_input(j["prompt"])
+
+        when :get_signing_box
+          self.new_with_type_get_signing_box
+
+        when :invoke_debot
+          self.new_with_type_invoke_debot(j["debot_addr"], DebotAction.from_json(j["action"]))
+
+        when :send
+          self.new_with_type_send(j["message"])
+
+        when :approve
+          self.new_with_type_send(DebotActivity.from_json(j["activity"]))
+
+        else
+          raise ArgumentError.new("no handler for type: #{tp}")
+        end
       end
 
       private
@@ -150,31 +183,31 @@ module TonSdk
     end
 
     class ResultOfAppDebotBrowser
+      private_class_method :new
+
       attr_reader :type_, :value, :signing_box, :is_approved
 
-      def new_with_type_input(a)
+      def self.new_with_type_input(a)
         @type_ = :input
         @value = a
       end
 
-      def new_with_type_get_signing_box(a)
+      def self.new_with_type_get_signing_box(a)
         @type_ = :get_signing_box
         @signing_box = signing_box
       end
 
-      def new_with_type_invoke_debot
+      def self.new_with_type_invoke_debot
         @type_ = :invoke_debot
       end
 
-      def new_with_type_approve(a)
+      def self.new_with_type_approve(a)
         @type_ = :approve
         @is_approved = a
       end
     end
 
-    ParamsOfFetch = Struct.new(:address) do
-      def to_h = { address: @address }
-    end
+    ParamsOfFetch = Struct.new(:address)
 
     ParamsOfExecute = Struct.new(:debot_handle, :action) do
       def to_h
@@ -185,22 +218,13 @@ module TonSdk
       end
     end
 
-    ParamsOfSend = Struct.new(:debot_handle, :message) do
-      def to_h
-        {
-          debot_handle: @debot_handle,
-          message: @message
-        }
-      end
-    end
-
+    ParamsOfSend = Struct.new(:debot_handle, :message)
     ParamsOfInit = Struct.new(:address)
-
     DebotInfo = Struct.new(
       :name,
       :version,
       :publisher,
-      :key,
+      :caption,
       :author,
       :support,
       :hello,
@@ -209,9 +233,48 @@ module TonSdk
       :icon,
       :interfaces,
       keyword_init: true
-    )
+    ) do
+      def initialize(
+        name: nil,
+        version: nil,
+        publisher: nil,
+        caption: nil,
+        author: nil,
+        support: nil,
+        hello: nil,
+        language: nil,
+        dabi: nil,
+        icon: nil,
+        interfaces: []
+      )
+        super
+      end
+    end
 
     ResultOfFetch = Struct.new(:info)
+    Spending = Struct.new(:amount, :dst)
+
+    class DebotActivity
+      private_class_method :new
+
+      attr_reader :type_, :msg, :dst, :out, :fee, :setcode, :signkey, :signing_box_handle
+
+      def self.new_with_type_transaction(msg:, dst:, out:, fee:, setcode:, signkey:, signing_box_handle:)
+        @type_ = :transaction
+        @msg = msg
+        @dst = dst
+        @out = out
+        @fee = fee
+        @setcode = setcode
+        @signkey = signkey
+        @signing_box_handle = signing_box_handle
+      end
+
+      def self.from_json(j)
+        # todo
+      end
+    end
+
 
 
     #
@@ -219,7 +282,7 @@ module TonSdk
     #
 
     def self.init(ctx, params, app_browser_obj)
-      Interop::request_to_native_lib(ctx, "debot.init", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "debot.init", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
@@ -234,7 +297,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "debot.start",
-        params.to_h.to_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -251,7 +314,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "debot.fetch",
-        params.to_h.to_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -266,7 +329,7 @@ module TonSdk
     end
 
     def self.execute(ctx, params)
-      Interop::request_to_native_lib(ctx, "debot.execute", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "debot.execute", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
@@ -278,7 +341,7 @@ module TonSdk
     end
 
     def self.remove(ctx, params)
-      Interop::request_to_native_lib(ctx, "debot.remove", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "debot.remove", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
@@ -290,7 +353,7 @@ module TonSdk
     end
 
     def self.send(ctx, params)
-      Interop::request_to_native_lib(ctx, "debot.send", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "debot.send", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil

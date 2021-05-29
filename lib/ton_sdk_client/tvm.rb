@@ -22,30 +22,27 @@ module TonSdk
       CONTRACT_EXECUTION_ERROR = 414
     end
 
-    class ExecutionOptions
-      attr_reader :blockchain_config, :block_time, :block_lt, :transaction_lt
-
+    ExecutionOptions = Struct.new(:blockchain_config, :block_time, :block_lt, :transaction_lt, keyword_init: true) do
       def initialize(blockchain_config: nil, block_time: nil, block_lt: nil, transaction_lt: nil)
-        @blockchain_config = blockchain_config
-        @block_time = block_time
-        @block_lt = block_lt
-        @transaction_lt = transaction_lt
+        super
       end
     end
 
     class AccountForExecutor
+      private_class_method :new
+
       TYPES = [:none, :uninit, :account]
       attr_reader :type_, :boc, :unlimited_balance
 
-      def new_with_type_none
+      def self.new_with_type_none
         @type_ = :none
       end
 
-      def new_with_type_uninit
+      def self.new_with_type_uninit
         @type_ = :uninit
       end
 
-      def new_with_type_account(boc:, unlimited_balance: nil)
+      def self.new_with_type_account(boc:, unlimited_balance: nil)
         @type_ = :account
         @boc = boc
         @unlimited_balance = unlimited_balance
@@ -67,10 +64,16 @@ module TonSdk
       end
     end
 
-    class ParamsOfRunExecutor
-      attr_reader :message, :account, :execution_options, :abi, :skip_transaction_check,
-                    :boc_cache, :return_updated_account
-
+    ParamsOfRunExecutor = Struct.new(
+      :message,
+      :account,
+      :execution_options,
+      :abi,
+      :skip_transaction_check,
+      :boc_cache,
+      :return_updated_account,
+      keyword_init: true
+    ) do
       def initialize(
         message:,
         account:,
@@ -80,41 +83,22 @@ module TonSdk
         boc_cache: nil,
         return_updated_account: nil
       )
-        @message = message
-        @account = account
-        @execution_options = execution_options
-        @abi = abi
-        @skip_transaction_check = skip_transaction_check
-        @boc_cache = boc_cache
-        @return_updated_account = return_updated_account
+        super
       end
 
       def to_h
-        abi_val = @abi.nil? ? nil : @abi.to_h
-        exe_opt_val = @execution_options.nil? ? nil : @execution_options.to_h
-        boc_cache_val = @boc_cache.nil? ? nil : @boc_cache.to_h
-
-        {
-          message: @message,
-          account: @account.to_h,
-          execution_options: exe_opt_val,
-          abi: abi_val,
-          skip_transaction_check: @skip_transaction_check,
-          boc_cache: boc_cache_val,
-          return_updated_account: @return_updated_account
-        }
+        h = super
+        h[:account] = self.account.to_h
+        h[:execution_options] = self.execution_options&.to_h
+        h[:abi] = self.abi&.to_h
+        h[:boc_cache] = self.boc_cache&.to_h
+        h
       end
     end
 
-    class ResultOfRunExecutor
-      attr_reader :transaction, :out_messages, :decoded, :account, :fees
-
+    ResultOfRunExecutor = Struct.new(:transaction, :out_messages, :decoded, :account, :fees, keyword_init: true) do
       def initialize(transaction:, out_messages:, decoded: nil, account:, fees:)
-        @transaction = transaction
-        @out_messages = out_messages
-        @decoded = decoded
-        @account = account
-        @fees = fees
+        super
       end
     end
 
@@ -132,28 +116,20 @@ module TonSdk
       end
 
       def to_h
-        abi_val = @abi.nil? ? nil : @abi.to_h
-        exe_opt_val = @execution_options.nil? ? nil : @execution_options.to_h
-        boc_cache_val = @boc_cache.nil? ? nil : @boc_cache.to_h
-
         {
           message: @message,
           account: @account,
-          execution_options: exe_opt_val,
-          abi: abi_val,
-          boc_cache: boc_cache_val,
+          execution_options: @execution_options&.to_h,
+          abi: @abi&.to_h,
+          boc_cache: @boc_cache&.to_h,
           return_updated_account: @return_updated_account
         }
       end
     end
 
-    class ResultOfRunTvm
-      attr_reader :out_messages, :decoded, :account
-
+    ResultOfRunTvm = Struct.new(:out_messages, :decoded, :account, keyword_init: true) do
       def initialize(out_messages:, decoded: nil, account:)
-        @out_messages = out_messages
-        @decoded = decoded
-        @account = account
+        super
       end
     end
 
@@ -169,59 +145,49 @@ module TonSdk
       end
 
       def to_h
-        exe_opt_val = @execution_options.nil? ? nil : @execution_options.to_h
-
         {
           account: @account,
           function_name: @function_name,
           input: @input,
-          execution_options: exe_opt_val,
+          execution_options: @execution_options&.to_h,
           tuple_list_as_array: @tuple_list_as_array
         }
       end
     end
 
-    class ResultOfRunGet
-      attr_reader :output
+    ResultOfRunGet = Struct.new(:output)
 
-      def initialize(a)
-        @output = a
-      end
-    end
-
-    class TransactionFees
-      attr_reader :in_msg_fwd_fee, :storage_fee, :gas_fee, :out_msgs_fwd_fee,
-        :total_account_fees
-
-      def initialize(in_msg_fwd_fee:, storage_fee: , gas_fee:, out_msgs_fwd_fee:,
-        total_account_fees:, total_output:
+    TransactionFees = Struct.new(
+      :in_msg_fwd_fee,
+      :storage_fee,
+      :gas_fee,
+      :out_msgs_fwd_fee,
+      :total_account_fees,
+      :total_output,
+      keyword_init: true
+    ) do
+      def initialize(
+        in_msg_fwd_fee:,
+        storage_fee:,
+        gas_fee:,
+        out_msgs_fwd_fee:,
+        total_account_fees:,
+        total_output:
       )
-        @in_msg_fwd_fee = in_msg_fwd_fee
-        @storage_fee = storage_fee
-        @gas_fee = gas_fee
-        @out_msgs_fwd_fee = out_msgs_fwd_fee
-        @total_account_fees = total_account_fees
-        @total_output = total_output
-      end
-
-      def to_h
-        {
-          in_msg_fwd_fee: @in_msg_fwd_fee,
-          storage_fee: @storage_fee,
-          gas_fee: @gas_fee,
-          out_msgs_fwd_fee: @out_msgs_fwd_fee,
-          total_account_fees: @total_account_fees,
-          total_output: @total_output
-        }
+        super
       end
     end
+
+
+    #
+    # functions
+    #
 
     def self.run_executor(ctx, params)
-      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "tvm.run_executor",
-        pr_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -241,11 +207,10 @@ module TonSdk
     end
 
     def self.run_tvm(ctx, params)
-      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "tvm.run_tvm",
-        pr_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -263,11 +228,10 @@ module TonSdk
     end
 
     def self.run_get(ctx, params)
-      pr_json = params.to_h.to_json
       Interop::request_to_native_lib(
         ctx,
         "tvm.run_get",
-        pr_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?

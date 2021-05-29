@@ -23,13 +23,7 @@ module TonSdk
       end
     end
 
-    ResultOfSendMessage = Struct.new(:shard_block_id) do
-      def to_h
-        {
-          shard_block_id: @shard_block_id
-        }
-      end
-    end
+    ResultOfSendMessage = Struct.new(:shard_block_id)
 
     class ParamsOfWaitForTransaction
       attr_reader :abi, :message, :shard_block_id, :send_events
@@ -135,19 +129,9 @@ module TonSdk
       end
     end
 
-    class DecodedOutput
-      attr_reader :out_messages, :output
-
+    DecodedOutput = Struct.new(:out_messages, :output) do
       def initialize(out_messages:, output: nil)
-        @out_messages = out_messages
-        @output = output
-      end
-
-      def to_h
-        {
-          out_messages: @out_messages,
-          output: @output
-        }
+        super
       end
     end
 
@@ -173,7 +157,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "processing.send_message",
-        params.to_h.to_json,
+        params,
         client_callback: client_callback,
         is_single_thread_only: false
       ) do |resp|
@@ -195,7 +179,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "processing.wait_for_transaction",
-        params.to_h.to_json,
+        params,
         client_callback: client_callback,
         is_single_thread_only: false
       ) do |resp|
@@ -222,7 +206,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "processing.process_message",
-        params.to_h.to_json,
+        params,
         client_callback: client_callback,
         is_single_thread_only: false
       ) do |resp|

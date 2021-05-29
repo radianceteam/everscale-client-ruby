@@ -39,59 +39,17 @@ module TonSdk
       end
     end
 
-    class FunctionHeader
-      attr_reader :expire, :time, :pubkey
+    FunctionHeader = Struct.new(:expire, :time, :pubkey, keyword_init: true)
 
-      def initialize(expire: nil, time: nil, pubkey: nil)
-        @expire = expire
-        @time = time
-        @pubkey = pubkey
-      end
-
-      def to_h
-        {
-          expire: @expire,
-          time: @time,
-          pubkey: @pubkey
-        }
-      end
-    end
-
-    class CallSet
-      attr_reader :function_name, :header, :input
-
+    CallSet = Struct.new(:function_name, :header, :input, keyword_init: true) do
       def initialize(function_name:, header: nil, input: nil)
-        @function_name = function_name
-        @header = header
-        @input = input
-      end
-
-      def to_h
-        {
-          function_name: @function_name,
-          header: @header.nil? ? nil : @header.to_h,
-          input: @input
-        }
+        super
       end
     end
 
-    class DeploySet
-      attr_reader :tvc, :workchain_id, :initial_data, :initial_pubkey
-
+    DeploySet = Struct.new(:tvc, :workchain_id, :initial_data, :initial_pubkey, keyword_init: true) do
       def initialize(tvc:, workchain_id: nil, initial_data: nil, initial_pubkey: nil)
-        @tvc = tvc
-        @workchain_id = workchain_id
-        @initial_data = initial_data
-        @initial_pubkey = initial_pubkey
-      end
-
-      def to_h
-        {
-          tvc: @tvc,
-          workchain_id: @workchain_id,
-          initial_data: @initial_data,
-          initial_pubkey: @initial_pubkey
-        }
+        super
       end
     end
 
@@ -136,10 +94,18 @@ module TonSdk
       end
     end
 
-    class StateInitSource
-      TYPES = [:message, :state_init, :tvc]
-      attr_reader :type_, :source, :code, :data, :library, :tvc, :public_key, :init_params
-
+    STATIC_INIT_SOURCE_TYPES = [:message, :state_init, :tvc]
+    StateInitSource = Struct.new(
+      :type_,
+      :source,
+      :code,
+      :data,
+      :library,
+      :tvc,
+      :public_key,
+      :init_params,
+      keyword_init: true
+    ) do
       def initialize(
         type_:,
         source: nil,
@@ -150,17 +116,10 @@ module TonSdk
         public_key: nil,
         init_params: nil
       )
-        unless TYPES.include?(type_)
-          raise ArgumentError.new("unknown type: #{type_}; known types: #{TYPES}")
+        unless STATIC_INIT_SOURCE_TYPES.include?(type_)
+          raise ArgumentError.new("unknown type: #{type_}; known types: #{STATIC_INIT_SOURCE_TYPES}")
         end
-        @type_ = type_
-        @source = source
-        @code = code
-        @data = data
-        @library = library
-        @tvc = tvc
-        @public_key = public_key
-        @init_params = init_params
+        super
       end
 
       def to_h
@@ -185,49 +144,47 @@ module TonSdk
             init_params: @init_params.to_h
           }
         else
-          raise ArgumentError.new("unknown type: #{@type_}; known types: #{TYPES}")
+          raise ArgumentError.new("unknown type: #{@type_}; known types: #{STATIC_INIT_SOURCE_TYPES}")
         end
 
         h1.merge(h2)
       end
     end
 
-    class StateInitParams
-      attr_reader :abi, :value
-
+    StateInitParams = Struct.new(:abi, :value, keyword_init: true) do
       def initialize(abi:, value:)
-        @abi = abi
-        @value = value
-      end
-
-      def to_h
-        {
-          abi: abi.to_h,
-          value: @value
-        }
+        super
       end
     end
 
-    class MessageSource
-      TYPES = [:encoded, :encoding_params]
 
-      attr_reader :type_, :message, :abi, :address, :deploy_set, :call_set,
-        :signer, :processing_try_index
-
-      def initialize(type_:, message: nil, abi:  nil, address: nil, deploy_set: nil,
-        call_set: nil, signer:  nil, processing_try_index: 0)
-        unless TYPES.include?(type_)
-          raise ArgumentError.new("unknown type: #{type_}; known types: #{TYPES}")
+    MESSAGE_SOURCE_TYPES = [:encoded, :encoding_params]
+    MessageSource = Struct.new(
+      :type_,
+      :message,
+      :abi,
+      :address,
+      :deploy_set,
+      :call_set,
+      :signer,
+      :processing_try_index,
+      keyword_init: true
+    ) do
+      def initialize(
+        type_:,
+        message: nil,
+        abi:  nil,
+        address: nil,
+        deploy_set: nil,
+        call_set: nil,
+        signer:  nil,
+        processing_try_index: 0
+      )
+        unless MESSAGE_SOURCE_TYPES.include?(type_)
+          raise ArgumentError.new("unknown type: #{type_}; known types: #{MESSAGE_SOURCE_TYPES}")
         end
 
-        @type_ = type_
-        @message = message
-        @abi = abi
-        @address = address
-        @deploy_set = deploy_set
-        @call_set = call_set
-        @signer = signer
-        @processing_try_index = processing_try_index
+        super
       end
 
       def to_h
@@ -256,142 +213,68 @@ module TonSdk
       end
     end
 
-    class ParamsOfEncodeMessageBody
-      attr_reader :abi, :call_set, :is_internal, :signer, :processing_try_index
-
+    ParamsOfEncodeMessageBody = Struct.new(:abi, :call_set, :is_internal, :signer, :processing_try_index, keyword_init: true) do
       def initialize(abi:, call_set:, is_internal:, signer:, processing_try_index: 0)
-        @abi = abi
-        @call_set = call_set
-        @is_internal = is_internal
-        @signer = signer
-        @processing_try_index = processing_try_index
-      end
-
-      def to_h
-        {
-          abi: @abi.to_h,
-          call_set: @call_set.to_h,
-          is_internal: @is_internal,
-          signer: @signer.to_h,
-          processing_try_index: @processing_try_index
-        }
+        super
       end
     end
 
-    class ResultOfEncodeMessageBody
-      attr_reader :body, :data_to_sign
-
+    ResultOfEncodeMessageBody = Struct.new(:body, :data_to_sign, keyword_init: true) do
       def initialize(body:, data_to_sign: nil)
-        @body = body
-        @data_to_sign = data_to_sign
+        super
       end
     end
 
-    class ParamsOfAttachSignatureToMessageBody
-      attr_reader :abi, :public_key, :message, :signature
-
+    ParamsOfAttachSignatureToMessageBody = Struct.new(:abi, :public_key, :message, :signature, keyword_init: true) do
       def initialize(abi:, public_key:, message:, signature:)
-        @abi = abi
-        @public_key = public_key
-        @message = message
-        @signature = signature
-      end
-
-      def to_h
-        {
-          abi: @abi.to_h,
-          public_key: @public_key,
-          message: @message,
-          signature: @signature
-        }
+        super
       end
     end
 
-    class ResultOfAttachSignatureToMessageBody
-      attr_reader :body
+    ResultOfAttachSignatureToMessageBody = Struct.new(:body)
 
-      def initialize(a)
-        @body = a
+    ParamsOfEncodeMessage = Struct.new(
+      :abi,
+      :address,
+      :deploy_set,
+      :call_set,
+      :signer,
+      :processing_try_index,
+      keyword_init: true
+    ) do
+      def initialize(
+        abi:,
+        address: nil,
+        deploy_set: nil,
+        call_set: nil,
+        signer:,
+        processing_try_index: 0
+      )
+        super
       end
     end
 
-    class ParamsOfEncodeMessage
-      attr_reader :abi, :address, :deploy_set, :call_set, :signer, :processing_try_index
-
-      def initialize(abi:, address: nil, deploy_set: nil, call_set: nil, signer:, processing_try_index: 0)
-        @abi = abi
-        @address = address
-        @deploy_set = deploy_set
-        @call_set = call_set
-        @signer = signer
-        @processing_try_index = processing_try_index
-      end
-
-      def to_h
-        {
-          abi: @abi.to_h,
-          address: @address,
-          deploy_set: @deploy_set.nil? ? nil: @deploy_set.to_h,
-          call_set: @call_set.nil? ? nil: @call_set.to_h,
-          signer: @signer.to_h,
-          processing_try_index: @processing_try_index
-        }
-      end
-    end
-
-    class ResultOfEncodeMessage
-      attr_reader :message, :data_to_sign, :address, :message_id
-
+    ResultOfEncodeMessage = Struct.new(:message, :data_to_sign, :address, :message_id, keyword_init: true) do
       def initialize(message:, data_to_sign: nil, address:, message_id:)
-        @message = message
-        @data_to_sign = data_to_sign
-        @address = address
-        @message_id = message_id
+        super
       end
     end
 
-    class ParamsOfAttachSignature
-      attr_reader :abi, :public_key, :message, :signature
-
+    ParamsOfAttachSignature = Struct.new(:abi, :public_key, :message, :signature, keyword_init: true) do
       def initialize(abi:, public_key:, message:, signature:)
-        @abi = abi
-        @public_key = public_key
-        @message = message
-        @signature = signature
-      end
-
-      def to_h
-        {
-          abi: @abi.to_h,
-          public_key: @public_key,
-          message: @message,
-          signature: @signature
-        }
+        super
       end
     end
 
-    class ResultOfAttachSignature
-      attr_reader :message, :message_id
-
+    ResultOfAttachSignature = Struct.new(:message, :message_id, keyword_init: true) do
       def initialize(message:, message_id:)
-        @message = message
-        @message_id = message_id
+        super
       end
     end
 
-    class ParamsOfDecodeMessage
-      attr_reader :abi, :message
-
+    ParamsOfDecodeMessage = Struct.new(:abi, :message, keyword_init: true) do
       def initialize(abi:, message:)
-        @abi = abi
-        @message = message
-      end
-
-      def to_h
-        {
-          abi: @abi.to_h,
-          message: @message
-        }
+        super
       end
     end
 
@@ -458,57 +341,21 @@ module TonSdk
       end
     end
 
-    class ParamsOfDecodeMessageBody
-      attr_reader :abi, :body, :is_internal
-
+    ParamsOfDecodeMessageBody = Struct.new(:abi, :body, :is_internal, keyword_init: true) do
       def initialize(abi:, body:, is_internal:)
-        @abi = abi
-        @body = body
-        @is_internal = is_internal
-      end
-
-      def to_h
-        {
-          abi: @abi.to_h,
-          body: @body,
-          is_internal: @is_internal
-        }
+        super
       end
     end
 
-    class ParamsOfEncodeAccount
-      attr_reader :state_init, :balance, :last_trans_lt, :last_paid
-
+    ParamsOfEncodeAccount = Struct.new(:state_init, :balance, :last_trans_lt, :last_paid, keyword_init: true) do
       def initialize(state_init:, balance: nil, last_trans_lt: nil, last_paid: nil)
-        @state_init = state_init
-        @balance = balance
-        @last_trans_lt = last_trans_lt
-        @last_paid = last_paid
-      end
-
-      def to_h
-        {
-          state_init: @state_init.to_h,
-          balance: @balance,
-          last_trans_lt: @last_trans_lt,
-          last_paid: @last_paid
-        }
+        super
       end
     end
 
-    class ResultOfEncodeAccount
-      attr_reader :account, :id_
-
+    ResultOfEncodeAccount = Struct.new(:account, :id_, keyword_init: true) do
       def initialize(account:, id_:)
-        @account = account
-        @id_ = id_
-      end
-
-      def to_h
-        {
-          account: @account,
-          id: @id_
-        }
+        super
       end
     end
 
@@ -773,9 +620,17 @@ module TonSdk
       end
     end
 
-    class ParamsOfEncodeInternalMessage
-      attr_reader :abi, :address, :src_address, :deploy_set, :call_set, :value, :bounce, :enable_ihr
-
+    ParamsOfEncodeInternalMessage = Struct.new(
+      :abi,
+      :address,
+      :src_address,
+      :deploy_set,
+      :call_set,
+      :value,
+      :bounce,
+      :enable_ihr,
+      keyword_init: true
+    ) do
       def initialize(
         abi: nil,
         address: nil,
@@ -786,45 +641,18 @@ module TonSdk
         bounce: nil,
         enable_ihr: nil
       )
-        @abi = abi
-        @address = address
-        @src_address = src_address
-        @deploy_set = deploy_set
-        @call_set = call_set
-        @value = value
-        @bounce = bounce
-        @enable_ihr = enable_ihr
-      end
-
-      def to_h
-        {
-          abi: @abi.nil? ? nil : @abi.to_h,
-          address: @address,
-          src_address: @src_address,
-          deploy_set: @deploy_set.nil? ? nil : @deploy_set.to_h,
-          call_set: @call_set.nil? ? nil : @call_set.to_h,
-          value: @value,
-          bounce: @bounce,
-          enable_ihr: @enable_ihr
-        }
+        super
       end
     end
 
-    class ResultOfEncodeInternalMessage
-      attr_reader :message, :address, :message_id
-
+    ResultOfEncodeInternalMessage = Struct.new(
+      :message,
+      :address,
+      :message_id,
+      keyword_init: true
+    ) do
       def initialize(message:, address:, message_id:)
-        @message = message
-        @address = address
-        @message_id = message_id
-      end
-
-      def to_h
-        {
-          message: @message,
-          address: @address,
-          message_id: @message_id
-        }
+        super
       end
     end
 
@@ -834,8 +662,7 @@ module TonSdk
     #
 
     def self.encode_message_body(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.encode_message_body", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.encode_message_body", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeMessageBody.new(
@@ -849,8 +676,7 @@ module TonSdk
     end
 
     def self.attach_signature_to_message_body(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.attach_signature_to_message_body", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.attach_signature_to_message_body", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfAttachSignatureToMessageBody.new(resp.result["body"])
@@ -862,8 +688,7 @@ module TonSdk
     end
 
     def self.encode_message(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.encode_message", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.encode_message", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeMessage.new(
@@ -880,8 +705,7 @@ module TonSdk
     end
 
     def self.attach_signature(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.attach_signature", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.attach_signature", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfAttachSignature.new(
@@ -895,8 +719,7 @@ module TonSdk
     end
 
     def self.decode_message(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.decode_message", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.decode_message", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: DecodedMessageBody.from_json(resp.result)
@@ -908,8 +731,7 @@ module TonSdk
     end
 
     def self.decode_message_body(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.decode_message_body", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.decode_message_body", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: DecodedMessageBody.from_json(resp.result)
@@ -921,8 +743,7 @@ module TonSdk
     end
 
     def self.encode_account(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.encode_account", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.encode_account", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeAccount.new(
@@ -937,8 +758,7 @@ module TonSdk
     end
 
     def self.encode_internal_message(ctx, params)
-      pr_json = params.to_h.to_json
-      Interop::request_to_native_lib(ctx, "abi.encode_internal_message", pr_json) do |resp|
+      Interop::request_to_native_lib(ctx, "abi.encode_internal_message", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeInternalMessage.new(

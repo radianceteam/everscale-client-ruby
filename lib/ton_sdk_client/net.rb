@@ -37,20 +37,15 @@ module TonSdk
       end
     end
 
-    class ParamsOfQueryCollection
-      attr_reader :collection, :filter, :result, :order, :limit
-
+    ParamsOfQueryCollection = Struct.new(:collection, :filter, :result, :order, :limit, keyword_init: true) do
       def initialize(collection: , filter: nil, result: , order: [], limit: nil)
-        @collection = collection
-        @filter = filter
-        @result = result
-        @order = order
-        @limit = limit
+        super
       end
 
       def to_h
-        ord_h_s = if !@order.nil?
-          @order.map do |x|
+        h = super
+        ord_h_s = if !self.order.nil?
+          self.order.map do |x|
             {
               path: x.path,
               direction: x.direction.to_s.upcase
@@ -58,105 +53,54 @@ module TonSdk
           end
         end
 
-        {
-          collection: @collection,
-          filter: @filter,
-          result: @result,
-          order: ord_h_s,
-          limit: @limit
-        }
+        h[:order] = ord_h_s
+        h
       end
     end
 
     ResultOfQueryCollection = Struct.new(:result)
-
     ResultOfWaitForCollection = Struct.new(:result)
-
     ResultOfQuery = Struct.new(:result)
-
-    ResultOfBatchQuery = Struct.new(:results) do
-      def to_h = { results: @results }
-    end
-
-    class ParamsOfWaitForCollection
-      attr_reader :collection, :filter, :result, :timeout
-
+    ResultOfBatchQuery = Struct.new(:results)
+    ParamsOfWaitForCollection = Struct.new(:collection, :filter, :result, :timeout) do
       def initialize(collection:, filter: nil, result:, timeout: nil)
-        @collection = collection
-        @filter = filter
-        @result = result
-        @timeout = timeout
-      end
-
-      def to_h
-        {
-          collection: @collection,
-          filter: @filter,
-          result: @result,
-          timeout: @timeout
-        }
+        super
       end
     end
 
-    class ParamsOfSubscribeCollection
-      attr_reader :collection, :filter, :result
-
+    ParamsOfSubscribeCollection = Struct.new(:collection, :filter, :result) do
       def initialize(collection:, filter: nil, result:)
-        @collection = collection
-        @filter = filter
-        @result = result
-      end
-
-      def to_h
-        {
-          collection: @collection,
-          filter: @filter,
-          result: @result
-        }
+        super
       end
     end
 
-    ResultOfSubscribeCollection = Struct.new(:handle) do
-      def to_h = { handle: @handle }
-    end
-
+    ResultOfSubscribeCollection = Struct.new(:handle)
     ParamsOfQuery = Struct.new(:query, :variables) do
       def initialize(query:, variables: nil)
         super
       end
-
-      def to_h
-        {
-          query: @query,
-          variables: @variables
-        }
-      end
     end
 
-    ParamsOfFindLastShardBlock = Struct.new(:address) do
-      def to_h = { address: @address }
-    end
-
+    ParamsOfFindLastShardBlock = Struct.new(:address)
     ResultOfFindLastShardBlock = Struct.new(:block_id)
-
-    EndpointsSet = Struct.new(:endpoints) do
-      def to_h = { endpoints: @endpoints }
-    end
+    EndpointsSet = Struct.new(:endpoints)
 
     class ParamsOfQueryOperation
+      private_class_method :new
+
       attr_reader :type_, :params
 
-      def new_with_type_query_collection(params)
+      def self.new_with_type_query_collection(params)
         @type_ = :query_collection
         @params = params
       end
 
-      def new_with_type_wait_for_collection(params)
+      def self.new_with_type_wait_for_collection(params)
         @type_ = :wait_for_collection
         @params = params
       end
       
-      def new_with_type_aggregate_collection(params)
+      def self.new_with_type_aggregate_collection(params)
         @type_ = :aggregate_collection
         @params = params
       end
@@ -174,26 +118,20 @@ module TonSdk
     ParamsOfBatchQuery = Struct.new(:operations) do
       def to_h
         {
-          operations: @operations.compact.map(&:to_h)
+          operations: self.operations.compact.map(&:to_h)
         }
       end
     end
 
-    class ParamsOfAggregateCollection
-      attr_reader :collection, :filter, :fields
-
+    ParamsOfAggregateCollection = Struct.new(:collection, :filter, :fields) do
       def initialize(collection:, filter: nil, fields: [])
-        @collection = collection
-        @filter = filter
-        @fields = fields
+        super
       end
 
       def to_h
-        {
-          collection: @collection,
-          filter: @filter,
-          fields: @fields.map(&:to_h)
-        }
+        h = super
+        h[:fields] = self.fields.map(&:to_h)
+        h
       end
     end
 
@@ -224,24 +162,15 @@ module TonSdk
       end
     end
 
-    ResultOfAggregateCollection = Struct.new(:values) do
-      def to_h = { values: @values }
-    end
+    ResultOfAggregateCollection = Struct.new(:values)
 
     ParamsOfQueryCounterparties = Struct.new(:account, :result, :first, :after, keyword_init: true) do
       def initialize(account:, result:, first: nil, after: nil)
         super
       end
-
-      def to_h
-        {
-          account: @account,
-          result: @result,
-          first: @first,
-          after: @after
-        }
-      end
     end
+
+    ResultOfGetEndpoints = Struct.new(:query, :endpoints, keyword_init: true)
 
 
     #
@@ -252,7 +181,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "net.query_collection",
-        params.to_h.to_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -269,7 +198,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "net.wait_for_collection",
-        params.to_h.to_json,
+        params,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
@@ -283,7 +212,7 @@ module TonSdk
     end
 
     def self.unsubscribe(ctx, params)
-      Interop::request_to_native_lib(ctx, "net.unsubscribe", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "net.unsubscribe", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ""
@@ -298,7 +227,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "net.subscribe_collection",
-        params.to_h.to_json,
+        params,
         client_callback: client_callback,
         is_single_thread_only: false
       ) do |resp|
@@ -313,7 +242,7 @@ module TonSdk
     end
 
     def self.query(ctx, params)
-      Interop::request_to_native_lib(ctx, "net.query", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "net.query", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfQuery.new(resp.result["result"])
@@ -325,7 +254,7 @@ module TonSdk
     end
 
     def self.suspend(ctx)
-      Interop::request_to_native_lib(ctx, "net.suspend", "") do |resp|
+      Interop::request_to_native_lib(ctx, "net.suspend") do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(result: "")
         else
@@ -335,7 +264,7 @@ module TonSdk
     end
 
     def self.resume(ctx)
-      Interop::request_to_native_lib(ctx, "net.resume", "") do |resp|
+      Interop::request_to_native_lib(ctx, "net.resume") do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(result: "")
         else
@@ -345,7 +274,7 @@ module TonSdk
     end
 
     def self.find_last_shard_block(ctx, params)
-      Interop::request_to_native_lib(ctx, "net.find_last_shard_block", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "net.find_last_shard_block", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfFindLastShardBlock.new(resp.result["block_id"])
@@ -357,7 +286,7 @@ module TonSdk
     end
 
     def self.fetch_endpoints(ctx)
-      Interop::request_to_native_lib(ctx, "net.fetch_endpoints", nil) do |resp|
+      Interop::request_to_native_lib(ctx, "net.fetch_endpoints") do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: EndpointsSet.new(resp.result["endpoints"])
@@ -369,7 +298,7 @@ module TonSdk
     end
 
     def self.set_endpoints(ctx, params)
-      Interop::request_to_native_lib(ctx, "net.set_endpoints", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "net.set_endpoints", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
@@ -382,7 +311,7 @@ module TonSdk
   end
 
   def self.batch_query(ctx, params)
-    Interop::request_to_native_lib(ctx, "net.batch_query", params.to_h.to_json) do |resp|
+    Interop::request_to_native_lib(ctx, "net.batch_query", params) do |resp|
       if resp.success?
         yield NativeLibResponsetResult.new(
           result: ResultOfBatchQuery.new(resp.result["results"])
@@ -394,7 +323,7 @@ module TonSdk
   end
 
   def self.aggregate_collection(ctx, params)
-    Interop::request_to_native_lib(ctx, "net.aggregate_collection", params.to_h.to_json) do |resp|
+    Interop::request_to_native_lib(ctx, "net.aggregate_collection", params) do |resp|
       if resp.success?
         yield NativeLibResponsetResult.new(
           result: ResultOfAggregateCollection.new(resp.result["values"])
@@ -406,10 +335,25 @@ module TonSdk
   end
 
   def self.query_counterparties(ctx, params)
-    Interop::request_to_native_lib(ctx, "net.query_counterparties", params.to_h.to_json) do |resp|
+    Interop::request_to_native_lib(ctx, "net.query_counterparties", params) do |resp|
       if resp.success?
         yield NativeLibResponsetResult.new(
           result: ResultOfQueryCollection.new(resp.result["result"])
+        )
+      else
+        yield resp
+      end
+    end
+  end
+
+  def self.get_endpoints(ctx, params)
+    Interop::request_to_native_lib(ctx, "net.get_endpoints", params) do |resp|
+      if resp.success?
+        yield NativeLibResponsetResult.new(
+          result: ResultOfGetEndpoints.new(
+            query: resp.result["query"],
+            endpoints: resp.result["endpoints"],
+          )
         )
       else
         yield resp

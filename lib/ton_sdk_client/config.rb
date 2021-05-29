@@ -1,120 +1,67 @@
 module TonSdk
-  class ClientConfig
-    attr_reader :network, :crypto, :abi
-
-    def initialize(network: nil, crypto: nil, abi: nil)
-      if network.nil? && crypto.nil? && abi.nil?
-        raise ArgumentError.new("all 3 arguments may not be nil")
-      end
-
-      @network = network
-      @crypto = crypto
-      @abi = abi
-    end
-
-    def to_h
-      {
-        network: @network.nil? ? nil : @network.to_h,
-        crypto: @crypto.nil? ? nil : @crypto.to_h,
-        abi: @abi.nil? ? nil : @abi.to_h
-      }
-    end
-  end
-
-  class NetworkConfig
-    DEFAULT_NETWORK_RETRIES_COUNT = 5
-    DEFAULT_MAX_RECONNECT_TIMEOUT = 120000
-    DEFAULT_RECONNECT_TIMEOUT = 1000
-    DEFAULT_MESSAGE_RETRIES_COUNT = 5
-
-    DEFAULT_MESSAGE_PROCESSING_TIMEOUT = 40000
-    DEFAULT_WAIT_TIMEOUT = 40000
-    DEFAULT_OUT_OF_SYNC_THRESHOLD = 15000
-    DEFAULT_SENDING_ENDPOINT_COUNT = 2
-
-    attr_reader :server_address, :endpoints, :network_retries_count,
-      :message_retries_count, :message_processing_timeout,
-      :wait_for_timeout, :out_of_sync_threshold, :reconnect_timeout,
-      :max_reconnect_timeout,
-      :sending_endpoint_count,
-      :access_key
-
+  CryptoConfig = Struct.new(:mnemonic_dictionary, :mnemonic_word_count, :hdkey_derivation_path, keyword_init: true)
+  BocConfig = Struct.new(:cache_max_size)
+  NetworkConfig = Struct.new(
+    :server_address,
+    :endpoints,
+    :network_retries_count,
+    :message_retries_count,
+    :message_processing_timeout,
+    :wait_for_timeout,
+    :out_of_sync_threshold,
+    :reconnect_timeout,
+    :max_reconnect_timeout,
+    :sending_endpoint_count,
+    :latency_detection_interval,
+    :max_latency,
+    :access_key,
+    keyword_init: true
+  ) do
     def initialize(
       server_address: "",
       endpoints: [],
-
-      network_retries_count: DEFAULT_NETWORK_RETRIES_COUNT,
-      max_reconnect_timeout: DEFAULT_MAX_RECONNECT_TIMEOUT,
-      reconnect_timeout: DEFAULT_RECONNECT_TIMEOUT,
-      message_retries_count: DEFAULT_MESSAGE_RETRIES_COUNT,
-
-      message_processing_timeout: DEFAULT_MESSAGE_PROCESSING_TIMEOUT,
-      wait_for_timeout: DEFAULT_WAIT_TIMEOUT,
-      out_of_sync_threshold: DEFAULT_OUT_OF_SYNC_THRESHOLD,
-      sending_endpoint_count: DEFAULT_SENDING_ENDPOINT_COUNT,
-
+      network_retries_count: 5,
+      max_reconnect_timeout: 120000,
+      reconnect_timeout: 1000,
+      message_retries_count: 5,
+      message_processing_timeout: 40000,
+      wait_for_timeout: 40000,
+      out_of_sync_threshold: 15000,
+      sending_endpoint_count: 2,
+      latency_detection_interval: 60000,
+      max_latency: 60000,
       access_key: nil
     )
-
-      @server_address = server_address
-      @endpoints = endpoints
-
-      @network_retries_count = network_retries_count
-      @max_reconnect_timeout = max_reconnect_timeout
-      @reconnect_timeout = reconnect_timeout
-      @message_retries_count = message_retries_count
-
-      @message_processing_timeout = message_processing_timeout
-      @wait_for_timeout = wait_for_timeout
-      @out_of_sync_threshold = out_of_sync_threshold
-      @sending_endpoint_count = sending_endpoint_count
-
-      @access_key = access_key
-    end
-
-    def to_h
-      {
-        server_address: @server_address,
-        endpoints: @endpoints,
-
-        network_retries_count: @network_retries_count,
-        max_reconnect_timeout: @max_reconnect_timeout,
-        reconnect_timeout: @reconnect_timeout,
-        message_retries_count: @message_retries_count,
-
-        message_processing_timeout: @message_processing_timeout,
-        wait_for_timeout: @wait_for_timeout,
-        out_of_sync_threshold: @out_of_sync_threshold,
-        sending_endpoint_count: @sending_endpoint_count,
-
-        access_key: @access_key
-      }
+      super
     end
   end
 
-  CryptoConfig = Struct.new(:fish_param) do
-    def to_h = { fish_param: @fish_param }
-  end
-
-  class AbiConfig
-    DEFAULT_EXPIRATION_TIMEOUT = 40000
-    DEFAULT_TIMEOUT_GROW_FACTOR = 1.5
-
-    attr_reader :message_expiration_timeout, :message_expiration_timeout_grow_factor
-
+  AbiConfig = Struct.new(
+    :workchain,
+    :message_expiration_timeout,
+    :message_expiration_timeout_grow_factor,
+    keyword_init: true
+  ) do
     def initialize(
-      message_expiration_timeout: DEFAULT_EXPIRATION_TIMEOUT,
-      message_expiration_timeout_grow_factor: DEFAULT_TIMEOUT_GROW_FACTOR
+      workchain: nil,
+      message_expiration_timeout: 40000,
+      message_expiration_timeout_grow_factor: 1.5
     )
-      @message_expiration_timeout = message_expiration_timeout
-      @message_expiration_timeout_grow_factor = message_expiration_timeout_grow_factor
+      super
     end
+  end
 
+  ClientConfig = Struct.new(:network, :crypto, :abi, :boc, keyword_init: true) do
     def to_h
+      res = super.to_h
+
       {
-        message_expiration_timeout: @message_expiration_timeout,
-        message_expiration_timeout_grow_factor: @message_expiration_timeout_grow_factor
+        network: res[:network]&.to_h,
+        crypto: res[:crypto]&.to_h,
+        abi: res[:abi]&.to_h,
+        boc: res[:boc]&.to_h
       }
     end
   end
+
 end

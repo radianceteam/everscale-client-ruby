@@ -32,7 +32,7 @@ module TonSdk
       end
     end
 
-    ParamsOfConvertAddress = Struct.new(:address, :output_format) do
+    ParamsOfConvertAddress = Struct.new(:address, :output_format, keyword_init: true) do
       def to_h
         {
           address: @address,
@@ -42,33 +42,13 @@ module TonSdk
     end
 
     ResultOfConvertAddress = Struct.new(:address)
-
-    ParamsOfCalcStorageFee = Struct.new(:account, :period) do
-      def to_h
-        {
-          account: @account,
-          period: @period
-        }
-      end
-    end
-
+    ParamsOfCalcStorageFee = Struct.new(:account, :period, keyword_init: true)
     ResultOfCalcStorageFee = Struct.new(:fee)
 
-    ParamsOfCompressZstd = Struct.new(:uncompressed, :level) do
-      def to_h
-        {
-          uncompressed: @uncompressed,
-          level: @level
-        }
-      end
-    end
-
+    ParamsOfCompressZstd = Struct.new(:uncompressed, :level, keyword_init: true)
     ResultOfCompressZstd = Struct.new(:compressed)
 
-    ParamsOfDecompressZstd = Struct.new(:compressed) do
-      def to_h = { compressed: @compressed }
-    end
-
+    ParamsOfDecompressZstd = Struct.new(:compressed)
     ResultOfDecompressZstd = Struct.new(:decompressed)
 
 
@@ -76,8 +56,8 @@ module TonSdk
     # functions
     #
 
-    def self.convert_address(ctx, prm)
-      Interop::request_to_native_lib(ctx, "utils.convert_address", prm.to_h.to_json) do |resp|
+    def self.convert_address(ctx, params)
+      Interop::request_to_native_lib(ctx, "utils.convert_address", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: Utils::ResultOfConvertAddress.new(resp.result["address"])
@@ -88,8 +68,8 @@ module TonSdk
       end
     end
 
-    def self.calc_storage_fee(ctx, prm)
-      Interop::request_to_native_lib(ctx, "utils.calc_storage_fee", prm.to_h.to_json) do |resp|
+    def self.calc_storage_fee(ctx, params)
+      Interop::request_to_native_lib(ctx, "utils.calc_storage_fee", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: Utils::ResultOfCalcStorageFee.new(resp.result["fee"])
@@ -100,8 +80,8 @@ module TonSdk
       end
     end
 
-    def self.compress_zstd(ctx, prm)
-      Interop::request_to_native_lib(ctx, "utils.compress_zstd", prm.to_h.to_json) do |resp|
+    def self.compress_zstd(ctx, params)
+      Interop::request_to_native_lib(ctx, "utils.compress_zstd", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: Utils::ResultOfCompressZstd.new(resp.result["compressed"])
@@ -112,8 +92,8 @@ module TonSdk
       end
     end
 
-    def self.decompress_zstd(ctx, prm)
-      Interop::request_to_native_lib(ctx, "utils.decompress_zstd", prm.to_h.to_json) do |resp|
+    def self.decompress_zstd(ctx, params)
+      Interop::request_to_native_lib(ctx, "utils.decompress_zstd", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: Utils::ParamsOfDecompressZstd.new(resp.result["decompressed"])

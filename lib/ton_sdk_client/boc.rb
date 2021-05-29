@@ -5,64 +5,31 @@ module TonSdk
     # types
     #
 
-    ParamsOfParse = Struct.new(:boc) do
-      def to_h = { boc: @boc }
-    end
-
+    ParamsOfParse = Struct.new(:boc)
     ResultOfParse = Struct.new(:parsed)
-
-    ParamsOfParseShardstate = Struct.new(:boc, :id, :workchain_id) do
-      def to_h
-        {
-          boc: @boc,
-          id: @id_,
-          workchain_id: @workchain_id
-        }
-      end
-    end
-
-    ParamsOfGetBlockchainConfig = Struct.new(:block_boc) do
-      def to_h = { block_boc: @block_boc }
-    end
-
+    ParamsOfParseShardstate = Struct.new(:boc, :id_, :workchain_id, keyword_init: true)
+    ParamsOfGetBlockchainConfig = Struct.new(:block_boc)
     ResultOfGetBlockchainConfig = Struct.new(:config_boc)
 
-    ParamsOfGetBocHash = Struct.new(:boc) do
-      def to_h
-        {
-          boc: @boc
-        }
-      end
-    end
-
+    ParamsOfGetBocHash = Struct.new(:boc)
     ResultOfGetBocHash = Struct.new(:hash)
-
-    ParamsOfGetCodeFromTvc = Struct.new(:hash) do
-      def to_h = { tvc: @tvc }
-    end
-
+    ParamsOfGetCodeFromTvc = Struct.new(:hash)
     ResultOfGetCodeFromTvc = Struct.new(:code)
-
-    ParamsOfBocCacheGet = Struct.new(:boc_ref) do
-      def to_h = { boc_ref: @boc_ref }
-    end
+    ParamsOfBocCacheGet = Struct.new(:boc_ref)
 
     ResultOfBocCacheGet = Struct.new(:boc)
 
     class BocCacheType
-      TYPES = [
-        :pinned,
-        :unpinned
-      ]
+      private_class_method :new
 
       attr_reader :type_, :pin
 
-      def new_with_type_pinned(pin)
+      def self.new_with_type_pinned(pin)
         @type_ = :pinned
         @pin = pin
       end
 
-      def new_with_type_unpinned
+      def self.new_with_type_unpinned
         @type_ = :unpinned
       end
 
@@ -93,25 +60,8 @@ module TonSdk
     end
 
     ResultOfBocCacheSet = Struct.new(:boc_ref)
-
-    ParamsOfBocCacheUnpin = Struct.new(:boc, :boc_ref) do
-      def to_h
-        {
-          boc: @boc,
-          boc_ref: @boc_ref
-        }
-      end
-    end
-
-    ParamsOfEncodeBoc = Struct.new(:builder, :boc_cache) do
-      def to_h
-        {
-          boc: @boc,
-          boc_ref: @boc_ref
-        }
-      end
-    end
-
+    ParamsOfBocCacheUnpin = Struct.new(:boc, :boc_ref)
+    ParamsOfEncodeBoc = Struct.new(:builder, :boc_cache)
     ResultOfEncodeBoc = Struct.new(:boc)
 
 
@@ -121,7 +71,7 @@ module TonSdk
     #
 
     def self.parse_message(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.parse_message", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.parse_message", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfParse.new(resp.result["parsed"])
@@ -133,7 +83,7 @@ module TonSdk
     end
 
     def self.parse_transaction(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.parse_transaction", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.parse_transaction", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfParse.new(resp.result["parsed"])
@@ -145,7 +95,7 @@ module TonSdk
     end
 
     def self.parse_account(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.parse_account", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.parse_account", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfParse.new(resp.result["parsed"])
@@ -157,7 +107,7 @@ module TonSdk
     end
 
     def self.parse_block(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.parse_block", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.parse_block", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfParse.new(resp.result["parsed"])
@@ -169,7 +119,7 @@ module TonSdk
     end
 
     def self.parse_shardstate(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.parse_shardstate", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.parse_shardstate", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfParse.new(resp.result["parsed"])
@@ -181,7 +131,7 @@ module TonSdk
     end
 
     def self.get_blockchain_config(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetBlockchainConfig.new(resp.result["config_boc"])
@@ -193,7 +143,7 @@ module TonSdk
     end
 
     def self.get_boc_hash(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.get_boc_hash", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.get_boc_hash", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetBocHash.new(resp.result["hash"])
@@ -205,7 +155,7 @@ module TonSdk
     end
 
     def self.get_code_from_tvc(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.get_code_from_tvc", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.get_code_from_tvc", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetCodeFromTvc.new(resp.result["code"])
@@ -217,7 +167,7 @@ module TonSdk
     end
 
     def self.cache_get(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.cache_get", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.cache_get", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfBocCacheGet.new(
@@ -231,7 +181,7 @@ module TonSdk
     end
 
     def self.cache_set(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.cache_set", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.cache_set", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfBocCacheSet.new(
@@ -245,7 +195,7 @@ module TonSdk
     end
 
     def self.cache_unpin(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.cache_unpin", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.cache_unpin", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
@@ -257,7 +207,7 @@ module TonSdk
     end
 
     def self.encode_boc(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.encode_boc", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.encode_boc", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeBoc.new(
@@ -271,7 +221,7 @@ module TonSdk
     end
 
     def self.get_blockchain_config(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", params.to_h.to_json) do |resp|
+      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetBlockchainConfig.new(
