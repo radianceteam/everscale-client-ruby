@@ -105,6 +105,11 @@ module TonSdk
         @params = params
       end
 
+      def self.new_with_type_query_counterparties(params)
+        @type_ = :query_counterparties
+        @params = params
+      end
+
       def to_h
         tp = {
           type: Helper.sym_to_capitalized_case_str(@type_)
@@ -179,7 +184,7 @@ module TonSdk
       :account_addr,
       :total_fees,
       :aborted,
-      :exit_code
+      :exit_code,
       keyword_init: true
     ) do
       def initialize(id_:, in_msg:, out_msgs:, account_addr:, total_fees:, aborted:, exit_code: nil)
@@ -225,6 +230,7 @@ module TonSdk
     end
 
     ResultOfQueryTransactionTree = Struct.new(:messages, :transactions, keyword_init: true)
+
 
     #
     # functions
@@ -387,18 +393,6 @@ module TonSdk
     end
   end
 
-  def self.query_counterparties(ctx, params)
-    Interop::request_to_native_lib(ctx, "net.query_counterparties", params) do |resp|
-      if resp.success?
-        yield NativeLibResponsetResult.new(
-          result: ResultOfQueryCollection.new(resp.result["result"])
-        )
-      else
-        yield resp
-      end
-    end
-  end
-
   def self.get_endpoints(ctx, params)
     Interop::request_to_native_lib(ctx, "net.get_endpoints", params) do |resp|
       if resp.success?
@@ -407,6 +401,18 @@ module TonSdk
             query: resp.result["query"],
             endpoints: resp.result["endpoints"],
           )
+        )
+      else
+        yield resp
+      end
+    end
+  end
+
+  def self.query_counterparties(ctx, params)
+    Interop::request_to_native_lib(ctx, "net.query_counterparties", params) do |resp|
+      if resp.success?
+        yield NativeLibResponsetResult.new(
+          result: ResultOfQueryCollection.new(resp.result["result"])
         )
       else
         yield resp
