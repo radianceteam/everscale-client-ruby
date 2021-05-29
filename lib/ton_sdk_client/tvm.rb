@@ -22,14 +22,9 @@ module TonSdk
       CONTRACT_EXECUTION_ERROR = 414
     end
 
-    class ExecutionOptions
-      attr_reader :blockchain_config, :block_time, :block_lt, :transaction_lt
-
+    ExecutionOptions = Struct.new(:blockchain_config, :block_time, :block_lt, :transaction_lt, keyword_init: true) do
       def initialize(blockchain_config: nil, block_time: nil, block_lt: nil, transaction_lt: nil)
-        @blockchain_config = blockchain_config
-        @block_time = block_time
-        @block_lt = block_lt
-        @transaction_lt = transaction_lt
+        super
       end
     end
 
@@ -92,17 +87,13 @@ module TonSdk
       end
 
       def to_h
-        abi_val = @abi.nil? ? nil : @abi.to_h
-        exe_opt_val = @execution_options.nil? ? nil : @execution_options.to_h
-        boc_cache_val = @boc_cache.nil? ? nil : @boc_cache.to_h
-
         {
           message: @message,
           account: @account.to_h,
-          execution_options: exe_opt_val,
-          abi: abi_val,
+          execution_options: @execution_options&.to_h,
+          abi: @abi&.to_h,
           skip_transaction_check: @skip_transaction_check,
-          boc_cache: boc_cache_val,
+          boc_cache: @boc_cache&.to_h,
           return_updated_account: @return_updated_account
         }
       end
@@ -175,6 +166,7 @@ module TonSdk
       :gas_fee,
       :out_msgs_fwd_fee,
       :total_account_fees,
+      :total_output,
       keyword_init: true
     ) do
       def initialize(
