@@ -62,20 +62,20 @@ module TonSdk
     ResultOfWaitForCollection = Struct.new(:result)
     ResultOfQuery = Struct.new(:result)
     ResultOfBatchQuery = Struct.new(:results)
-    ParamsOfWaitForCollection = Struct.new(:collection, :filter, :result, :timeout) do
+    ParamsOfWaitForCollection = Struct.new(:collection, :filter, :result, :timeout, keyword_init: true) do
       def initialize(collection:, filter: nil, result:, timeout: nil)
         super
       end
     end
 
-    ParamsOfSubscribeCollection = Struct.new(:collection, :filter, :result) do
+    ParamsOfSubscribeCollection = Struct.new(:collection, :filter, :result, keyword_init: true) do
       def initialize(collection:, filter: nil, result:)
         super
       end
     end
 
     ResultOfSubscribeCollection = Struct.new(:handle)
-    ParamsOfQuery = Struct.new(:query, :variables) do
+    ParamsOfQuery = Struct.new(:query, :variables, keyword_init: true) do
       def initialize(query:, variables: nil)
         super
       end
