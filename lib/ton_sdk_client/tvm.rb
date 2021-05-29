@@ -128,16 +128,12 @@ module TonSdk
       end
 
       def to_h
-        abi_val = @abi.nil? ? nil : @abi.to_h
-        exe_opt_val = @execution_options.nil? ? nil : @execution_options.to_h
-        boc_cache_val = @boc_cache.nil? ? nil : @boc_cache.to_h
-
         {
           message: @message,
           account: @account,
-          execution_options: exe_opt_val,
-          abi: abi_val,
-          boc_cache: boc_cache_val,
+          execution_options: @execution_options&.to_h,
+          abi: @abi&.to_h,
+          boc_cache: @boc_cache&.to_h,
           return_updated_account: @return_updated_account
         }
       end

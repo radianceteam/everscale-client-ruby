@@ -26,12 +26,12 @@ module TonSdk
     DebotAction = Struct.new(:description, :name, :action_type, :to, :attributes, :misc, keyword_init: true) do
       def to_h
         {
-          description: @description,
-          name: @name,
-          action_type: @action_type,
-          to: @to,
-          attributes: @attributes,
-          misc: @misc
+          description: self.description,
+          name: self.name,
+          action_type: self.action_type,
+          to: self.to,
+          attributes: self.attributes,
+          misc: self.misc
         }
       end
 
