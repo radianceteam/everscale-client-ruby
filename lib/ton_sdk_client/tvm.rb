@@ -64,10 +64,16 @@ module TonSdk
       end
     end
 
-    class ParamsOfRunExecutor
-      attr_reader :message, :account, :execution_options, :abi, :skip_transaction_check,
-                    :boc_cache, :return_updated_account
-
+    ParamsOfRunExecutor = Struct.new(
+      :message,
+      :account,
+      :execution_options,
+      :abi,
+      :skip_transaction_check,
+      :boc_cache,
+      :return_updated_account,
+      keyword_init: true
+    ) do
       def initialize(
         message:,
         account:,
@@ -77,25 +83,16 @@ module TonSdk
         boc_cache: nil,
         return_updated_account: nil
       )
-        @message = message
-        @account = account
-        @execution_options = execution_options
-        @abi = abi
-        @skip_transaction_check = skip_transaction_check
-        @boc_cache = boc_cache
-        @return_updated_account = return_updated_account
+        super
       end
 
       def to_h
-        {
-          message: @message,
-          account: @account.to_h,
-          execution_options: @execution_options&.to_h,
-          abi: @abi&.to_h,
-          skip_transaction_check: @skip_transaction_check,
-          boc_cache: @boc_cache&.to_h,
-          return_updated_account: @return_updated_account
-        }
+        h = super
+        h[:account] = self.account.to_h
+        h[:execution_options] = self.execution_options&.to_h
+        h[:abi] = self.abi&.to_h
+        h[:boc_cache] = self.boc_cache&.to_h
+        h
       end
     end
 
