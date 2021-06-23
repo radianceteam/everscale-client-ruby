@@ -217,8 +217,8 @@ module TonSdk
       end
     end
 
-    ParamsOfQueryTransactionTree = Struct.new(:in_msg, :abi_registry, keyword_init: true) do
-      def initialize(in_msg:, abi_registry: [])
+    ParamsOfQueryTransactionTree = Struct.new(:in_msg, :abi_registry, :timeout, keyword_init: true) do
+      def initialize(in_msg:, abi_registry: [], timeout: nil)
         super
       end
 
