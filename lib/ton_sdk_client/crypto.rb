@@ -265,6 +265,11 @@ module TonSdk
       end
     end
 
+    EncryptionBoxInfo = Struct.new(:hdpath, :algorithm, :options, :public, keyword_init: true)
+    ParamsOfEncryptionBoxGetInfo = Struct.new(:encryption_box)
+    ResultOfEncryptionBoxGetInfo = Struct.new(:info)
+    RegisteredEncryptionBox = Struct.new(:handle)
+
 
     #
     # functions
@@ -756,6 +761,58 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: nil
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.register_encryption_box(ctx, app_obj:)
+      client_callback = Proc.new do |type_, x|
+        app_res = app_obj.request(x["request_data"])
+        app_req_result = case app_res
+        in [:success, result]
+          TonSdk::Client::AppRequestResult.new(
+            type_: :ok,
+            result: result
+          )
+        in [:error, text]
+          TonSdk::Client::AppRequestResult.new(
+            type_: :error,
+            text: text
+          )
+        end
+
+        params = TonSdk::Client::ParamsOfResolveAppRequest.new(
+          app_request_id: x["app_request_id"],
+          result: app_req_result
+        )
+        TonSdk::Client.resolve_app_request(ctx, params)
+      end
+
+      Interop::request_to_native_lib(
+        ctx,
+        "crypto.register_encryption_box",
+        nil,
+        client_callback: client_callback,
+        is_single_thread_only: false
+      ) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: RegisteredEncryptionBox.new(resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.encryption_box_get_info(ctx, params)
+      Interop::request_to_native_lib(ctx, "crypto.encryption_box_get_info", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfEncryptionBoxGetInfo.new(resp.result["info"])
           )
         else
           yield resp
