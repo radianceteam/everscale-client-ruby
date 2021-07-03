@@ -434,4 +434,17 @@ module TonSdk
       end
     end
   end
+
+
+
+
+  # todo
+    # def self.create_block_iterator(ctx, params)
+    # def self.create_transaction_iterator(ctx, params)
+    # def self.resume_block_iterator(ctx, params)
+    # def self.resume_transaction_iterator(ctx, params)
+    # def self.iterator_next(ctx, params)
+    # def self.iterator_remove(ctx, params)
+
+
 end
