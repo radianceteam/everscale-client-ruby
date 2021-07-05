@@ -228,8 +228,27 @@ module TonSdk
         h
       end
     end
-
     ResultOfQueryTransactionTree = Struct.new(:messages, :transactions, keyword_init: true)
+
+    ParamsOfCreateBlockIterator = Struct.new(:start_time, :end_time, :shard_filter, :result, keyword_init: true)
+    RegisteredIterator = Struct.new(:handle)
+    ParamsOfResumeBlockIterator = Struct.new(:resume_state)
+    ParamsOfCreateTransactionIterator = Struct.new(:start_time, :end_time, :shard_filter, :accounts_filter, :result, :include_transfers, keyword_init: true)
+    ParamsOfResumeTransactionIterator = Struct.new(:resume_state, :accounts_filter, keyword_init: true) do
+      def initialize(resume_state:, accounts_filter: nil)
+        super
+      end
+    end
+    ParamsOfIteratorNext = Struct.new(:iterator, :limit, :return_resume_state, keyword_init: true) do
+      def initialize(iterator:, limit: nil, return_resume_state: nil)
+        super
+      end
+    end
+    ResultOfIteratorNext = Struct.new(:items, :has_more, :resume_state, keyword_init: true) do
+      def initialize(items: [], has_more:, resume_state: nil)
+        super
+      end
+    end
 
 
     #
@@ -367,84 +386,148 @@ module TonSdk
         end
       end
     end
-  end
 
-  def self.batch_query(ctx, params)
-    Interop::request_to_native_lib(ctx, "net.batch_query", params) do |resp|
-      if resp.success?
-        yield NativeLibResponsetResult.new(
-          result: ResultOfBatchQuery.new(resp.result["results"])
-        )
-      else
-        yield resp
-      end
-    end
-  end
-
-  def self.aggregate_collection(ctx, params)
-    Interop::request_to_native_lib(ctx, "net.aggregate_collection", params) do |resp|
-      if resp.success?
-        yield NativeLibResponsetResult.new(
-          result: ResultOfAggregateCollection.new(resp.result["values"])
-        )
-      else
-        yield resp
-      end
-    end
-  end
-
-  def self.get_endpoints(ctx, params)
-    Interop::request_to_native_lib(ctx, "net.get_endpoints", params) do |resp|
-      if resp.success?
-        yield NativeLibResponsetResult.new(
-          result: ResultOfGetEndpoints.new(
-            query: resp.result["query"],
-            endpoints: resp.result["endpoints"],
+    def self.batch_query(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.batch_query", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfBatchQuery.new(resp.result["results"])
           )
-        )
-      else
-        yield resp
+        else
+          yield resp
+        end
       end
     end
-  end
 
-  def self.query_counterparties(ctx, params)
-    Interop::request_to_native_lib(ctx, "net.query_counterparties", params) do |resp|
-      if resp.success?
-        yield NativeLibResponsetResult.new(
-          result: ResultOfQueryCollection.new(resp.result["result"])
-        )
-      else
-        yield resp
-      end
-    end
-  end
-
-  def self.query_transaction_tree(ctx, params)
-    Interop::request_to_native_lib(ctx, "net.query_transaction_tree", params) do |resp|
-      if resp.success?
-        yield NativeLibResponsetResult.new(
-          result: ResultOfQueryTransactionTree.new(
-            messages: resp.result["messages"],
-            transactions: resp.result["transactions"],
+    def self.aggregate_collection(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.aggregate_collection", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfAggregateCollection.new(resp.result["values"])
           )
-        )
-      else
-        yield resp
+        else
+          yield resp
+        end
       end
     end
+
+    def self.get_endpoints(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.get_endpoints", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfGetEndpoints.new(
+              query: resp.result["query"],
+              endpoints: resp.result["endpoints"],
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.query_counterparties(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.query_counterparties", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfQueryCollection.new(resp.result["result"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.query_transaction_tree(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.query_transaction_tree", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfQueryTransactionTree.new(
+              messages: resp.result["messages"],
+              transactions: resp.result["transactions"],
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.create_block_iterator(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.create_block_iterator", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: RegisteredIterator.new(resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.resume_block_iterator(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.resume_block_iterator", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: RegisteredIterator.new(resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.create_transaction_iterator(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.create_transaction_iterator", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: RegisteredIterator.new(resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.resume_transaction_iterator(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.resume_transaction_iterator", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: RegisteredIterator.new(resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.iterator_next(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.iterator_next", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfIteratorNext.new(
+              items: resp.result["items"],
+              has_more: resp.result["has_more"],
+              resume_state: resp.result["resume_state"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.remove_iterator(ctx, params)
+      Interop::request_to_native_lib(ctx, "net.remove_iterator", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: nil
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
   end
-
-
-
-
-  # todo
-    # def self.create_block_iterator(ctx, params)
-    # def self.create_transaction_iterator(ctx, params)
-    # def self.resume_block_iterator(ctx, params)
-    # def self.resume_transaction_iterator(ctx, params)
-    # def self.iterator_next(ctx, params)
-    # def self.iterator_remove(ctx, params)
-
-
 end
