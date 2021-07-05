@@ -42,6 +42,7 @@ module TonSdk
       UNEXPECTED_CALLBACK_RESPONSE = 31
       CANNOT_PARSE_NUMBER = 32
       INTERNAL_ERROR = 33
+      INVALID_HANDLE = 34
     end
 
     ResultOfVersion = Struct.new(:version)
