@@ -51,6 +51,9 @@ module TonSdk
     ParamsOfDecompressZstd = Struct.new(:compressed)
     ResultOfDecompressZstd = Struct.new(:decompressed)
 
+    ParamsOfGetAddressType = Struct.new(:address)
+    ResultOfGetAddressType = Struct.new(:address_type)
+
 
     #
     # functions
@@ -60,7 +63,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "utils.convert_address", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: Utils::ResultOfConvertAddress.new(resp.result["address"])
+            result: ResultOfConvertAddress.new(resp.result["address"])
           )
         else
           yield resp
@@ -72,7 +75,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "utils.calc_storage_fee", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: Utils::ResultOfCalcStorageFee.new(resp.result["fee"])
+            result: ResultOfCalcStorageFee.new(resp.result["fee"])
           )
         else
           yield resp
@@ -84,7 +87,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "utils.compress_zstd", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: Utils::ResultOfCompressZstd.new(resp.result["compressed"])
+            result: ResultOfCompressZstd.new(resp.result["compressed"])
           )
         else
           yield resp
@@ -96,7 +99,19 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "utils.decompress_zstd", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: Utils::ParamsOfDecompressZstd.new(resp.result["decompressed"])
+            result: ParamsOfDecompressZstd.new(resp.result["decompressed"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.get_address_type(ctx, params)
+      Interop::request_to_native_lib(ctx, "utils.get_address_type", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfGetAddressType.new(resp.result["address_type"])
           )
         else
           yield resp
