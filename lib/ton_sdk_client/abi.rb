@@ -549,43 +549,33 @@ module TonSdk
     end
 
     class AbiContract
-      attr_reader :abi_version, :header, :functions, :events, :data
+      attr_reader :abi_version, :header, :functions, :events, :data, :fields
 
-      def initialize(abi_version: nil, header: [], functions: [], events: [], data: [])
+      def initialize(
+        abi_version: nil,
+        header: [],
+        functions: [],
+        events: [],
+        data: [],
+        fields: []
+      )
         @abi_version = abi_version
-
-        # in case if an argument has been passed as nil,
-        # a default value should be used instead
-
-        @header = header || []
-        @functions = functions || []
-        @events = events || []
-        @data = data || []
+        @header = header
+        @functions = functions
+        @events = events
+        @data = data
+        @fields = fields
       end
 
       def to_h
-        @header.compact! if !@header.nil?
-
-        fn_h_s = if !@functions.nil?
-          @functions.compact.map(&:to_h)
-        end
-
-        ev_h_s = if !@events.nil?
-          @events.compact.map(&:to_h)
-        end
-
-        dt_h_s = if !@data.nil?
-          @data.compact.map(&:to_h)
-        end
-
         {
           abi_version: @abi_version,
           :"ABI version" => @abi_version, #TODO
-
           header: @header,
-          functions: fn_h_s,
-          events: ev_h_s,
-          data: dt_h_s,
+          functions: @functions&.map(&:to_h),
+          events: @events&.map(&:to_h),
+          data: @data&.map(&:to_h),
+          fields: @fields
         }
       end
 
@@ -610,12 +600,19 @@ module TonSdk
           j["data"].compact.map {|x| AbiData.from_json(x) }
         end
 
+        fl_s = if j["fields"].nil?
+          []
+        else
+          j["fields"].compact.map {|x| AbiParam.from_json(x) }
+        end
+
         self.new(
           abi_version: j["ABI version"],
           header: j["header"],
           functions: fn_s,
           events: ev_s,
-          data: dt_s
+          data: dt_s,
+          fields: fl_s
         )
       end
     end
@@ -655,6 +652,9 @@ module TonSdk
         super
       end
     end
+
+    ParamsOfDecodeAccountData = Struct.new(:abi, :data, keyword_init: true)
+    ResultOfDecodeData = Struct.new(:data)
 
 
     #
@@ -772,5 +772,22 @@ module TonSdk
         end
       end
     end
+
+    def self.decode_account_data(ctx, params)
+      Interop::request_to_native_lib(ctx, "abi.decode_account_data", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfDecodeData.new(
+              resp.result["data"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+
+
   end
 end
