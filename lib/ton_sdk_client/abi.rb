@@ -549,10 +549,11 @@ module TonSdk
     end
 
     class AbiContract
-      attr_reader :abi_version, :header, :functions, :events, :data, :fields
+      attr_reader :abi_version, :version, :header, :functions, :events, :data, :fields
 
       def initialize(
         abi_version: nil,
+        version: nil,
         header: [],
         functions: [],
         events: [],
@@ -560,6 +561,7 @@ module TonSdk
         fields: []
       )
         @abi_version = abi_version
+        @version = version
         @header = header
         @functions = functions
         @events = events
@@ -571,11 +573,12 @@ module TonSdk
         {
           abi_version: @abi_version,
           :"ABI version" => @abi_version, #TODO
+          version: @version,
           header: @header,
           functions: @functions&.map(&:to_h),
           events: @events&.map(&:to_h),
           data: @data&.map(&:to_h),
-          fields: @fields
+          fields: @fields&.map(&:to_h)
         }
       end
 
@@ -608,6 +611,7 @@ module TonSdk
 
         self.new(
           abi_version: j["ABI version"],
+          version: j["version"],
           header: j["header"],
           functions: fn_s,
           events: ev_s,

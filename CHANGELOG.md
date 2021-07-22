@@ -2,6 +2,10 @@
 
 all the changes are always according to the ones of the main TON SDK library; and on top on that, there may be additional ones
 
+1.20.x
+-----
+* NetworkConfig and AbiContract have been changed (not mentioned explicitly in Changelog of TON SDK )
+
 
 1.15.x
 -----
