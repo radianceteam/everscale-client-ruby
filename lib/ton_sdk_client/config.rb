@@ -5,15 +5,16 @@ module TonSdk
     :server_address,
     :endpoints,
     :network_retries_count,
+    :max_reconnect_timeout,
+    :reconnect_timeout,
     :message_retries_count,
     :message_processing_timeout,
     :wait_for_timeout,
     :out_of_sync_threshold,
-    :reconnect_timeout,
-    :max_reconnect_timeout,
     :sending_endpoint_count,
     :latency_detection_interval,
     :max_latency,
+    :query_timeout,
     :access_key,
     keyword_init: true
   ) do
@@ -30,6 +31,7 @@ module TonSdk
       sending_endpoint_count: 2,
       latency_detection_interval: 60000,
       max_latency: 60000,
+      query_timeout: 60000,
       access_key: nil
     )
       super
