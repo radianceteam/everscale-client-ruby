@@ -25,6 +25,13 @@ module TonSdk
       MNEMONICFROMENTROPY_FAILED = 120
       SIGNING_BOX_NOT_REGISTERED = 121
       INVALID_SIGNATURE = 122
+      ENCRYPTION_BOX_NOT_REGISTERED = 123
+      INVALID_IV_SIZE = 124
+      UNSUPPORTED_CIPHER_MODE = 125
+      CANNOT_CREATE_CIPHER = 126
+      ENCRYPT_DATA_ERROR = 127
+      DECRYPT_DATA_ERROR = 128
+      IV_REQUIRED = 129
     end
 
     ParamsOfFactorize = Struct.new(:composite)
@@ -269,6 +276,19 @@ module TonSdk
     ParamsOfEncryptionBoxGetInfo = Struct.new(:encryption_box)
     ResultOfEncryptionBoxGetInfo = Struct.new(:info)
     RegisteredEncryptionBox = Struct.new(:handle)
+    ParamsOfCreateEncryptionBox = Struct.new(:algorithm)
+
+    class EncryptionAlgorithm
+      private_class_method :new
+
+      attr_reader :type_, :aes_params
+
+      def self.new_with_type_aes(aes_params:)
+        @type_ = :aes
+        @aes_params = aes_params
+      end
+    end
+
 
 
     #
@@ -813,6 +833,18 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncryptionBoxGetInfo.new(resp.result["info"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.create_encryption_box(ctx, params)
+      Interop::request_to_native_lib(ctx, "crypto.create_encryption_box", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: RegisteredEncryptionBox.new(resp.result["handle"])
           )
         else
           yield resp
