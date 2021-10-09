@@ -252,6 +252,17 @@ module TonSdk
       )
         super
       end
+
+      def to_h
+        {
+          abi: abi.to_h,
+          address: address,
+          deploy_set: deploy_set&.to_h,
+          call_set: call_set&.to_h,
+          signer: signer.to_h,
+          processing_try_index: processing_try_index
+        }
+      end
     end
 
     ResultOfEncodeMessage = Struct.new(:message, :data_to_sign, :address, :message_id, keyword_init: true) do
