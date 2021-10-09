@@ -46,7 +46,14 @@ module TonSdk
     ParamsOfConvertPublicKeyToTonSafeFormat  = Struct.new(:public_key)
     ResultOfConvertPublicKeyToTonSafeFormat = Struct.new(:ton_public_key)
 
-    KeyPair = Struct.new(:public_, :secret)
+    KeyPair = Struct.new(:public_, :secret, keyword_init: true) do
+      def to_h
+        {
+          public: public_,
+          secret: secret
+        }
+      end
+    end
     ParamsOfSign = Struct.new(:unsigned, :keys)
     ResultOfSign = Struct.new(:signed, :signature)
     ParamsOfVerifySignature = Struct.new(:signed, :public_)
