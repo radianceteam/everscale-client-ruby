@@ -45,7 +45,11 @@ pr1 = TonSdk::Processing::ParamsOfProcessMessage.new(
 )
 
 TonSdk::Processing.process_message(@c_ctx.context, pr1, cb) do |res|
-  puts res
+  if res.success?
+    puts res.result
+  else
+    puts res.error.message
+  end
 end
 
 # required, to keep the main thread alive
