@@ -45,6 +45,14 @@ module TonSdk
       def initialize(function_name:, header: nil, input: nil)
         super
       end
+
+      def to_h
+        {
+          function_name: function_name,
+          header: header.to_h,
+          input: input
+        }
+      end
     end
 
     DeploySet = Struct.new(:tvc, :workchain_id, :initial_data, :initial_pubkey, keyword_init: true) do
