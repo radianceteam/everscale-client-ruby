@@ -8,3 +8,4 @@ tonclient*.lib
 tonclient*.dll
 __*
 *.gem
+.idea

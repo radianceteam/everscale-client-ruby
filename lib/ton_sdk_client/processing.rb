@@ -135,11 +135,11 @@ module TonSdk
       end
     end
 
-    ParamsOfProcessMessage = Struct.new(:message_encode_params, :send_events) do
+    ParamsOfProcessMessage = Struct.new(:message_encode_params, :send_events, keyword_init: true) do
       def to_h
         {
-          message_encode_params: @message_encode_params.to_h,
-          send_events: @send_events
+          message_encode_params: message_encode_params.to_h,
+          send_events: send_events
         }
       end
     end

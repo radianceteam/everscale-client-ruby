@@ -54,7 +54,7 @@ def get_grams_from_giver(ctx, to_address)
         Boc.parse_message(ctx, TonSdk::Boc::ParamsOfParse.new(msg))
       end
     else
-      raise SdkError.new(message: res.error)
+      raise TonSdk::SdkError.new(message: res.error.message)
     end
   end
 end
