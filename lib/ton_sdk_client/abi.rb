@@ -676,9 +676,48 @@ module TonSdk
       end
     end
 
-    ParamsOfDecodeAccountData = Struct.new(:abi, :data, keyword_init: true)
+    ParamsOfDecodeAccountData = Struct.new(:abi, :data, keyword_init: true) do
+      def to_h
+        {
+          abi: abi&.to_h,
+          data: data
+        }
+      end
+    end
+
     ResultOfDecodeData = Struct.new(:data)
 
+    ParamsOfUpdateInitialData = Struct.new(
+      :data,
+      :abi,
+      :initial_data,
+      :initial_pubkey,
+      :boc_cache,
+      keyword_init: true
+    ) do
+      def to_h
+        {
+          data: data,
+          abi: abi&.to_h,
+          initial_data: initial_data,
+          initial_pubkey: initial_pubkey,
+          boc_cache: boc_cache&.to_h
+        }
+      end
+    end
+
+    ResultOfUpdateInitialData = Struct.new(:data)
+
+    ParamsOfDecodeInitialData = Struct.new(:data, :abi, keyword_init: true) do
+      def to_h
+        {
+          data: data,
+          abi: abi&.to_h
+        }
+      end
+    end
+
+    ResultOfDecodeInitialData = Struct.new(:initial_pubkey, :initial_data, keyword_init: true)
 
     #
     # functions
@@ -810,7 +849,33 @@ module TonSdk
       end
     end
 
+    def self.update_initial_data(ctx, params)
+      Interop::request_to_native_lib(ctx, "abi.update_initial_data", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfUpdateInitialData.new(
+              resp.result["data"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
 
-
+    def self.decode_initial_data(ctx, params)
+      Interop::request_to_native_lib(ctx, "abi.decode_initial_data", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfDecodeInitialData.new(
+              initial_pubkey: resp.result["initial_pubkey"],
+              initial_data: resp.result["initial_data"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
   end
 end

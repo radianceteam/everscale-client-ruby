@@ -99,5 +99,75 @@ describe TonSdk::Boc do
       expect(@res.success?).to eq true
       expect(@res.result.hash).to eq "dfd47194f3058ee058bfbfad3ea40cbbd9ad17ca77cd0904d4d9f18a48c2fbca"
     end
+
+    context "code_salt" do
+      let(:code_no_salt) { 'te6ccgECGAEAAmMAAgaK2zUXAQQkiu1TIOMDIMD/4wIgwP7jAvILFAMCDgKE7UTQ10nDAfhmIds80wABn4ECANcYIPkBWPhC+RDyqN7TPwH4QyG58rQg+COBA+iogggbd0CgufK0+GPTHwHbPPI8BgQDSu1E0NdJwwH4ZiLQ1wsDqTgA3CHHAOMCIdcNH/K8IeMDAds88jwTEwQDPCCCEDKVn7a64wIgghBgeXU+uuMCIIIQaLVfP7rjAg8HBQIiMPhCbuMA+Ebyc9H4ANs88gAGEAE+7UTQ10nCAYqOFHDtRND0BYBA9A7yvdcL//hicPhj4hICdjD4RvLgTNTR2zwhjicj0NMB+kAwMcjPhyDOjQQAAAAAAAAAAAAAAAAOB5dT6M8WzMlw+wCRMOLjAPIACBACMvhBiMjPjits1szOyTCBAIbIy/8B0AHJ2zwXCQIWIYs4rbNYxwWKiuILCgEIAds8yQwBJgHU1DAS0Ns8yM+OK2zWEszPEckMAWbViy9KQNcm9ATTCTEg10qR1I6A4osvShjXJjAByM+L0pD0AIAgzwsJz4vShswSzMjPEc4NAQSIAQ4AAAOEMPhG8uBM+EJu4wDT/9HbPCGOKCPQ0wH6QDAxyM+HIM6NBAAAAAAAAAAAAAAAAAspWftozxbL/8lw+wCRMOLbPPIAEhEQABz4Q/hCyMv/yz/Pg8ntVAAgIMECkXGYUwCltf/wHKjiMQAe7UTQ0//TP9MAMdH4Y/hiAAr4RvLgTAIK9KQg9KEWFQAUc29sIDAuNTEuMAAqoAAAABwgwQKRcZhTAKW1//AcqOIxAAwg+GHtHtk=' }
+      let(:code_salt) { 'te6ccgEBAQEAJAAAQ4AGPqCXQ2drhdqhLLt3rJ80LxA65YMTwgWLLUmt9EbElFA=' }
+
+      it "#get_code_salt" do
+        params = TonSdk::Boc::ParamsOfGetCodeSalt.new(code: code_no_salt)
+        TonSdk::Boc.get_code_salt(@c_ctx.context, params) { |r| @response = r }
+
+        expect(@response.success?).to eq(true)
+        expect(@response.result.salt).to eq(nil)
+      end
+
+      it "#set_code_salt" do
+        params = TonSdk::Boc::ParamsOfSetCodeSalt.new(code: code_no_salt, salt: code_salt)
+        TonSdk::Boc.set_code_salt(@c_ctx.context, params) { |r| @response = r }
+        code_with_salt = @response.result.code
+
+        expect(@response.success?).to eq(true)
+        expect(code_with_salt).not_to eq(code_no_salt)
+
+        #get_code_salt
+        params = TonSdk::Boc::ParamsOfGetCodeSalt.new(code: code_with_salt)
+        TonSdk::Boc.get_code_salt(@c_ctx.context, params) { |r| @response = r }
+
+        expect(@response.success?).to eq(true)
+        expect(@response.result.salt).to eq(code_salt)
+      end
+    end
+
+    context "#encode_decode_tvc" do
+      let(:tvc_check) { 'te6ccgECDAEAARMAAwF/CAcBAgFiBQIBQr9BJCkgXqZtbyAE7fpXD29Ws+heWbqhvvvHO32l1VvcYQMBBBI0BAAEVngBQr9aLu9QVndfW5Vy/zrWPdKnHR+ygcoXel4cdHMOzLLlEwYAD6usq62rrKuoAEgR71YDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABFP8A9KQT9LzyyAsJAgEgCwoA36X//3aiaGmP6f/o5CxSZ4WPkOeF/+T2qmRnxET/s2X/wQgC+vCAfQFANeegZLh9gEB354V/wQgD39JAfQFANeegZLhkZ82JA6Mrm6RBCAOt5or9AUA156BF6kMrY2N5YQO7e5NjIQxni2S4fYB9gEAAAtI=' }
+      let(:decoded_check) do
+        TonSdk::Boc::ResultOfDecodeTvc.new(
+          code:'te6ccgEBBAEAhwABFP8A9KQT9LzyyAsBAgEgAwIA36X//3aiaGmP6f/o5CxSZ4WPkOeF/+T2qmRnxET/s2X/wQgC+vCAfQFANeegZLh9gEB354V/wQgD39JAfQFANeegZLhkZ82JA6Mrm6RBCAOt5or9AUA156BF6kMrY2N5YQO7e5NjIQxni2S4fYB9gEAAAtI=',
+          data: 'te6ccgEBAQEAJgAASBHvVgMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
+          library: 'te6ccgEBBgEAYAACAWIEAQFCv0EkKSBepm1vIATt+lcPb1az6F5ZuqG++8c7faXVW9xhAgEEEjQDAARWeAFCv1ou71BWd19blXL/OtY90qcdH7KByhd6Xhx0cw7MsuUTBQAPq6yrrausq6g=',
+          tick: true,
+          tock: true
+        )
+      end
+
+      it "#decode_tvc" do
+        params = TonSdk::Boc::ParamsOfDecodeTvc.new(tvc: tvc_check)
+        TonSdk::Boc.decode_tvc(@c_ctx.context, params) { |r| @response = r }
+
+        expect(@response.success?).to eq(true)
+        expect(@response.result).to eq(decoded_check)
+      end
+
+      it "#encode_tvc" do
+        params = TonSdk::Boc::ParamsOfEncodeTvc.new(**decoded_check.to_h)
+        TonSdk::Boc.encode_tvc(@c_ctx.context, params) { |r| @response = r }
+
+        expect(@response.success?).to eq(true)
+        expect(@response.result.tvc).to eq(tvc_check)
+      end
+    end
+
+    it "#get_compiler_version" do
+      tvc = 'te6ccgECEwEAAbYAAgE0AwEBAcACAEPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgBCSK7VMg4wMgwP/jAiDA/uMC8gsQBQQSAoTtRNDXScMB+GYh2zzTAAGfgQIA1xgg+QFY+EL5EPKo3tM/AfhDIbnytCD4I4ED6KiCCBt3QKC58rT4Y9MfAds88jwIBgNK7UTQ10nDAfhmItDXCwOpOADcIccA4wIh1w0f8rwh4wMB2zzyPA8PBgIoIIIQBoFGw7rjAiCCEGi1Xz+64wILBwIiMPhCbuMA+Ebyc9H4ANs88gAIDAIW7UTQ10nCAYqOgOIOCQFccO1E0PQFcSGAQPQOk9cLB5Fw4vhqciGAQPQPjoDf+GuAQPQO8r3XC//4YnD4YwoBAogSA3Aw+Eby4Ez4Qm7jANHbPCKOICTQ0wH6QDAxyM+HIM6AYs9AXgHPkhoFGw7LB8zJcPsAkVvi4wDyAA4NDAAq+Ev4SvhD+ELIy//LP8+DywfMye1UAAj4SvhLACztRNDT/9M/0wAx0wfU0fhr+Gr4Y/hiAAr4RvLgTAIK9KQg9KESEQAUc29sIDAuNTEuMAAA'
+      params = TonSdk::Boc::ParamsOfDecodeTvc.new(tvc: tvc)
+      TonSdk::Boc.decode_tvc(@c_ctx.context, params) { |r| @response = r }
+      decoded = @response.result
+
+      params = TonSdk::Boc::ParamsOfGetCompilerVersion.new(code: decoded.code)
+      TonSdk::Boc.get_compiler_version(@c_ctx.context, params) { |r| @response = r }
+
+      expect(@response.result.version).to eq("sol 0.51.0")
+    end
   end
 end

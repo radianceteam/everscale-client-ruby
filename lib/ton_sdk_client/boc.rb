@@ -64,7 +64,76 @@ module TonSdk
     ParamsOfEncodeBoc = Struct.new(:builder, :boc_cache)
     ResultOfEncodeBoc = Struct.new(:boc)
 
+    ParamsOfGetCodeSalt = Struct.new(:code, :boc_cache, keyword_init: true) do
+      def to_h
+        {
+          code: code,
+          boc_cache: boc_cache&.to_h
+        }
+      end
+    end
 
+    ResultOfGetCodeSalt = Struct.new(:salt)
+
+    ParamsOfSetCodeSalt = Struct.new(:code, :salt, :boc_cache, keyword_init: true) do
+      def to_h
+        {
+          code: code,
+          salt: salt,
+          boc_cache: boc_cache&.to_h
+        }
+      end
+    end
+
+    ResultOfSetCodeSalt = Struct.new(:code)
+
+    ParamsOfDecodeTvc = Struct.new(:tvc, :boc_cache, keyword_init: true) do
+      def to_h
+        {
+          tvc: tvc,
+          boc_cache: boc_cache&.to_h
+        }
+      end
+    end
+
+    ResultOfDecodeTvc = Struct.new(
+      :code,
+      :data,
+      :library,
+      :tick,
+      :tock,
+      :split_depth,
+      keyword_init: true
+    )
+
+    ParamsOfEncodeTvc = Struct.new(
+      :code,
+      :data,
+      :library,
+      :tick,
+      :tock,
+      :split_depth,
+      :boc_cache,
+      keyword_init: true
+    ) do
+      def to_h
+        {
+          code: code,
+          data: data,
+          library: library,
+          tick: tick,
+          tock: tock,
+          split_depth: split_depth,
+          boc_cache: boc_cache&.to_h
+        }
+      end
+    end
+
+    ResultOfEncodeTvc = Struct.new(:tvc)
+
+    ParamsOfGetCompilerVersion = Struct.new(:code, keyword_init: true)
+
+    ResultOfGetCompilerVersion = Struct.new(:version)
 
     #
     # functions
@@ -130,11 +199,11 @@ module TonSdk
       end
     end
 
-    def self.get_blockchain_config(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", params) do |resp|
+    def self.get_boc_hash(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.get_boc_hash", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfGetBlockchainConfig.new(resp.result["config_boc"])
+            result: ResultOfGetBocHash.new(resp.result["hash"])
           )
         else
           yield resp
@@ -142,11 +211,13 @@ module TonSdk
       end
     end
 
-    def self.get_boc_hash(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.get_boc_hash", params) do |resp|
+    def self.get_blockchain_config(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfGetBocHash.new(resp.result["hash"])
+            result: ResultOfGetBlockchainConfig.new(
+              resp.result["config_boc"]
+            )
           )
         else
           yield resp
@@ -220,12 +291,73 @@ module TonSdk
       end
     end
 
-    def self.get_blockchain_config(ctx, params)
-      Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", params) do |resp|
+    def self.get_code_salt(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.get_code_salt", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfGetBlockchainConfig.new(
-              resp.result["config_boc"]
+            result: ResultOfGetCodeSalt.new(
+              resp.result["salt"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.set_code_salt(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.set_code_salt", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfSetCodeSalt.new(
+              resp.result["code"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.decode_tvc(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.decode_tvc", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfDecodeTvc.new(
+              code: resp.result["code"],
+              data: resp.result["data"],
+              library: resp.result["library"],
+              tick: resp.result["tick"],
+              tock: resp.result["tock"],
+              split_depth: resp.result["split_depth"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.encode_tvc(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.encode_tvc", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfEncodeTvc.new(
+              resp.result["tvc"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.get_compiler_version(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.get_compiler_version", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfGetCompilerVersion.new(
+              resp.result["version"]
             )
           )
         else

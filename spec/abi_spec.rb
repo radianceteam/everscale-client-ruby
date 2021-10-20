@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'json'
+require 'base64'
 
 describe TonSdk::Abi do
   context "methods of abi" do
@@ -150,6 +151,47 @@ describe TonSdk::Abi do
       expect(@res4.result.name).to eq expected4.name
       expect(@res4.result.value[:value0]).to eq expected4.value["value0"]
       expect(@res4.result.header).to eq expected4.header
+    end
+
+    it "#decode_update_initial_data" do
+      initdata_abi_json = File.read("#{TESTS_DATA_DIR}/contracts/abi_v2/t24_initdata.abi.json")
+      abi = TonSdk::Abi::Abi.new(
+        type_: :json,
+        value: TonSdk::Abi::AbiContract.from_json(JSON.parse(initdata_abi_json)).to_h.to_json
+      )
+      initdata_tvc = File.read("#{TESTS_DATA_DIR}/contracts/abi_v2/t24_initdata.tvc", mode: "rb")
+      tvc = Base64.strict_encode64(initdata_tvc)
+
+      # Get and decode contract initial data
+      params = TonSdk::Boc::ParamsOfDecodeTvc.new(tvc: tvc)
+      TonSdk::Boc.decode_tvc(@c_ctx.context, params) { |r| @response = r }
+      data = @response.result.data
+      params = TonSdk::Abi::ParamsOfDecodeInitialData.new(data: data, abi: abi)
+      TonSdk::Abi.decode_initial_data(@c_ctx.context, params) { |r| @response = r }
+      decoded = @response.result
+
+      expect(decoded.initial_pubkey).to eq('00' * 32)
+      expect(decoded.initial_data).to eq({})
+
+      # Update initial data
+      initial_data = {'a': "123", 's': 'some string'}
+      initial_pubkey = '22' * 32
+      params = TonSdk::Abi::ParamsOfUpdateInitialData.new(
+        data: data, abi: abi, initial_data: initial_data, initial_pubkey: initial_pubkey
+      )
+      TonSdk::Abi.update_initial_data(@c_ctx.context, params) { |r| @response = r }
+      data_updated = @response.result.data
+
+      expect(data_updated).to eq('te6ccgEBBwEARwABAcABAgPPoAQCAQFIAwAWc29tZSBzdHJpbmcCASAGBQADHuAAQQiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIoA==')
+
+      # Decode updated data
+      params = TonSdk::Abi::ParamsOfDecodeInitialData.new(data: data_updated, abi: abi)
+      TonSdk::Abi.decode_initial_data(@c_ctx.context, params) { |r| @response = r }
+      decoded = @response.result
+
+      expect(decoded.initial_data['a']).to eq(initial_data[:a])
+      expect(decoded.initial_data['s']).to eq(initial_data[:s])
+      expect(decoded.initial_pubkey).to eq(initial_pubkey)
     end
   end
 end
