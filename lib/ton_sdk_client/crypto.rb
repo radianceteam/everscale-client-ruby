@@ -54,8 +54,15 @@ module TonSdk
         }
       end
     end
-    ParamsOfSign = Struct.new(:unsigned, :keys)
-    ResultOfSign = Struct.new(:signed, :signature)
+    ParamsOfSign = Struct.new(:unsigned, :keys, keyword_init: true) do
+      def to_h
+        {
+          unsigned: unsigned,
+          keys: keys&.to_h
+        }
+      end
+    end
+    ResultOfSign = Struct.new(:signed, :signature, keyword_init: true)
     ParamsOfVerifySignature = Struct.new(:signed, :public_)
     ResultOfVerifySignature = Struct.new(:unsigned)
 
