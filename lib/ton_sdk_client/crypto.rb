@@ -229,11 +229,7 @@ module TonSdk
 
     ResultOfHDKeyDeriveFromXPrvPath = Struct.new(:xprv)
 
-    ParamsOfChaCha20 = Struct.new(:data, :key, :nonce) do
-      def initialize(data:, key:, nonce:)
-        super
-      end
-    end
+    ParamsOfChaCha20 = Struct.new(:data, :key, :nonce, keyword_init: true)
 
     ResultOfChaCha20 = Struct.new(:data)
 
