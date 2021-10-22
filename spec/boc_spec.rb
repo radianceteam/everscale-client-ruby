@@ -60,7 +60,7 @@ describe TonSdk::Boc do
 
     it "#parse_shardstate" do
       pr1 = TonSdk::Boc::ParamsOfParseShardstate.new(
-        id_: "zerostate:-1",
+        id: "zerostate:-1",
         workchain_id: -1,
         boc: File.read("spec/data/boc/parse_shardstate1.txt")
       )
