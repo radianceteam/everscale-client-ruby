@@ -230,11 +230,7 @@ module TonSdk
 
     ResultOfChaCha20 = Struct.new(:data)
 
-    ParamsOfSigningBoxSign = Struct.new(:signing_box, :unsigned) do
-      def initialize(signing_box:, unsigned:)
-        super
-      end
-    end
+    ParamsOfSigningBoxSign = Struct.new(:signing_box, :unsigned, keyword_init: true)
 
     ResultOfSigningBoxSign = Struct.new(:signature)
     RegisteredSigningBox = Struct.new(:handle)
@@ -762,6 +758,7 @@ module TonSdk
       Interop::request_to_native_lib(
         ctx,
         "crypto.signing_box_get_public_key",
+        params,
         is_single_thread_only: is_single_thread_only
       ) do |resp|
         if resp.success?
