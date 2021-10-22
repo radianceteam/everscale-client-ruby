@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe TonSdk::Processing do
   context "methods of processing" do
-    it "send and wait for message" do
+    xit "send and wait for message" do
       abi = load_abi(name: "Events", version: AbiVersion::V2)
       tvc = load_tvc(name: "Events", version: AbiVersion::V2)
 
