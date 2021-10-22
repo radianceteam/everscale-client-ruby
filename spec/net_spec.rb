@@ -144,7 +144,7 @@ describe TonSdk::Net do
         result: "id"
       )
 
-      TonSdk::Net.subscribe_collection(@c_ctx.context, pr1, cb) { |a| @res = a }
+      TonSdk::Net.subscribe_collection(@c_ctx.context, pr1, client_callback: cb) { |a| @res = a }
 
       timeout_at = get_timeout_for_async_operation()
       is_next_iter = @res.nil?
