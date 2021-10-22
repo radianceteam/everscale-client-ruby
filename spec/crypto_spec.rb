@@ -149,7 +149,7 @@ describe TonSdk::Crypto do
       expect { |b| TonSdk::Crypto.hdkey_public_from_xprv(@c_ctx.context, pr3, &b) }.to yield_control
       TonSdk::Crypto.hdkey_public_from_xprv(@c_ctx.context, pr3) { |a| @res3 = a }
       expect(@res3.success?).to eq true
-      expect(@res3.result.public_).to eq "02a8eb63085f73c33fa31b4d1134259406347284f8dab6fc68f4bf8c96f6c39b75"
+      expect(@res3.result.public_).to eq "7b70008d0c40992283d488b1046739cf827afeabf647a5f07c4ad1e7e45a6f89"
 
       #4
       pr4 = TonSdk::Crypto::ParamsOfHDKeyDeriveFromXPrv.new(

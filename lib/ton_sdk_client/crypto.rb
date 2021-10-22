@@ -218,11 +218,7 @@ module TonSdk
     ParamsOfHDKeyPublicFromXPrv = Struct.new(:xprv)
     ResultOfHDKeyPublicFromXPrv = Struct.new(:public_)
 
-    ParamsOfHDKeyDeriveFromXPrvPath = Struct.new(:xprv, :path) do
-      def initialize(xprv:, path:)
-        super
-      end
-    end
+    ParamsOfHDKeyDeriveFromXPrvPath = Struct.new(:xprv, :path, keyword_init: true)
 
     ResultOfHDKeyDeriveFromXPrvPath = Struct.new(:xprv)
 
