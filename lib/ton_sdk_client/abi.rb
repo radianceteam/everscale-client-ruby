@@ -283,6 +283,15 @@ module TonSdk
       def initialize(abi:, public_key:, message:, signature:)
         super
       end
+
+      def to_h
+        {
+          abi: abi&.to_h,
+          public_key: public_key,
+          message: message,
+          signature: signature
+        }
+      end
     end
 
     ResultOfAttachSignature = Struct.new(:message, :message_id, keyword_init: true) do
@@ -294,6 +303,13 @@ module TonSdk
     ParamsOfDecodeMessage = Struct.new(:abi, :message, keyword_init: true) do
       def initialize(abi:, message:)
         super
+      end
+
+      def to_h
+        {
+          abi: abi&.to_h,
+          message: message
+        }
       end
     end
 
@@ -363,6 +379,14 @@ module TonSdk
     ParamsOfDecodeMessageBody = Struct.new(:abi, :body, :is_internal, keyword_init: true) do
       def initialize(abi:, body:, is_internal:)
         super
+      end
+
+      def to_h
+        {
+          abi: abi&.to_h,
+          body: body,
+          is_internal: is_internal
+        }
       end
     end
 
