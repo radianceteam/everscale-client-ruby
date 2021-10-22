@@ -115,7 +115,7 @@ describe TonSdk::Crypto do
         salt: Base64.urlsafe_encode64("Test Salt", padding: false),
         log_n: 10,
         r: 8,
-        p_: 16,
+        p: 16,
         dk_len: 64
       )
 

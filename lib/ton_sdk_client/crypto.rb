@@ -61,7 +61,7 @@ module TonSdk
 
     ParamsOfHash = Struct.new(:data)
     ResultOfHash = Struct.new(:hash)
-    ParamsOfScrypt = Struct.new(:password, :salt, :log_n, :r, :p_, :dk_len, keyword_init: true)
+    ParamsOfScrypt = Struct.new(:password, :salt, :log_n, :r, :p, :dk_len, keyword_init: true)
     ResultOfScrypt = Struct.new(:key)
     ParamsOfNaclSignKeyPairFromSecret = Struct.new(:secret)
 
