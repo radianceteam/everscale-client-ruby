@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TonSdk::Debot do
+xdescribe TonSdk::Debot do
 
   # TODO in the main repository 'debot' is still unstable, as of 15 jan 2021
   # finish the tests once 'debot' has become stable
