@@ -35,8 +35,8 @@ module TonSdk
     ParamsOfConvertAddress = Struct.new(:address, :output_format, keyword_init: true) do
       def to_h
         {
-          address: @address,
-          output_format: @output_format.to_h
+          address: address,
+          output_format: output_format.to_h
         }
       end
     end
