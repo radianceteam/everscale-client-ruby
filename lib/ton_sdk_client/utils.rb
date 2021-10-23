@@ -51,7 +51,7 @@ module TonSdk
     ParamsOfDecompressZstd = Struct.new(:compressed, keyword_init: true)
     ResultOfDecompressZstd = Struct.new(:decompressed)
 
-    ParamsOfGetAddressType = Struct.new(:address)
+    ParamsOfGetAddressType = Struct.new(:address, keyword_init: true)
     ResultOfGetAddressType = Struct.new(:address_type)
 
 

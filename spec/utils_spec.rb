@@ -109,5 +109,46 @@ describe TonSdk::Utils do
 
       expect(decompressed).to eq(uncompressed)
     end
+
+    it "#get_address_type" do
+      ["", "   ", "123456", "abcdef"].each do |address|
+        params = TonSdk::Utils::ParamsOfGetAddressType.new(address: address)
+        TonSdk::Utils.get_address_type(@c_ctx.context, params) { |r| @response = r }
+
+        expect(@response.failure?).to eq(true)
+      end
+
+      [
+        "-1:7777777777777777777777777777777777777777777777777777777777777777",
+        "0:919db8e740d50bf349df2eea03fa30c385d846b991ff5542e67098ee833fc7f7"
+      ].each do |address|
+        params = TonSdk::Utils::ParamsOfGetAddressType.new(address: address)
+        TonSdk::Utils.get_address_type(@c_ctx.context, params) { |r| @response = r }
+
+        expect(@response.result.address_type).to eq("Hex")
+      end
+
+      [
+        "7777777777777777777777777777777777777777777777777777777777777777",
+        "919db8e740d50bf349df2eea03fa30c385d846b991ff5542e67098ee833fc7f7"
+      ].each do |address|
+        params = TonSdk::Utils::ParamsOfGetAddressType.new(address: address)
+        TonSdk::Utils.get_address_type(@c_ctx.context, params) { |r| @response = r }
+
+        expect(@response.result.address_type).to eq("AccountId")
+      end
+
+      [
+        "EQCRnbjnQNUL80nfLuoD+jDDhdhGuZH/VULmcJjugz/H9wam",
+        "EQCRnbjnQNUL80nfLuoD+jDDhdhGuZH/VULmcJjugz/H9wam",
+        "UQCRnbjnQNUL80nfLuoD+jDDhdhGuZH/VULmcJjugz/H91tj",
+        "UQCRnbjnQNUL80nfLuoD-jDDhdhGuZH_VULmcJjugz_H91tj"
+      ].each do |address|
+        params = TonSdk::Utils::ParamsOfGetAddressType.new(address: address)
+        TonSdk::Utils.get_address_type(@c_ctx.context, params) { |r| @response = r }
+
+        expect(@response.result.address_type).to eq("Base64")
+      end
+    end
   end
 end
