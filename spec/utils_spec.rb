@@ -82,6 +82,17 @@ describe TonSdk::Utils do
       expect(@res5.result.address).to eq(hex)
     end
 
+    it "#calc_storage_fee" do
+      account = File.read("spec/data/boc/parse_account1.txt")
+      params = TonSdk::Utils::ParamsOfCalcStorageFee.new(
+        account: account,
+        period: 1000
+      )
+      TonSdk::Utils.calc_storage_fee(@c_ctx.context, params) { |r| @response = r }
+
+      expect(@response.result.fee).to eq("330")
+    end
+
     it "#compression" do
       uncompressed = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
       params = TonSdk::Utils::ParamsOfCompressZstd.new(
