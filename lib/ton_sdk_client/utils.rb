@@ -48,7 +48,7 @@ module TonSdk
     ParamsOfCompressZstd = Struct.new(:uncompressed, :level, keyword_init: true)
     ResultOfCompressZstd = Struct.new(:compressed)
 
-    ParamsOfDecompressZstd = Struct.new(:compressed)
+    ParamsOfDecompressZstd = Struct.new(:compressed, keyword_init: true)
     ResultOfDecompressZstd = Struct.new(:decompressed)
 
     ParamsOfGetAddressType = Struct.new(:address)
@@ -99,7 +99,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "utils.decompress_zstd", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ParamsOfDecompressZstd.new(resp.result["decompressed"])
+            result: ResultOfDecompressZstd.new(resp.result["decompressed"])
           )
         else
           yield resp

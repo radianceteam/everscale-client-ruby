@@ -81,5 +81,22 @@ describe TonSdk::Utils do
 
       expect(@res5.result.address).to eq(hex)
     end
+
+    it "#compression" do
+      uncompressed = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      params = TonSdk::Utils::ParamsOfCompressZstd.new(
+        uncompressed: Base64.strict_encode64(uncompressed),
+        level: 21
+      )
+      TonSdk::Utils.compress_zstd(@c_ctx.context, params) { |r| @response = r }
+
+      expect(@response.result.compressed).to eq("KLUv/QCAdQgAJhc5GJCnsA2AIm2tVzjno88mHb3Ttx9b8fXHHDAAMgAyAMUsVo6Pi3rPTDF2WDl510aHTwt44hrUxbn5oF6iUfiUiRbQhYo/PSM2WvKYt/hMIOQmuOaY/bmJQoRky46EF+cEd+Thsep5Hloo9DLCSwe1vFwcqIHycEKlMqBSo+szAiIBhkukH5kSIVlFukEWNF2SkIv6HBdPjFAjoUliCPjzKB/4jK91X95rTAKoASkPNqwUEw2Gkscdb3lR8YRYOR+P0sULCqzPQ8mQFJWnBSyP25mWIY2bFEUSJiGsWD+9NBqLhIAGDggQkLMbt5Y1aDR4uLKqwJXmQFPg/XTXIL7LCgspIF1YYplND4Uo")
+
+      params = TonSdk::Utils::ParamsOfDecompressZstd.new(compressed: @response.result.compressed)
+      TonSdk::Utils.decompress_zstd(@c_ctx.context, params) { |r| @response = r }
+      decompressed = Base64.strict_decode64(@response.result.decompressed)
+
+      expect(decompressed).to eq(uncompressed)
+    end
   end
 end
