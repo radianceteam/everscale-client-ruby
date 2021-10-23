@@ -43,7 +43,7 @@ describe TonSdk::Utils do
           type_: :base64,
           bounce: false,
           test_: false,
-          url: false,
+          url: false
         )
       )
 
@@ -61,7 +61,7 @@ describe TonSdk::Utils do
           type_: :base64,
           bounce: true,
           test_: true,
-          url: true,
+          url: true
         )
       )
 
@@ -71,6 +71,15 @@ describe TonSdk::Utils do
       TonSdk::Utils.convert_address(@c_ctx.context, pr4) { |a| @res4 = a }
       expect(@res4.success?).to eq true
       expect(@res4.result.address).to eq base64url
+
+      # 5
+      pr5 = TonSdk::Utils::ParamsOfConvertAddress.new(
+        address: base64,
+        output_format: TonSdk::Utils::AddressStringFormat.new(type_: :hex)
+      )
+      TonSdk::Utils.convert_address(@c_ctx.context, pr5) { |a| @res5 = a }
+
+      expect(@res5.result.address).to eq(hex)
     end
   end
 end
