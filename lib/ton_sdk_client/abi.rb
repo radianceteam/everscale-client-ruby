@@ -103,8 +103,9 @@ module TonSdk
     end
 
     STATIC_INIT_SOURCE_TYPES = [:message, :state_init, :tvc]
+    # TODO: Refactor with subclasses?
     StateInitSource = Struct.new(
-      :type_,
+      :type,
       :source,
       :code,
       :data,
@@ -115,7 +116,7 @@ module TonSdk
       keyword_init: true
     ) do
       def initialize(
-        type_:,
+        type:,
         source: nil,
         code: nil,
         data: nil,
@@ -124,35 +125,35 @@ module TonSdk
         public_key: nil,
         init_params: nil
       )
-        unless STATIC_INIT_SOURCE_TYPES.include?(type_)
-          raise ArgumentError.new("unknown type: #{type_}; known types: #{STATIC_INIT_SOURCE_TYPES}")
+        unless STATIC_INIT_SOURCE_TYPES.include?(type)
+          raise ArgumentError.new("unknown type: #{type}; known types: #{STATIC_INIT_SOURCE_TYPES}")
         end
         super
       end
 
       def to_h
         h1 = {
-          type: Helper.sym_to_capitalized_case_str(@type_)
+          type: Helper.sym_to_capitalized_case_str(type)
         }
 
-        h2 = case @type_
+        h2 = case type
         when :message
           {
-            source: @source.to_h
+            source: source.to_h
           }
         when :state_init
           {
-            code: @code,
-            data: @data,
-            library: @library
+            code: code,
+            data: data,
+            library: library
           }
         when :tvc
           {
-            public_key: @public_key,
-            init_params: @init_params.to_h
+            public_key: public_key,
+            init_params: init_params.to_h
           }
         else
-          raise ArgumentError.new("unknown type: #{@type_}; known types: #{STATIC_INIT_SOURCE_TYPES}")
+          raise ArgumentError.new("unknown type: #{type}; known types: #{STATIC_INIT_SOURCE_TYPES}")
         end
 
         h1.merge(h2)
@@ -390,9 +391,22 @@ module TonSdk
       end
     end
 
-    ParamsOfEncodeAccount = Struct.new(:state_init, :balance, :last_trans_lt, :last_paid, keyword_init: true) do
-      def initialize(state_init:, balance: nil, last_trans_lt: nil, last_paid: nil)
-        super
+    ParamsOfEncodeAccount = Struct.new(
+      :state_init,
+      :balance,
+      :last_trans_lt,
+      :last_paid,
+      :boc_cache,
+      keyword_init: true
+    ) do
+      def to_h
+        {
+          state_init: state_init.to_h,
+          balance: balance,
+          last_trans_lt: last_trans_lt,
+          last_paid: last_paid,
+          boc_cache: boc_cache&.to_h
+        }
       end
     end
 
