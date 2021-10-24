@@ -266,7 +266,7 @@ describe TonSdk::Crypto do
 
     it "#nacl" do
       # 1
-      pr1 = TonSdk::Crypto::ParamsOfNaclSignKeyPairFromSecret.new("8fb4f2d256e57138fb310b0a6dac5bbc4bee09eb4821223a720e5b8e1f3dd674")
+      pr1 = TonSdk::Crypto::ParamsOfNaclSignKeyPairFromSecret.new(secret: "8fb4f2d256e57138fb310b0a6dac5bbc4bee09eb4821223a720e5b8e1f3dd674")
       TonSdk::Crypto::nacl_sign_keypair_from_secret_key(@c_ctx.context, pr1) { |a| @res = a }
       expect(@res.success?).to eq true
       expect(@res.result.public_).to eq "aa5533618573860a7e1bf19f34bd292871710ed5b2eafa0dcdbb33405f2231c6"

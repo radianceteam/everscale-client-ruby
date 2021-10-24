@@ -77,7 +77,7 @@ module TonSdk
     ResultOfHash = Struct.new(:hash)
     ParamsOfScrypt = Struct.new(:password, :salt, :log_n, :r, :p, :dk_len, keyword_init: true)
     ResultOfScrypt = Struct.new(:key)
-    ParamsOfNaclSignKeyPairFromSecret = Struct.new(:secret)
+    ParamsOfNaclSignKeyPairFromSecret = Struct.new(:secret, keyword_init: true)
 
     ParamsOfNaclSign = Struct.new(:unsigned, :secret, keyword_init: true)
     ResultOfNaclSign = Struct.new(:signed)
@@ -91,8 +91,13 @@ module TonSdk
     end
 
     ResultOfNaclSignOpen = Struct.new(:unsigned)
+
+    ParamsOfNaclSignDetached = Struct.new(:unsigned, :secret, keyword_init: true)
+
     ResultOfNaclSignDetached = Struct.new(:signature)
+
     ParamsOfNaclBoxKeyPairFromSecret = Struct.new(:secret)
+
     ParamsOfNaclBox = Struct.new(:decrypted, :nonce, :their_public, :secret) do
       def initialize(decrypted:, nonce:, their_public:, secret:)
         super
