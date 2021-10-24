@@ -222,9 +222,22 @@ module TonSdk
       end
     end
 
-    ParamsOfEncodeMessageBody = Struct.new(:abi, :call_set, :is_internal, :signer, :processing_try_index, keyword_init: true) do
-      def initialize(abi:, call_set:, is_internal:, signer:, processing_try_index: 0)
-        super
+    ParamsOfEncodeMessageBody = Struct.new(
+      :abi,
+      :call_set,
+      :is_internal,
+      :signer,
+      :processing_try_index,
+      keyword_init: true
+    ) do
+      def to_h
+        {
+          abi: abi.to_h,
+          call_set: call_set.to_h,
+          is_internal: is_internal,
+          signer: signer.to_h,
+          processing_try_index: processing_try_index
+        }
       end
     end
 
@@ -235,8 +248,13 @@ module TonSdk
     end
 
     ParamsOfAttachSignatureToMessageBody = Struct.new(:abi, :public_key, :message, :signature, keyword_init: true) do
-      def initialize(abi:, public_key:, message:, signature:)
-        super
+      def to_h
+        {
+          abi: abi.to_h,
+          public_key: public_key,
+          message: message,
+          signature: signature
+        }
       end
     end
 
