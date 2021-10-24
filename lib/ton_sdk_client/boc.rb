@@ -5,7 +5,7 @@ module TonSdk
     # types
     #
 
-    ParamsOfParse = Struct.new(:boc)
+    ParamsOfParse = Struct.new(:boc, keyword_init: true)
     ResultOfParse = Struct.new(:parsed)
     ParamsOfParseShardstate = Struct.new(:boc, :id, :workchain_id, keyword_init: true)
     ParamsOfGetBlockchainConfig = Struct.new(:block_boc)
