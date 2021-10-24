@@ -194,106 +194,94 @@ describe TonSdk::Abi do
     it "#decode_v2" do
       abi = load_abi(name: "Events")
 
-      pr1 = TonSdk::Abi::ParamsOfDecodeMessage.new(
-        abi: abi,
-        message: "te6ccgEBAwEAvAABRYgAC31qq9KF9Oifst6LU9U6FQSQQRlCSEMo+A3LN5MvphIMAQHhrd/b+MJ5Za+AygBc5qS/dVIPnqxCsM9PvqfVxutK+lnQEKzQoRTLYO6+jfM8TF4841bdNjLQwIDWL4UVFdxIhdMfECP8d3ruNZAXul5xxahT91swIEkEHph08JVlwmUmQAAAXRnJcuDX1XMZBW+LBKACAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
-      )
+      decode_events = Proc.new do |message|
+        result = test_client.request(
+          "abi.decode_message",
+          TonSdk::Abi::ParamsOfDecodeMessage.new(
+            abi: abi,
+            message: message
+          )
+        )
+        parsed = test_client.request(
+          "boc.parse_message",
+          TonSdk::Boc::ParamsOfParse.new(
+            boc: message
+          )
+        )
+        body = parsed.parsed["body"]
+        result_body = test_client.request(
+          "abi.decode_message_body",
+          TonSdk::Abi::ParamsOfDecodeMessageBody.new(
+            abi: abi,
+            body: body,
+            is_internal: parsed.parsed["msg_type_name"] == "Internal"
+          )
+        )
+        expect(result.to_h).to eq(result_body.to_h)
+        result
+      end
 
-      expect { |b| TonSdk::Abi.decode_message(@c_ctx.context, pr1, &b) }.to yield_control
-      TonSdk::Abi.decode_message(@c_ctx.context, pr1) { |a| @res1 = a }
-      sleep(0.1) until @res1
+      match_events = Proc.new do |expected, actual|
+        expect(expected.body_type).to eq(actual.body_type)
+        expect(expected.name).to eq(actual.name)
+        expect(expected.value.first[0].to_s).to eq(actual.value.first[0])
+        expect(expected.value.first[1]).to eq(actual.value.first[1])
+        if expected.header
+          expect(expected.header.expire).to eq(actual.header.expire)
+          expect(expected.header.time).to eq(actual.header.time)
+          expect(expected.header.pubkey).to eq(actual.header.pubkey)
+        end
+      end
 
-      # 1
-      expected1 = TonSdk::Abi::DecodedMessageBody.new(
+      expected = TonSdk::Abi::DecodedMessageBody.new(
         body_type: :input,
         name: "returnValue",
-        value: {id: "0x0"},
-        # value: {id: 256},
+        value: {id: '0x0000000000000000000000000000000000000000000000000000000000000000'},
         header: TonSdk::Abi::FunctionHeader.new(
           expire: 1599458404,
           time: 1599458364291,
-          pubkey: "4c7c408ff1ddebb8d6405ee979c716a14fdd6cc08124107a61d3c25597099499",
+          pubkey: "4c7c408ff1ddebb8d6405ee979c716a14fdd6cc08124107a61d3c25597099499"
         )
       )
 
-      expect(@res1.success?).to eq true
-      expect(@res1.result.body_type).to eq expected1.body_type
-      expect(@res1.result.name).to eq expected1.name
-      expect(@res1.result.value[:id]).to eq expected1.value["id"]
-      expect(@res1.result.header.expire).to eq expected1.header.expire
-      expect(@res1.result.header.time).to eq expected1.header.time
-      expect(@res1.result.header.pubkey).to eq expected1.header.pubkey
+      match_events.call(expected, decode_events.call("te6ccgEBAwEAvAABRYgAC31qq9KF9Oifst6LU9U6FQSQQRlCSEMo+A3LN5MvphIMAQHhrd/b+MJ5Za+AygBc5qS/dVIPnqxCsM9PvqfVxutK+lnQEKzQoRTLYO6+jfM8TF4841bdNjLQwIDWL4UVFdxIhdMfECP8d3ruNZAXul5xxahT91swIEkEHph08JVlwmUmQAAAXRnJcuDX1XMZBW+LBKACAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="))
 
-
-      # # 2
-      pr2 = TonSdk::Abi::ParamsOfDecodeMessage.new(
-        abi: abi,
-        message: "te6ccgEBAQEAVQAApeACvg5/pmQpY4m61HmJ0ne+zjHJu3MNG8rJxUDLbHKBu/AAAAAAAAAMJL6z6ro48sYvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA"
-      )
-      expect { |b| TonSdk::Abi.decode_message(@c_ctx.context, pr2, &b) }.to yield_control
-      TonSdk::Abi.decode_message(@c_ctx.context, pr2) { |a| @res2 = a }
-
-      expected2 = TonSdk::Abi::DecodedMessageBody.new(
+      expected = TonSdk::Abi::DecodedMessageBody.new(
         body_type: :event,
         name: "EventThrown",
-        value: {id: "0x0"},
+        value: {id: '0x0000000000000000000000000000000000000000000000000000000000000000'}
       )
 
-      expect(@res2.success?).to eq true
-      expect(@res2.result.body_type).to eq expected2.body_type
-      expect(@res2.result.name).to eq expected2.name
-      expect(@res2.result.value[:id]).to eq expected2.value["id"]
-      expect(@res2.result.header).to eq expected2.header
+      match_events.call(expected, decode_events.call("te6ccgEBAQEAVQAApeACvg5/pmQpY4m61HmJ0ne+zjHJu3MNG8rJxUDLbHKBu/AAAAAAAAAMJL6z6ro48sYvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA"))
 
-
-      # # 3
-      pr3 = TonSdk::Abi::ParamsOfDecodeMessageBody.new(
-        abi: abi,
-        body: "te6ccgEBAgEAlgAB4a3f2/jCeWWvgMoAXOakv3VSD56sQrDPT76n1cbrSvpZ0BCs0KEUy2Duvo3zPExePONW3TYy0MCA1i+FFRXcSIXTHxAj/Hd67jWQF7peccWoU/dbMCBJBB6YdPCVZcJlJkAAAF0ZyXLg19VzGQVviwSgAQBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
-        is_internal: false
+      result = test_client.request(
+        "abi.decode_message_body",
+        TonSdk::Abi::ParamsOfDecodeMessageBody.new(
+          abi: abi,
+          body: "te6ccgEBAgEAlgAB4a3f2/jCeWWvgMoAXOakv3VSD56sQrDPT76n1cbrSvpZ0BCs0KEUy2Duvo3zPExePONW3TYy0MCA1i+FFRXcSIXTHxAj/Hd67jWQF7peccWoU/dbMCBJBB6YdPCVZcJlJkAAAF0ZyXLg19VzGQVviwSgAQBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+          is_internal: false
+        )
       )
-      expect { |b| TonSdk::Abi.decode_message_body(@c_ctx.context, pr3, &b) }.to yield_control
-      TonSdk::Abi.decode_message_body(@c_ctx.context, pr3) { |a| @res3 = a }
-
-      expected3 = TonSdk::Abi::DecodedMessageBody.new(
+      expected = TonSdk::Abi::DecodedMessageBody.new(
         body_type: :input,
         name: "returnValue",
-        value: {id: "0x0"},
+        value: {id: '0x0000000000000000000000000000000000000000000000000000000000000000'},
         header: TonSdk::Abi::FunctionHeader.new(
           expire: 1599458404,
           time: 1599458364291,
-          pubkey: "4c7c408ff1ddebb8d6405ee979c716a14fdd6cc08124107a61d3c25597099499",
+          pubkey: "4c7c408ff1ddebb8d6405ee979c716a14fdd6cc08124107a61d3c25597099499"
         )
       )
 
-      expect(@res3.success?).to eq true
-      expect(@res3.result.body_type).to eq expected3.body_type
-      expect(@res3.result.name).to eq expected3.name
-      expect(@res3.result.value[:id]).to eq expected3.value["id"]
-      expect(@res3.result.header.expire).to eq expected3.header.expire
-      expect(@res3.result.header.time).to eq expected3.header.time
-      expect(@res3.result.header.pubkey).to eq expected3.header.pubkey
+      match_events.call(expected, result)
 
-
-      # # 4
-      pr4 = TonSdk::Abi::ParamsOfDecodeMessage.new(
-        abi: abi,
-        message: "te6ccgEBAQEAVQAApeACvg5/pmQpY4m61HmJ0ne+zjHJu3MNG8rJxUDLbHKBu/AAAAAAAAAMKr6z6rxK3xYJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA",
-      )
-      expect { |b| TonSdk::Abi.decode_message(@c_ctx.context, pr4, &b) }.to yield_control
-      TonSdk::Abi.decode_message(@c_ctx.context, pr4) { |a| @res4 = a }
-
-      expected4 = TonSdk::Abi::DecodedMessageBody.new(
+      expected = TonSdk::Abi::DecodedMessageBody.new(
         body_type: :output,
         name: "returnValue",
-        value: {"value0": "0x0"},
+        value: {value0: '0x0000000000000000000000000000000000000000000000000000000000000000'}
       )
 
-      expect(@res4.success?).to eq true
-      expect(@res4.result.body_type).to eq expected4.body_type
-      expect(@res4.result.name).to eq expected4.name
-      expect(@res4.result.value[:value0]).to eq expected4.value["value0"]
-      expect(@res4.result.header).to eq expected4.header
+      match_events.call(expected, decode_events.call("te6ccgEBAQEAVQAApeACvg5/pmQpY4m61HmJ0ne+zjHJu3MNG8rJxUDLbHKBu/AAAAAAAAAMKr6z6rxK3xYJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA"))
     end
 
     it "#decode_update_initial_data" do
