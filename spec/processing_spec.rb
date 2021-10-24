@@ -3,8 +3,8 @@ require 'spec_helper'
 describe TonSdk::Processing do
   context "methods of processing" do
     xit "send and wait for message" do
-      abi = load_abi(name: "Events", version: AbiVersion::V2)
-      tvc = load_tvc(name: "Events", version: AbiVersion::V2)
+      abi = load_abi(name: "Events")
+      tvc = load_tvc(name: "Events")
 
       keys = TonSdk::Crypto::KeyPair.new(
         public_: "4c7c408ff1ddebb8d6405ee979c716a14fdd6cc08124107a61d3c25597099499",
