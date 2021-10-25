@@ -61,7 +61,7 @@ describe TonSdk::Crypto do
 
     it "#convert_public_key_to_ton_safe_format" do
       pr1 = TonSdk::Crypto::ParamsOfConvertPublicKeyToTonSafeFormat.new(
-        "06117f59ade83e097e0fb33e5d29e8735bda82b3bf78a015542aaa853bb69600"
+        public_key: "06117f59ade83e097e0fb33e5d29e8735bda82b3bf78a015542aaa853bb69600"
       )
       expect { |b| TonSdk::Crypto.convert_public_key_to_ton_safe_format(@c_ctx.context, pr1, &b) }.to yield_control
       TonSdk::Crypto.convert_public_key_to_ton_safe_format(@c_ctx.context, pr1) { |a| @res1 = a }
@@ -69,13 +69,48 @@ describe TonSdk::Crypto do
       expect(@res1.result.ton_public_key).to eq "PuYGEX9Zreg-CX4Psz5dKehzW9qCs794oBVUKqqFO7aWAOTD"
     end
 
-    it "#generate_random_sign_keys" do
-      expect { |b| TonSdk::Crypto.generate_random_sign_keys(@c_ctx.context, &b) }.to yield_control
-      TonSdk::Crypto.generate_random_sign_keys(@c_ctx.context) { |a| @res1 = a }
-      expect(@res1.success?).to eq true
-      expect(@res1.result.public_.length).to eq 64
-      expect(@res1.result.secret.length).to eq 64
-      expect(@res1.result.public_).to_not eq @res1.result.secret
+    it "keys" do
+      result = test_client.request(
+        "crypto.convert_public_key_to_ton_safe_format",
+        TonSdk::Crypto::ParamsOfConvertPublicKeyToTonSafeFormat.new(
+          public_key: "06117f59ade83e097e0fb33e5d29e8735bda82b3bf78a015542aaa853bb69600"
+        )
+      )
+
+      expect("PuYGEX9Zreg-CX4Psz5dKehzW9qCs794oBVUKqqFO7aWAOTD").to eq(result.ton_public_key)
+
+      result = test_client.request_no_params(
+        "crypto.generate_random_sign_keys",
+        is_single_thread_only: true # workaround
+      )
+
+      expect(result.public_.length).to eq(64)
+      expect(result.secret.length).to eq(64)
+      expect(result.secret).not_to eq(result.public_)
+
+      result = test_client.request(
+        "crypto.sign",
+        TonSdk::Crypto::ParamsOfSign.new(
+          unsigned: Base64.strict_encode64("Test Message"),
+          keys: TonSdk::Crypto::KeyPair.new(
+            public_: "1869b7ef29d58026217e9cf163cbfbd0de889bdf1bf4daebf5433a312f5b8d6e",
+            secret: "56b6a77093d6fdf14e593f36275d872d75de5b341942376b2a08759f3cbae78f"
+          )
+        )
+      )
+
+      expect(result.signed).to eq("+wz+QO6l1slgZS5s65BNqKcu4vz24FCJz4NSAxef9lu0jFfs8x3PzSZRC+pn5k8+aJi3xYMA3BQzglQmjK3hA1Rlc3QgTWVzc2FnZQ==")
+      expect(result.signature).to eq("fb0cfe40eea5d6c960652e6ceb904da8a72ee2fcf6e05089cf835203179ff65bb48c57ecf31dcfcd26510bea67e64f3e6898b7c58300dc14338254268cade103")
+
+      result = test_client.request(
+        "crypto.verify_signature",
+        TonSdk::Crypto::ParamsOfVerifySignature.new(
+          signed: Base64.strict_encode64("fb0cfe40eea5d6c960652e6ceb904da8a72ee2fcf6e05089cf835203179ff65bb48c57ecf31dcfcd26510bea67e64f3e6898b7c58300dc14338254268cade10354657374204d657373616765".scan(/../).map { |x| x.hex.chr }.join),
+          public_: "1869b7ef29d58026217e9cf163cbfbd0de889bdf1bf4daebf5433a312f5b8d6e"
+        )
+      )
+
+      expect(Base64.strict_decode64(result.unsigned)).to eq("Test Message")
     end
 
     it "#sign" do

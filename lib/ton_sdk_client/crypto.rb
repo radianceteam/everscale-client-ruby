@@ -43,7 +43,7 @@ module TonSdk
     ResultOfTonCrc16 = Struct.new(:crc)
     ParamsOfGenerateRandomBytes = Struct.new(:length)
     ResultOfGenerateRandomBytes = Struct.new(:bytes)
-    ParamsOfConvertPublicKeyToTonSafeFormat  = Struct.new(:public_key)
+    ParamsOfConvertPublicKeyToTonSafeFormat  = Struct.new(:public_key, keyword_init: true)
     ResultOfConvertPublicKeyToTonSafeFormat = Struct.new(:ton_public_key)
 
     KeyPair = Struct.new(:public_, :secret, keyword_init: true) do
