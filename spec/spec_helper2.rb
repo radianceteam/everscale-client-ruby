@@ -72,6 +72,10 @@ def load_tvc(name:, version: AbiVersion::V2)
   Base64::strict_encode64(tvc_cont_bin)
 end
 
+def load_boc(name:)
+  Base64.strict_encode64(IO.binread("#{TESTS_DATA_DIR}/boc/#{name}.boc"))
+end
+
 def get_grams_from_giver(ctx, to_address)
   abi = load_abi(name: "Giver", version: AbiVersion::V1)
   par_enc_msg = TonSdk::Abi::ParamsOfEncodeMessage.new(

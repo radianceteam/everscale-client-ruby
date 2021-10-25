@@ -13,6 +13,10 @@ module TonSdk
 
     ParamsOfGetBocHash = Struct.new(:boc)
     ResultOfGetBocHash = Struct.new(:hash)
+
+    ParamsOfGetBocDepth = Struct.new(:boc, keyword_init: true)
+    ResultOfGetBocDepth = Struct.new(:depth)
+
     ParamsOfGetCodeFromTvc = Struct.new(:hash)
     ResultOfGetCodeFromTvc = Struct.new(:code)
     ParamsOfBocCacheGet = Struct.new(:boc_ref)
@@ -98,11 +102,16 @@ module TonSdk
 
     ResultOfDecodeTvc = Struct.new(
       :code,
+      :code_hash,
+      :code_depth,
       :data,
+      :data_hash,
+      :data_depth,
       :library,
       :tick,
       :tock,
       :split_depth,
+      :compiler_version,
       keyword_init: true
     )
 
@@ -225,6 +234,20 @@ module TonSdk
       end
     end
 
+    def self.get_boc_depth(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.get_boc_depth", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfGetBocDepth.new(
+              resp.result["depth"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
     def self.get_code_from_tvc(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.get_code_from_tvc", params) do |resp|
         if resp.success?
@@ -325,11 +348,16 @@ module TonSdk
           yield NativeLibResponsetResult.new(
             result: ResultOfDecodeTvc.new(
               code: resp.result["code"],
+              code_depth: resp.result["code_depth"],
+              code_hash: resp.result["code_hash"],
               data: resp.result["data"],
+              data_depth: resp.result["data_depth"],
+              data_hash: resp.result["data_hash"],
               library: resp.result["library"],
               tick: resp.result["tick"],
               tock: resp.result["tock"],
-              split_depth: resp.result["split_depth"]
+              split_depth: resp.result["split_depth"],
+              compiler_version: resp.result["compiler_version"]
             )
           )
         else

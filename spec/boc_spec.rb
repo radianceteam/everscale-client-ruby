@@ -2,6 +2,16 @@ require 'spec_helper'
 
 describe TonSdk::Boc do
   context "methods of boc" do
+    it "#get_boc_depth" do
+      boc = load_boc(name: "account")
+      result = test_client.request(
+        "boc.get_boc_depth",
+        TonSdk::Boc::ParamsOfGetBocDepth.new(boc: boc)
+      )
+
+      expect(result.depth).to eq(8)
+    end
+
     it "#parse_message" do
       pr1 = TonSdk::Boc::ParamsOfParse.new("te6ccgEBAQEAWAAAq2n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE/zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzSsG8DgAAAAAjuOu9NAL7BxYpA")
 
@@ -129,45 +139,78 @@ describe TonSdk::Boc do
       end
     end
 
-    context "#encode_decode_tvc" do
-      let(:tvc_check) { 'te6ccgECDAEAARMAAwF/CAcBAgFiBQIBQr9BJCkgXqZtbyAE7fpXD29Ws+heWbqhvvvHO32l1VvcYQMBBBI0BAAEVngBQr9aLu9QVndfW5Vy/zrWPdKnHR+ygcoXel4cdHMOzLLlEwYAD6usq62rrKuoAEgR71YDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABFP8A9KQT9LzyyAsJAgEgCwoA36X//3aiaGmP6f/o5CxSZ4WPkOeF/+T2qmRnxET/s2X/wQgC+vCAfQFANeegZLh9gEB354V/wQgD39JAfQFANeegZLhkZ82JA6Mrm6RBCAOt5or9AUA156BF6kMrY2N5YQO7e5NjIQxni2S4fYB9gEAAAtI=' }
-      let(:decoded_check) do
-        TonSdk::Boc::ResultOfDecodeTvc.new(
-          code:'te6ccgEBBAEAhwABFP8A9KQT9LzyyAsBAgEgAwIA36X//3aiaGmP6f/o5CxSZ4WPkOeF/+T2qmRnxET/s2X/wQgC+vCAfQFANeegZLh9gEB354V/wQgD39JAfQFANeegZLhkZ82JA6Mrm6RBCAOt5or9AUA156BF6kMrY2N5YQO7e5NjIQxni2S4fYB9gEAAAtI=',
-          data: 'te6ccgEBAQEAJgAASBHvVgMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
-          library: 'te6ccgEBBgEAYAACAWIEAQFCv0EkKSBepm1vIATt+lcPb1az6F5ZuqG++8c7faXVW9xhAgEEEjQDAARWeAFCv1ou71BWd19blXL/OtY90qcdH7KByhd6Xhx0cw7MsuUTBQAPq6yrrausq6g=',
-          tick: true,
-          tock: true
+    it "#tvc_encode" do
+      check_encode_tvc = Proc.new do |tvc, decoded|
+        result = test_client.request(
+          "boc.decode_tvc",
+          TonSdk::Boc::ParamsOfDecodeTvc.new(tvc: tvc)
         )
+
+        expect(result.to_json).to eq(decoded.to_json)
+
+        result = test_client.request(
+          "boc.encode_tvc",
+          TonSdk::Boc::ParamsOfEncodeTvc.new(
+            code: result.code,
+            data: result.data,
+            library: result.library,
+            split_depth: result.split_depth,
+            tick: result.tick,
+            tock: result.tock
+          )
+        )
+
+        expect(result.tvc).to eq(tvc)
       end
 
-      it "#decode_tvc" do
-        params = TonSdk::Boc::ParamsOfDecodeTvc.new(tvc: tvc_check)
-        TonSdk::Boc.decode_tvc(@c_ctx.context, params) { |r| @response = r }
+      tvc = load_tvc(name: "t24_initdata")
+      decoded = TonSdk::Boc::ResultOfDecodeTvc.new(
+        code: "te6ccgECEAEAAYkABCSK7VMg4wMgwP/jAiDA/uMC8gsNAgEPAoTtRNDXScMB+GYh2zzTAAGfgQIA1xgg+QFY+EL5EPKo3tM/AfhDIbnytCD4I4ED6KiCCBt3QKC58rT4Y9MfAds88jwFAwNK7UTQ10nDAfhmItDXCwOpOADcIccA4wIh1w0f8rwh4wMB2zzyPAwMAwIoIIIQBoFGw7rjAiCCEGi1Xz+64wIIBAIiMPhCbuMA+Ebyc9H4ANs88gAFCQIW7UTQ10nCAYqOgOILBgFccO1E0PQFcSGAQPQOk9cLB5Fw4vhqciGAQPQPjoDf+GuAQPQO8r3XC//4YnD4YwcBAogPA3Aw+Eby4Ez4Qm7jANHbPCKOICTQ0wH6QDAxyM+HIM6AYs9AXgHPkhoFGw7LB8zJcPsAkVvi4wDyAAsKCQAq+Ev4SvhD+ELIy//LP8+DywfMye1UAAj4SvhLACztRNDT/9M/0wAx0wfU0fhr+Gr4Y/hiAAr4RvLgTAIK9KQg9KEPDgAUc29sIDAuNTEuMAAA",
+        code_depth: 7,
+        code_hash: "0ad23f96d7b1c1ce78dae573ac8cdf71523dc30f36316b5aaa5eb3cc540df0e0",
+        data: "te6ccgEBAgEAKAABAcABAEPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg",
+        data_depth: 1,
+        data_hash: "55a703465a160dce20481375de2e5b830c841c2787303835eb5821d62d65ca9d",
+        library: nil,
+        split_depth: nil,
+        tick: nil,
+        tock: nil,
+        compiler_version: "sol 0.51.0"
+      )
 
-        expect(@response.success?).to eq(true)
-        expect(@response.result).to eq(decoded_check)
-      end
+      check_encode_tvc.call(tvc, decoded)
 
-      it "#encode_tvc" do
-        params = TonSdk::Boc::ParamsOfEncodeTvc.new(**decoded_check.to_h)
-        TonSdk::Boc.encode_tvc(@c_ctx.context, params) { |r| @response = r }
+      tvc = load_boc(name: "state_init_lib")
+      decoded = TonSdk::Boc::ResultOfDecodeTvc.new(
+        code: "te6ccgEBBAEAhwABFP8A9KQT9LzyyAsBAgEgAwIA36X//3aiaGmP6f/o5CxSZ4WPkOeF/+T2qmRnxET/s2X/wQgC+vCAfQFANeegZLh9gEB354V/wQgD39JAfQFANeegZLhkZ82JA6Mrm6RBCAOt5or9AUA156BF6kMrY2N5YQO7e5NjIQxni2S4fYB9gEAAAtI=",
+        code_depth: 2,
+        code_hash: "45910e27fe37d8dcf1fac777ebb3bda38ae1ea8389f81bfb1bc0079f3f67ef5b",
+        data: "te6ccgEBAQEAJgAASBHvVgMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        data_depth: 0,
+        data_hash: "97bfef744b0d45f78b901e2997fb55f6dbc1d396a8d2f8f4c3a5468c010db67a",
+        library: "te6ccgEBBgEAYAACAWIEAQFCv0EkKSBepm1vIATt+lcPb1az6F5ZuqG++8c7faXVW9xhAgEEEjQDAARWeAFCv1ou71BWd19blXL/OtY90qcdH7KByhd6Xhx0cw7MsuUTBQAPq6yrrausq6g=",
+        split_depth: nil,
+        tick: true,
+        tock: true,
+        compiler_version: nil
+      )
 
-        expect(@response.success?).to eq(true)
-        expect(@response.result.tvc).to eq(tvc_check)
-      end
+      check_encode_tvc.call(tvc, decoded)
     end
 
     it "#get_compiler_version" do
-      tvc = 'te6ccgECEwEAAbYAAgE0AwEBAcACAEPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgBCSK7VMg4wMgwP/jAiDA/uMC8gsQBQQSAoTtRNDXScMB+GYh2zzTAAGfgQIA1xgg+QFY+EL5EPKo3tM/AfhDIbnytCD4I4ED6KiCCBt3QKC58rT4Y9MfAds88jwIBgNK7UTQ10nDAfhmItDXCwOpOADcIccA4wIh1w0f8rwh4wMB2zzyPA8PBgIoIIIQBoFGw7rjAiCCEGi1Xz+64wILBwIiMPhCbuMA+Ebyc9H4ANs88gAIDAIW7UTQ10nCAYqOgOIOCQFccO1E0PQFcSGAQPQOk9cLB5Fw4vhqciGAQPQPjoDf+GuAQPQO8r3XC//4YnD4YwoBAogSA3Aw+Eby4Ez4Qm7jANHbPCKOICTQ0wH6QDAxyM+HIM6AYs9AXgHPkhoFGw7LB8zJcPsAkVvi4wDyAA4NDAAq+Ev4SvhD+ELIy//LP8+DywfMye1UAAj4SvhLACztRNDT/9M/0wAx0wfU0fhr+Gr4Y/hiAAr4RvLgTAIK9KQg9KESEQAUc29sIDAuNTEuMAAA'
-      params = TonSdk::Boc::ParamsOfDecodeTvc.new(tvc: tvc)
-      TonSdk::Boc.decode_tvc(@c_ctx.context, params) { |r| @response = r }
-      decoded = @response.result
+      tvc = load_tvc(name: "t24_initdata")
+      code = test_client.request(
+        "boc.decode_tvc",
+        TonSdk::Boc::ParamsOfDecodeTvc.new(tvc: tvc)
+      ).code
 
-      params = TonSdk::Boc::ParamsOfGetCompilerVersion.new(code: decoded.code)
-      TonSdk::Boc.get_compiler_version(@c_ctx.context, params) { |r| @response = r }
+      result = test_client.request(
+        "boc.get_compiler_version",
+        TonSdk::Boc::ParamsOfGetCompilerVersion.new(code: code)
+      )
 
-      expect(@response.result.version).to eq("sol 0.51.0")
+      expect(result.version).to eq("sol 0.51.0")
     end
   end
 end
