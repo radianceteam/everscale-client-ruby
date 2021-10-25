@@ -13,7 +13,7 @@ describe TonSdk::Boc do
     end
 
     it "#parse_message" do
-      pr1 = TonSdk::Boc::ParamsOfParse.new("te6ccgEBAQEAWAAAq2n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE/zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzSsG8DgAAAAAjuOu9NAL7BxYpA")
+      pr1 = TonSdk::Boc::ParamsOfParse.new(boc: "te6ccgEBAQEAWAAAq2n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE/zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzSsG8DgAAAAAjuOu9NAL7BxYpA")
 
       expect { |b| TonSdk::Boc.parse_message(@c_ctx.context, pr1, &b) }.to yield_control
       expect { |b| TonSdk::Boc.parse_message(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
@@ -27,7 +27,7 @@ describe TonSdk::Boc do
     end
 
     it "#parse_account" do
-      pr1 = TonSdk::Boc::ParamsOfParse.new(File.read("spec/data/boc/parse_account1.txt"))
+      pr1 = TonSdk::Boc::ParamsOfParse.new(boc: File.read("spec/data/boc/parse_account1.txt"))
 
       expect { |b| TonSdk::Boc.parse_account(@c_ctx.context, pr1, &b) }.to yield_control
       expect { |b| TonSdk::Boc.parse_account(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
@@ -41,7 +41,7 @@ describe TonSdk::Boc do
     end
 
     it "#parse_transaction" do
-      pr1 = TonSdk::Boc::ParamsOfParse.new("te6ccgECBwEAAZQAA7V75gA6WK5sEDTiHFGnH9ILOy2irjKLWTkWQMyMogsg40AAACDribjoE3gOAbYNpCaX4uLeXPQHt2Kw/Jp2OKkR2s+BASyeQM6wAAAg64IXyBX2DobAABRrMENIBQQBAhUEQojmJaAYazBCEQMCAFvAAAAAAAAAAAAAAAABLUUtpEnlC4z33SeGHxRhIq/htUa7i3D8ghbwxhQTn44EAJxC3UicQAAAAAAAAAAAdwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgnJAnYEvIQY6SnQKc3lXk6x1Z/lyplGFRbwAuNtVBi9EeceU3Ojl0F3EkRdylowY5x2qlgHNv4lNZUjhq0WqrLMNAQGgBgC3aADLL4ChL2HyLHwOLub5Mep87W3xdnMW8BpxKyVoGe3RPQAvmADpYrmwQNOIcUacf0gs7LaKuMotZORZAzIyiCyDjQ5iWgAGFFhgAAAEHXC9CwS+wdDGKTmMFkA=")
+      pr1 = TonSdk::Boc::ParamsOfParse.new(boc: "te6ccgECBwEAAZQAA7V75gA6WK5sEDTiHFGnH9ILOy2irjKLWTkWQMyMogsg40AAACDribjoE3gOAbYNpCaX4uLeXPQHt2Kw/Jp2OKkR2s+BASyeQM6wAAAg64IXyBX2DobAABRrMENIBQQBAhUEQojmJaAYazBCEQMCAFvAAAAAAAAAAAAAAAABLUUtpEnlC4z33SeGHxRhIq/htUa7i3D8ghbwxhQTn44EAJxC3UicQAAAAAAAAAAAdwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgnJAnYEvIQY6SnQKc3lXk6x1Z/lyplGFRbwAuNtVBi9EeceU3Ojl0F3EkRdylowY5x2qlgHNv4lNZUjhq0WqrLMNAQGgBgC3aADLL4ChL2HyLHwOLub5Mep87W3xdnMW8BpxKyVoGe3RPQAvmADpYrmwQNOIcUacf0gs7LaKuMotZORZAzIyiCyDjQ5iWgAGFFhgAAAEHXC9CwS+wdDGKTmMFkA=")
 
       expect { |b| TonSdk::Boc.parse_transaction(@c_ctx.context, pr1, &b) }.to yield_control
       expect { |b| TonSdk::Boc.parse_transaction(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
@@ -55,7 +55,7 @@ describe TonSdk::Boc do
     end
 
     it "#parse_block" do
-      pr1 = TonSdk::Boc::ParamsOfParse.new(File.read("spec/data/boc/parse_block1.txt"))
+      pr1 = TonSdk::Boc::ParamsOfParse.new(boc: File.read("spec/data/boc/parse_block1.txt"))
 
       expect { |b| TonSdk::Boc.parse_block(@c_ctx.context, pr1, &b) }.to yield_control
       expect { |b| TonSdk::Boc.parse_block(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
