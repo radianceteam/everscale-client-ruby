@@ -60,7 +60,7 @@ TonSdk::Crypto.register_signing_box(@c_ctx.context, app_obj: reg_sb_mock) do |re
 
     TonSdk::Crypto.signing_box_get_public_key(
       @c_ctx.context,
-      TonSdk::Crypto::RegisteredSigningBox.new(sb_handle)
+      TonSdk::Crypto::RegisteredSigningBox.new(handle: sb_handle)
     ) do |res2|
       if res2.success?
         puts "signing_box_get_public_key: #{res2.result}"

@@ -39,9 +39,9 @@ module TonSdk
       end
     end
 
-    FunctionHeader = Struct.new(:expire, :time, :pubkey, keyword_init: true)
+    FunctionHeader = KwStruct.new(:expire, :time, :pubkey)
 
-    CallSet = Struct.new(:function_name, :header, :input, keyword_init: true) do
+    CallSet = KwStruct.new(:function_name, :header, :input) do
       def initialize(function_name:, header: nil, input: nil)
         super
       end
@@ -55,7 +55,7 @@ module TonSdk
       end
     end
 
-    DeploySet = Struct.new(:tvc, :workchain_id, :initial_data, :initial_pubkey, keyword_init: true) do
+    DeploySet = KwStruct.new(:tvc, :workchain_id, :initial_data, :initial_pubkey) do
       def initialize(tvc:, workchain_id: nil, initial_data: nil, initial_pubkey: nil)
         super
       end
@@ -104,7 +104,7 @@ module TonSdk
 
     STATIC_INIT_SOURCE_TYPES = [:message, :state_init, :tvc]
     # TODO: Refactor with subclasses?
-    StateInitSource = Struct.new(
+    StateInitSource = KwStruct.new(
       :type,
       :source,
       :code,
@@ -112,8 +112,7 @@ module TonSdk
       :library,
       :tvc,
       :public_key,
-      :init_params,
-      keyword_init: true
+      :init_params
     ) do
       def initialize(
         type:,
@@ -160,7 +159,7 @@ module TonSdk
       end
     end
 
-    StateInitParams = Struct.new(:abi, :value, keyword_init: true) do
+    StateInitParams = KwStruct.new(:abi, :value) do
       def initialize(abi:, value:)
         super
       end
@@ -168,7 +167,7 @@ module TonSdk
 
 
     MESSAGE_SOURCE_TYPES = [:encoded, :encoding_params]
-    MessageSource = Struct.new(
+    MessageSource = KwStruct.new(
       :type_,
       :message,
       :abi,
@@ -176,8 +175,7 @@ module TonSdk
       :deploy_set,
       :call_set,
       :signer,
-      :processing_try_index,
-      keyword_init: true
+      :processing_try_index
     ) do
       def initialize(
         type_:,
@@ -222,13 +220,12 @@ module TonSdk
       end
     end
 
-    ParamsOfEncodeMessageBody = Struct.new(
+    ParamsOfEncodeMessageBody = KwStruct.new(
       :abi,
       :call_set,
       :is_internal,
       :signer,
-      :processing_try_index,
-      keyword_init: true
+      :processing_try_index
     ) do
       def to_h
         {
@@ -241,13 +238,13 @@ module TonSdk
       end
     end
 
-    ResultOfEncodeMessageBody = Struct.new(:body, :data_to_sign, keyword_init: true) do
+    ResultOfEncodeMessageBody = KwStruct.new(:body, :data_to_sign) do
       def initialize(body:, data_to_sign: nil)
         super
       end
     end
 
-    ParamsOfAttachSignatureToMessageBody = Struct.new(:abi, :public_key, :message, :signature, keyword_init: true) do
+    ParamsOfAttachSignatureToMessageBody = KwStruct.new(:abi, :public_key, :message, :signature) do
       def to_h
         {
           abi: abi.to_h,
@@ -258,16 +255,15 @@ module TonSdk
       end
     end
 
-    ResultOfAttachSignatureToMessageBody = Struct.new(:body)
+    ResultOfAttachSignatureToMessageBody = KwStruct.new(:body)
 
-    ParamsOfEncodeMessage = Struct.new(
+    ParamsOfEncodeMessage = KwStruct.new(
       :abi,
       :address,
       :deploy_set,
       :call_set,
       :signer,
-      :processing_try_index,
-      keyword_init: true
+      :processing_try_index
     ) do
       def initialize(
         abi:,
@@ -292,13 +288,13 @@ module TonSdk
       end
     end
 
-    ResultOfEncodeMessage = Struct.new(:message, :data_to_sign, :address, :message_id, keyword_init: true) do
+    ResultOfEncodeMessage = KwStruct.new(:message, :data_to_sign, :address, :message_id) do
       def initialize(message:, data_to_sign: nil, address:, message_id:)
         super
       end
     end
 
-    ParamsOfAttachSignature = Struct.new(:abi, :public_key, :message, :signature, keyword_init: true) do
+    ParamsOfAttachSignature = KwStruct.new(:abi, :public_key, :message, :signature) do
       def initialize(abi:, public_key:, message:, signature:)
         super
       end
@@ -313,13 +309,13 @@ module TonSdk
       end
     end
 
-    ResultOfAttachSignature = Struct.new(:message, :message_id, keyword_init: true) do
+    ResultOfAttachSignature = KwStruct.new(:message, :message_id) do
       def initialize(message:, message_id:)
         super
       end
     end
 
-    ParamsOfDecodeMessage = Struct.new(:abi, :message, keyword_init: true) do
+    ParamsOfDecodeMessage = KwStruct.new(:abi, :message) do
       def initialize(abi:, message:)
         super
       end
@@ -395,7 +391,7 @@ module TonSdk
       end
     end
 
-    ParamsOfDecodeMessageBody = Struct.new(:abi, :body, :is_internal, keyword_init: true) do
+    ParamsOfDecodeMessageBody = KwStruct.new(:abi, :body, :is_internal) do
       def initialize(abi:, body:, is_internal:)
         super
       end
@@ -409,13 +405,12 @@ module TonSdk
       end
     end
 
-    ParamsOfEncodeAccount = Struct.new(
+    ParamsOfEncodeAccount = KwStruct.new(
       :state_init,
       :balance,
       :last_trans_lt,
       :last_paid,
-      :boc_cache,
-      keyword_init: true
+      :boc_cache
     ) do
       def to_h
         {
@@ -428,7 +423,7 @@ module TonSdk
       end
     end
 
-    ResultOfEncodeAccount = Struct.new(:account, :id_, keyword_init: true) do
+    ResultOfEncodeAccount = KwStruct.new(:account, :id_) do
       def initialize(account:, id_:)
         super
       end
@@ -696,7 +691,7 @@ module TonSdk
       end
     end
 
-    ParamsOfEncodeInternalMessage = Struct.new(
+    ParamsOfEncodeInternalMessage = KwStruct.new(
       :abi,
       :address,
       :src_address,
@@ -704,8 +699,7 @@ module TonSdk
       :call_set,
       :value,
       :bounce,
-      :enable_ihr,
-      keyword_init: true
+      :enable_ihr
     ) do
       def initialize(
         abi: nil,
@@ -721,18 +715,17 @@ module TonSdk
       end
     end
 
-    ResultOfEncodeInternalMessage = Struct.new(
+    ResultOfEncodeInternalMessage = KwStruct.new(
       :message,
       :address,
-      :message_id,
-      keyword_init: true
+      :message_id
     ) do
       def initialize(message:, address:, message_id:)
         super
       end
     end
 
-    ParamsOfDecodeAccountData = Struct.new(:abi, :data, keyword_init: true) do
+    ParamsOfDecodeAccountData = KwStruct.new(:abi, :data) do
       def to_h
         {
           abi: abi&.to_h,
@@ -741,15 +734,14 @@ module TonSdk
       end
     end
 
-    ResultOfDecodeData = Struct.new(:data)
+    ResultOfDecodeData = KwStruct.new(:data)
 
-    ParamsOfUpdateInitialData = Struct.new(
+    ParamsOfUpdateInitialData = KwStruct.new(
       :data,
       :abi,
       :initial_data,
       :initial_pubkey,
-      :boc_cache,
-      keyword_init: true
+      :boc_cache
     ) do
       def to_h
         {
@@ -762,9 +754,9 @@ module TonSdk
       end
     end
 
-    ResultOfUpdateInitialData = Struct.new(:data)
+    ResultOfUpdateInitialData = KwStruct.new(:data)
 
-    ParamsOfDecodeInitialData = Struct.new(:data, :abi, keyword_init: true) do
+    ParamsOfDecodeInitialData = KwStruct.new(:data, :abi) do
       def to_h
         {
           data: data,
@@ -773,7 +765,7 @@ module TonSdk
       end
     end
 
-    ResultOfDecodeInitialData = Struct.new(:initial_pubkey, :initial_data, keyword_init: true)
+    ResultOfDecodeInitialData = KwStruct.new(:initial_pubkey, :initial_data)
 
     #
     # functions
@@ -797,7 +789,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "abi.attach_signature_to_message_body", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfAttachSignatureToMessageBody.new(resp.result["body"])
+            result: ResultOfAttachSignatureToMessageBody.new(body: resp.result["body"])
           )
         else
           yield resp
@@ -896,7 +888,7 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfDecodeData.new(
-              resp.result["data"]
+              data: resp.result["data"]
             )
           )
         else
@@ -910,7 +902,7 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfUpdateInitialData.new(
-              resp.result["data"]
+              data: resp.result["data"]
             )
           )
         else

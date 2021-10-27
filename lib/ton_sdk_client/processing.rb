@@ -23,7 +23,7 @@ module TonSdk
       end
     end
 
-    ResultOfSendMessage = Struct.new(:shard_block_id)
+    ResultOfSendMessage = KwStruct.new(:shard_block_id)
 
     class ParamsOfWaitForTransaction
       attr_reader :abi, :message, :shard_block_id, :send_events
@@ -129,13 +129,13 @@ module TonSdk
       end
     end
 
-    DecodedOutput = Struct.new(:out_messages, :output) do
+    DecodedOutput = KwStruct.new(:out_messages, :output) do
       def initialize(out_messages:, output: nil)
         super
       end
     end
 
-    ParamsOfProcessMessage = Struct.new(:message_encode_params, :send_events, keyword_init: true) do
+    ParamsOfProcessMessage = KwStruct.new(:message_encode_params, :send_events) do
       def to_h
         {
           message_encode_params: message_encode_params.to_h,
@@ -163,7 +163,7 @@ module TonSdk
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfSendMessage.new(resp.result["shard_block_id"])
+            result: ResultOfSendMessage.new(shard_block_id: resp.result["shard_block_id"])
           )
         else
           yield resp

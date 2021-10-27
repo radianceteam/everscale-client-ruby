@@ -45,10 +45,10 @@ module TonSdk
       INVALID_HANDLE = 34
     end
 
-    ResultOfVersion = Struct.new(:version)
-    ResultOfGetApiReference = Struct.new(:api)
+    ResultOfVersion = KwStruct.new(:version)
+    ResultOfGetApiReference = KwStruct.new(:api)
 
-    BuildInfoDependency = Struct.new(:name, :git_commit, keyword_init: true) do
+    BuildInfoDependency = KwStruct.new(:name, :git_commit) do
       def self.from_json(j)
         return nil if j.nil?
 
@@ -59,8 +59,8 @@ module TonSdk
       end
     end
 
-    ResultOfBuildInfo = Struct.new(:build_number, :dependencies, keyword_init: true)
-    ParamsOfAppRequest = Struct.new(:app_request_id, :request_data, keyword_init: true)
+    ResultOfBuildInfo = KwStruct.new(:build_number, :dependencies)
+    ParamsOfAppRequest = KwStruct.new(:app_request_id, :request_data)
 
     class AppRequestResult
       TYPES = [:ok, :error]
@@ -94,7 +94,7 @@ module TonSdk
       end
     end
 
-    ParamsOfResolveAppRequest = Struct.new(:app_request_id, :result, keyword_init: true) do
+    ParamsOfResolveAppRequest = KwStruct.new(:app_request_id, :result) do
       def to_h
         {
           app_request_id: @app_request_id,
@@ -116,7 +116,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "client.version") do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfVersion.new(resp.result["version"])
+            result: ResultOfVersion.new(version: resp.result["version"])
           )
         else
           yield resp
@@ -128,7 +128,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "client.get_api_reference") do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfGetApiReference.new(resp.result["api"])
+            result: ResultOfGetApiReference.new(api: resp.result["api"])
           )
         else
           yield resp

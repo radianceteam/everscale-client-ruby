@@ -4,7 +4,7 @@ require 'base64'
 describe TonSdk::Crypto do
   context "methods of crypto" do
     it "#factorize" do
-      pr1 = TonSdk::Crypto::ParamsOfFactorize.new("17ED48941A08F981")
+      pr1 = TonSdk::Crypto::ParamsOfFactorize.new(composite: "17ED48941A08F981")
       expect { |b| TonSdk::Crypto.factorize(@c_ctx.context, pr1, &b) }.to yield_control
       TonSdk::Crypto.factorize(@c_ctx.context, pr1) { |a| @res = a }
 
@@ -28,7 +28,7 @@ describe TonSdk::Crypto do
 
     it "#ton_crc16" do
       b64_str = TonSdk::Helper.base64_from_hex("0123456789abcdef")
-      pr1 = TonSdk::Crypto::ParamsOfTonCrc16.new(b64_str)
+      pr1 = TonSdk::Crypto::ParamsOfTonCrc16.new(data: b64_str)
       expect { |b| TonSdk::Crypto.ton_crc16(@c_ctx.context, pr1, &b) }.to yield_control
       TonSdk::Crypto.ton_crc16(@c_ctx.context, pr1) { |a| @res = a }
 
@@ -37,7 +37,7 @@ describe TonSdk::Crypto do
     end
 
     it "#generate_random_bytes" do
-      pr1 = TonSdk::Crypto::ParamsOfGenerateRandomBytes.new(32)
+      pr1 = TonSdk::Crypto::ParamsOfGenerateRandomBytes.new(length: 32)
       expect { |b| TonSdk::Crypto.generate_random_bytes(@c_ctx.context, pr1, &b) }.to yield_control
       TonSdk::Crypto.generate_random_bytes(@c_ctx.context, pr1) { |a| @res = a }
 
@@ -46,13 +46,13 @@ describe TonSdk::Crypto do
     end
 
     it "#sha256, sha512" do
-      pr1 = TonSdk::Crypto::ParamsOfHash.new(Base64::urlsafe_encode64("Message to hash with sha 256", padding: false))
+      pr1 = TonSdk::Crypto::ParamsOfHash.new(data: Base64::urlsafe_encode64("Message to hash with sha 256", padding: false))
       expect { |b| TonSdk::Crypto.sha256(@c_ctx.context, pr1, &b) }.to yield_control
       TonSdk::Crypto.sha256(@c_ctx.context, pr1) { |a| @res1 = a }
       expect(@res1.success?).to eq true
       expect(@res1.result.hash).to eq "16fd057308dd358d5a9b3ba2de766b2dfd5e308478fc1f7ba5988db2493852f5"
 
-      pr2 = TonSdk::Crypto::ParamsOfHash.new(Base64::urlsafe_encode64("Message to hash with sha 512"))
+      pr2 = TonSdk::Crypto::ParamsOfHash.new(data: Base64::urlsafe_encode64("Message to hash with sha 512"))
       expect { |b| TonSdk::Crypto.sha512(@c_ctx.context, pr2, &b) }.to yield_control
       TonSdk::Crypto.sha512(@c_ctx.context, pr2) { |a| @res2 = a }
       expect(@res2.success?).to eq true
@@ -173,14 +173,14 @@ describe TonSdk::Crypto do
 
 
       #2
-      pr2 = TonSdk::Crypto::ParamsOfHDKeySecretFromXPrv.new(@res1.result.xprv)
+      pr2 = TonSdk::Crypto::ParamsOfHDKeySecretFromXPrv.new(xprv: @res1.result.xprv)
       expect { |b| TonSdk::Crypto.hdkey_secret_from_xprv(@c_ctx.context, pr2, &b) }.to yield_control
       TonSdk::Crypto.hdkey_secret_from_xprv(@c_ctx.context, pr2) { |a| @res2 = a }
       expect(@res2.success?).to eq true
       expect(@res2.result.secret).to eq "0c91e53128fa4d67589d63a6c44049c1068ec28a63069a55ca3de30c57f8b365"
 
       #3
-      pr3 = TonSdk::Crypto::ParamsOfHDKeyPublicFromXPrv.new(@res1.result.xprv)
+      pr3 = TonSdk::Crypto::ParamsOfHDKeyPublicFromXPrv.new(xprv: @res1.result.xprv)
       expect { |b| TonSdk::Crypto.hdkey_public_from_xprv(@c_ctx.context, pr3, &b) }.to yield_control
       TonSdk::Crypto.hdkey_public_from_xprv(@c_ctx.context, pr3) { |a| @res3 = a }
       expect(@res3.success?).to eq true
@@ -265,7 +265,7 @@ describe TonSdk::Crypto do
 
 
       # 2
-      reg_sb = TonSdk::Crypto::RegisteredSigningBox.new(sb_handle)
+      reg_sb = TonSdk::Crypto::RegisteredSigningBox.new(handle: sb_handle)
       TonSdk::Crypto.signing_box_get_public_key(@c_ctx.context, reg_sb) { |a| @res2 = a }
 
       timeout_at = get_timeout_for_async_operation()

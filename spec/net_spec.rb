@@ -24,7 +24,7 @@ describe TonSdk::Net do
 
     it "find_last_shard_block" do
       pr1 = TonSdk::Net::ParamsOfFindLastShardBlock.new(
-        GIVER_ADDRESS
+        address: GIVER_ADDRESS
       )
       TonSdk::Net.find_last_shard_block(@c_ctx.context, pr1) { |a| @res = a }
       timeout_at = get_timeout_for_async_operation()

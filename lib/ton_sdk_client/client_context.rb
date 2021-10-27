@@ -1,5 +1,6 @@
 require 'json'
 
+require_relative './kw_struct.rb'
 require_relative './interop.rb'
 require_relative './types.rb'
 require_relative './helper.rb'

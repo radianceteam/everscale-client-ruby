@@ -5,23 +5,23 @@ module TonSdk
     # types
     #
 
-    ParamsOfParse = Struct.new(:boc, keyword_init: true)
-    ResultOfParse = Struct.new(:parsed)
-    ParamsOfParseShardstate = Struct.new(:boc, :id, :workchain_id, keyword_init: true)
-    ParamsOfGetBlockchainConfig = Struct.new(:block_boc)
-    ResultOfGetBlockchainConfig = Struct.new(:config_boc)
+    ParamsOfParse = KwStruct.new(:boc)
+    ResultOfParse = KwStruct.new(:parsed)
+    ParamsOfParseShardstate = KwStruct.new(:boc, :id, :workchain_id)
+    ParamsOfGetBlockchainConfig = KwStruct.new(:block_boc)
+    ResultOfGetBlockchainConfig = KwStruct.new(:config_boc)
 
-    ParamsOfGetBocHash = Struct.new(:boc)
-    ResultOfGetBocHash = Struct.new(:hash)
+    ParamsOfGetBocHash = KwStruct.new(:boc)
+    ResultOfGetBocHash = KwStruct.new(:hash)
 
-    ParamsOfGetBocDepth = Struct.new(:boc, keyword_init: true)
-    ResultOfGetBocDepth = Struct.new(:depth)
+    ParamsOfGetBocDepth = KwStruct.new(:boc)
+    ResultOfGetBocDepth = KwStruct.new(:depth)
 
-    ParamsOfGetCodeFromTvc = Struct.new(:hash)
-    ResultOfGetCodeFromTvc = Struct.new(:code)
-    ParamsOfBocCacheGet = Struct.new(:boc_ref)
+    ParamsOfGetCodeFromTvc = KwStruct.new(:hash)
+    ResultOfGetCodeFromTvc = KwStruct.new(:code)
+    ParamsOfBocCacheGet = KwStruct.new(:boc_ref)
 
-    ResultOfBocCacheGet = Struct.new(:boc)
+    ResultOfBocCacheGet = KwStruct.new(:boc)
 
     class BocCacheType
       private_class_method :new
@@ -54,7 +54,7 @@ module TonSdk
       end
     end
 
-    ParamsOfBocCacheSet = Struct.new(:boc, :cache_type) do
+    ParamsOfBocCacheSet = KwStruct.new(:boc, :cache_type) do
       def to_h
         {
           boc: @boc,
@@ -63,12 +63,12 @@ module TonSdk
       end
     end
 
-    ResultOfBocCacheSet = Struct.new(:boc_ref)
-    ParamsOfBocCacheUnpin = Struct.new(:boc, :boc_ref)
-    ParamsOfEncodeBoc = Struct.new(:builder, :boc_cache)
-    ResultOfEncodeBoc = Struct.new(:boc)
+    ResultOfBocCacheSet = KwStruct.new(:boc_ref)
+    ParamsOfBocCacheUnpin = KwStruct.new(:boc, :boc_ref)
+    ParamsOfEncodeBoc = KwStruct.new(:builder, :boc_cache)
+    ResultOfEncodeBoc = KwStruct.new(:boc)
 
-    ParamsOfGetCodeSalt = Struct.new(:code, :boc_cache, keyword_init: true) do
+    ParamsOfGetCodeSalt = KwStruct.new(:code, :boc_cache) do
       def to_h
         {
           code: code,
@@ -77,9 +77,9 @@ module TonSdk
       end
     end
 
-    ResultOfGetCodeSalt = Struct.new(:salt)
+    ResultOfGetCodeSalt = KwStruct.new(:salt)
 
-    ParamsOfSetCodeSalt = Struct.new(:code, :salt, :boc_cache, keyword_init: true) do
+    ParamsOfSetCodeSalt = KwStruct.new(:code, :salt, :boc_cache) do
       def to_h
         {
           code: code,
@@ -89,9 +89,9 @@ module TonSdk
       end
     end
 
-    ResultOfSetCodeSalt = Struct.new(:code)
+    ResultOfSetCodeSalt = KwStruct.new(:code)
 
-    ParamsOfDecodeTvc = Struct.new(:tvc, :boc_cache, keyword_init: true) do
+    ParamsOfDecodeTvc = KwStruct.new(:tvc, :boc_cache) do
       def to_h
         {
           tvc: tvc,
@@ -100,7 +100,7 @@ module TonSdk
       end
     end
 
-    ResultOfDecodeTvc = Struct.new(
+    ResultOfDecodeTvc = KwStruct.new(
       :code,
       :code_hash,
       :code_depth,
@@ -111,19 +111,17 @@ module TonSdk
       :tick,
       :tock,
       :split_depth,
-      :compiler_version,
-      keyword_init: true
+      :compiler_version
     )
 
-    ParamsOfEncodeTvc = Struct.new(
+    ParamsOfEncodeTvc = KwStruct.new(
       :code,
       :data,
       :library,
       :tick,
       :tock,
       :split_depth,
-      :boc_cache,
-      keyword_init: true
+      :boc_cache
     ) do
       def to_h
         {
@@ -138,11 +136,11 @@ module TonSdk
       end
     end
 
-    ResultOfEncodeTvc = Struct.new(:tvc)
+    ResultOfEncodeTvc = KwStruct.new(:tvc)
 
-    ParamsOfGetCompilerVersion = Struct.new(:code, keyword_init: true)
+    ParamsOfGetCompilerVersion = KwStruct.new(:code)
 
-    ResultOfGetCompilerVersion = Struct.new(:version)
+    ResultOfGetCompilerVersion = KwStruct.new(:version)
 
     #
     # functions
@@ -152,7 +150,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "boc.parse_message", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfParse.new(resp.result["parsed"])
+            result: ResultOfParse.new(parsed: resp.result["parsed"])
           )
         else
           yield resp
@@ -164,7 +162,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "boc.parse_transaction", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfParse.new(resp.result["parsed"])
+            result: ResultOfParse.new(parsed: resp.result["parsed"])
           )
         else
           yield resp
@@ -176,7 +174,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "boc.parse_account", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfParse.new(resp.result["parsed"])
+            result: ResultOfParse.new(parsed: resp.result["parsed"])
           )
         else
           yield resp
@@ -188,7 +186,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "boc.parse_block", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfParse.new(resp.result["parsed"])
+            result: ResultOfParse.new(parsed: resp.result["parsed"])
           )
         else
           yield resp
@@ -200,7 +198,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "boc.parse_shardstate", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfParse.new(resp.result["parsed"])
+            result: ResultOfParse.new(parsed: resp.result["parsed"])
           )
         else
           yield resp
@@ -212,7 +210,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "boc.get_boc_hash", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfGetBocHash.new(resp.result["hash"])
+            result: ResultOfGetBocHash.new(hash: resp.result["hash"])
           )
         else
           yield resp
@@ -225,7 +223,7 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetBlockchainConfig.new(
-              resp.result["config_boc"]
+              config_boc: resp.result["config_boc"]
             )
           )
         else
@@ -239,7 +237,7 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetBocDepth.new(
-              resp.result["depth"]
+              depth: resp.result["depth"]
             )
           )
         else
@@ -252,7 +250,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "boc.get_code_from_tvc", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfGetCodeFromTvc.new(resp.result["code"])
+            result: ResultOfGetCodeFromTvc.new(code: resp.result["code"])
           )
         else
           yield resp
@@ -305,7 +303,7 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeBoc.new(
-              resp.result["boc"]
+              boc: resp.result["boc"]
             )
           )
         else
@@ -319,7 +317,7 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetCodeSalt.new(
-              resp.result["salt"]
+              salt: resp.result["salt"]
             )
           )
         else
@@ -333,7 +331,7 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfSetCodeSalt.new(
-              resp.result["code"]
+              code: resp.result["code"]
             )
           )
         else
@@ -371,7 +369,7 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfEncodeTvc.new(
-              resp.result["tvc"]
+              tvc: resp.result["tvc"]
             )
           )
         else
@@ -385,7 +383,7 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfGetCompilerVersion.new(
-              resp.result["version"]
+              version: resp.result["version"]
             )
           )
         else

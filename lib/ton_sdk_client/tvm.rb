@@ -22,7 +22,7 @@ module TonSdk
       CONTRACT_EXECUTION_ERROR = 414
     end
 
-    ExecutionOptions = Struct.new(:blockchain_config, :block_time, :block_lt, :transaction_lt, keyword_init: true) do
+    ExecutionOptions = KwStruct.new(:blockchain_config, :block_time, :block_lt, :transaction_lt) do
       def initialize(blockchain_config: nil, block_time: nil, block_lt: nil, transaction_lt: nil)
         super
       end
@@ -64,15 +64,14 @@ module TonSdk
       end
     end
 
-    ParamsOfRunExecutor = Struct.new(
+    ParamsOfRunExecutor = KwStruct.new(
       :message,
       :account,
       :execution_options,
       :abi,
       :skip_transaction_check,
       :boc_cache,
-      :return_updated_account,
-      keyword_init: true
+      :return_updated_account
     ) do
       def initialize(
         message:,
@@ -96,7 +95,7 @@ module TonSdk
       end
     end
 
-    ResultOfRunExecutor = Struct.new(:transaction, :out_messages, :decoded, :account, :fees, keyword_init: true) do
+    ResultOfRunExecutor = KwStruct.new(:transaction, :out_messages, :decoded, :account, :fees) do
       def initialize(transaction:, out_messages:, decoded: nil, account:, fees:)
         super
       end
@@ -127,7 +126,7 @@ module TonSdk
       end
     end
 
-    ResultOfRunTvm = Struct.new(:out_messages, :decoded, :account, keyword_init: true) do
+    ResultOfRunTvm = KwStruct.new(:out_messages, :decoded, :account) do
       def initialize(out_messages:, decoded: nil, account:)
         super
       end
@@ -155,16 +154,15 @@ module TonSdk
       end
     end
 
-    ResultOfRunGet = Struct.new(:output)
+    ResultOfRunGet = KwStruct.new(:output)
 
-    TransactionFees = Struct.new(
+    TransactionFees = KwStruct.new(
       :in_msg_fwd_fee,
       :storage_fee,
       :gas_fee,
       :out_msgs_fwd_fee,
       :total_account_fees,
-      :total_output,
-      keyword_init: true
+      :total_output
     ) do
       def initialize(
         in_msg_fwd_fee:,
@@ -236,7 +234,7 @@ module TonSdk
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfRunGet.new(resp.result["output"])
+            result: ResultOfRunGet.new(output: resp.result["output"])
           )
         else
           yield resp

@@ -1,7 +1,7 @@
 module TonSdk
-  CryptoConfig = Struct.new(:mnemonic_dictionary, :mnemonic_word_count, :hdkey_derivation_path, keyword_init: true)
-  BocConfig = Struct.new(:cache_max_size)
-  NetworkConfig = Struct.new(
+  CryptoConfig = KwStruct.new(:mnemonic_dictionary, :mnemonic_word_count, :hdkey_derivation_path)
+  BocConfig = KwStruct.new(:cache_max_size)
+  NetworkConfig = KwStruct.new(
     :server_address,
     :endpoints,
     :network_retries_count,
@@ -15,8 +15,7 @@ module TonSdk
     :latency_detection_interval,
     :max_latency,
     :query_timeout,
-    :access_key,
-    keyword_init: true
+    :access_key
   ) do
     def initialize(
       server_address: "",
@@ -38,11 +37,10 @@ module TonSdk
     end
   end
 
-  AbiConfig = Struct.new(
+  AbiConfig = KwStruct.new(
     :workchain,
     :message_expiration_timeout,
-    :message_expiration_timeout_grow_factor,
-    keyword_init: true
+    :message_expiration_timeout_grow_factor
   ) do
     def initialize(
       workchain: nil,
@@ -53,7 +51,7 @@ module TonSdk
     end
   end
 
-  ClientConfig = Struct.new(:network, :crypto, :abi, :boc, keyword_init: true) do
+  ClientConfig = KwStruct.new(:network, :crypto, :abi, :boc) do
     def to_h
       res = super.to_h
 

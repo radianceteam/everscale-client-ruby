@@ -87,7 +87,9 @@ describe TonSdk::Boc do
     end
 
     it "#get_blockchain_config" do
-      pr1 = TonSdk::Boc::ParamsOfGetBlockchainConfig.new(File.read("spec/data/boc/get_blockchain_config1.txt"))
+      pr1 = TonSdk::Boc::ParamsOfGetBlockchainConfig.new(
+        block_boc: File.read("spec/data/boc/get_blockchain_config1.txt")
+      )
 
       expect { |b| TonSdk::Boc.get_blockchain_config(@c_ctx.context, pr1, &b) }.to yield_control
       expect { |b| TonSdk::Boc.get_blockchain_config(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
@@ -100,7 +102,7 @@ describe TonSdk::Boc do
     end
 
     it "#get_boc_hash" do
-      pr1 = TonSdk::Boc::ParamsOfGetBocHash.new("te6ccgEBAQEAWAAAq2n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE/zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzSsG8DgAAAAAjuOu9NAL7BxYpA")
+      pr1 = TonSdk::Boc::ParamsOfGetBocHash.new(boc: "te6ccgEBAQEAWAAAq2n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE/zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzSsG8DgAAAAAjuOu9NAL7BxYpA")
 
       expect { |b| TonSdk::Boc.get_boc_hash(@c_ctx.context, pr1, &b) }.to yield_control
       expect { |b| TonSdk::Boc.get_boc_hash(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
