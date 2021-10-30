@@ -222,15 +222,7 @@ describe TonSdk::Abi do
       end
 
       match_events = Proc.new do |expected, actual|
-        expect(expected.body_type).to eq(actual.body_type)
-        expect(expected.name).to eq(actual.name)
-        expect(expected.value.first[0].to_s).to eq(actual.value.first[0])
-        expect(expected.value.first[1]).to eq(actual.value.first[1])
-        if expected.header
-          expect(expected.header.expire).to eq(actual.header.expire)
-          expect(expected.header.time).to eq(actual.header.time)
-          expect(expected.header.pubkey).to eq(actual.header.pubkey)
-        end
+        expect(expected.to_h.to_json).to eq(actual.to_h.to_json)
       end
 
       expected = TonSdk::Abi::DecodedMessageBody.new(
