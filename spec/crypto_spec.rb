@@ -3,6 +3,32 @@ require 'base64'
 
 describe TonSdk::Crypto do
   context "methods of crypto" do
+    it "encryption" do
+      key = "01" * 32
+      nonce = "ff" * 12
+      encrypted = test_client.request(
+        "crypto.chacha20",
+        TonSdk::Crypto::ParamsOfChaCha20.new(
+          data: Base64.strict_encode64("Message"),
+          key: key,
+          nonce: nonce
+        )
+      )
+
+      expect(encrypted.data).to eq("w5QOGsJodQ==")
+
+      decrypted = test_client.request(
+        "crypto.chacha20",
+        TonSdk::Crypto::ParamsOfChaCha20.new(
+          data: encrypted.data,
+          key: key,
+          nonce: nonce
+        )
+      )
+
+      expect(decrypted.data).to eq("TWVzc2FnZQ==")
+    end
+
     it "#factorize" do
       pr1 = TonSdk::Crypto::ParamsOfFactorize.new(composite: "17ED48941A08F981")
       expect { |b| TonSdk::Crypto.factorize(@c_ctx.context, pr1, &b) }.to yield_control
@@ -235,19 +261,6 @@ describe TonSdk::Crypto do
       TonSdk::Crypto.mnemonic_verify(@c_ctx.context, pr3) { |a| @res3 = a }
       expect(@res3.success?).to eq true
       expect(@res3.result.valid).to eq false
-    end
-
-    it "#chacha20" do
-      pr1 = TonSdk::Crypto::ParamsOfChaCha20.new(
-        data: Base64.strict_encode64("Message"),
-        key: "01" * 32,
-        nonce: "ff" * 12,
-      )
-      expect { |b| TonSdk::Crypto.chacha20(@c_ctx.context, pr1, &b) }.to yield_control
-      TonSdk::Crypto.chacha20(@c_ctx.context, pr1) { |a| @res = a }
-
-      expect(@res.success?).to eq true
-      expect(@res.result.data).to eq "w5QOGsJodQ=="
     end
 
     it "#signing_box" do
