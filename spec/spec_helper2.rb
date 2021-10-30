@@ -54,11 +54,11 @@ class TestClient
   end
 
   # Workaround for singlethreaded requests
-  def request_no_params(function_name, is_single_thread_only:)
+  def request_no_params(function_name, **args)
     klass_name = function_name.split(".").first
     method_ = function_name.split(".").last
     klass = Kernel.const_get("TonSdk::#{klass_name.capitalize}")
-    klass.send(method_, client_context.context, is_single_thread_only: is_single_thread_only) { |r| @response = r }
+    klass.send(method_, client_context.context, **args) { |r| @response = r }
     response = @response
     @response = nil
     if response.success?

@@ -98,11 +98,7 @@ module TonSdk
 
     ParamsOfNaclBoxKeyPairFromSecret = KwStruct.new(:secret)
 
-    ParamsOfNaclBox = KwStruct.new(:decrypted, :nonce, :their_public, :secret) do
-      def initialize(decrypted:, nonce:, their_public:, secret:)
-        super
-      end
-    end
+    ParamsOfNaclBox = KwStruct.new(:decrypted, :nonce, :their_public, :secret)
 
     ResultOfNaclBox = KwStruct.new(:encrypted)
     ParamsOfNaclBoxOpen = KwStruct.new(:encrypted, :nonce, :their_public, :secret) do
@@ -112,11 +108,7 @@ module TonSdk
     end
 
     ResultOfNaclBoxOpen = KwStruct.new(:decrypted)
-    ParamsOfNaclSecretBox = KwStruct.new(:decrypted, :nonce, :key) do
-      def initialize(decrypted:, nonce:, key:)
-        super
-      end
-    end
+    ParamsOfNaclSecretBox = KwStruct.new(:decrypted, :nonce, :key)
 
     ParamsOfNaclSecretBoxOpen = KwStruct.new(:encrypted, :nonce, :key) do
       def initialize(encrypted:, nonce:, key:)

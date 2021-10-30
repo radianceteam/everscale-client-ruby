@@ -370,6 +370,90 @@ describe TonSdk::Crypto do
       )
 
       expect(result.succeeded).to eq(false)
+
+      # Box
+
+      result = test_client.request_no_params("crypto.nacl_box_keypair")
+
+      expect(result.public_.length).to eq(64)
+      expect(result.secret.length).to eq(64)
+      expect(result.public_).not_to eq(result.secret)
+
+      result = test_client.request(
+        "crypto.nacl_box_keypair_from_secret_key",
+        TonSdk::Crypto::ParamsOfNaclBoxKeyPairFromSecret.new(
+          secret: "e207b5966fb2c5be1b71ed94ea813202706ab84253bdf4dc55232f82a1caf0d4"
+        )
+      )
+
+      expect(result.public_).to eq("a53b003d3ffc1e159355cb37332d67fc235a7feb6381e36c803274074dc3933a")
+
+      result = test_client.request(
+        "crypto.nacl_box",
+        TonSdk::Crypto::ParamsOfNaclBox.new(
+          decrypted: Base64.strict_encode64("Test Message"),
+          nonce: "cd7f99924bf422544046e83595dd5803f17536f5c9a11746",
+          their_public: "c4e2d9fe6a6baf8d1812b799856ef2a306291be7a7024837ad33a8530db79c6b",
+          secret: "d9b9dc5033fb416134e5d2107fdbacab5aadb297cb82dbdcd137d663bac59f7f"
+        )
+      )
+
+      expect(result.encrypted).to eq("li4XED4kx/pjQ2qdP0eR2d/K30uN94voNADxwA==")
+
+      result = test_client.request(
+        "crypto.nacl_box_open",
+        TonSdk::Crypto::ParamsOfNaclBoxOpen.new(
+          encrypted: TonSdk::Helper.base64_from_hex("962e17103e24c7fa63436a9d3f4791d9dfcadf4b8df78be83400f1c0"),
+          nonce: "cd7f99924bf422544046e83595dd5803f17536f5c9a11746",
+          their_public: "c4e2d9fe6a6baf8d1812b799856ef2a306291be7a7024837ad33a8530db79c6b",
+          secret: "d9b9dc5033fb416134e5d2107fdbacab5aadb297cb82dbdcd137d663bac59f7f"
+        )
+      )
+
+      expect(Base64.strict_decode64(result.decrypted)).to eq("Test Message")
+
+      # Secret box
+
+      result = test_client.request(
+        "crypto.nacl_secret_box",
+        TonSdk::Crypto::ParamsOfNaclSecretBox.new(
+          decrypted: Base64.strict_encode64("Test Message"),
+          nonce: "2a33564717595ebe53d91a785b9e068aba625c8453a76e45",
+          key: "8f68445b4e78c000fe4d6b7fc826879c1e63e3118379219a754ae66327764bd8"
+        )
+      )
+
+      expect(result.encrypted).to eq("JL7ejKWe2KXmrsns41yfXoQF0t/C1Q8RGyzQ2A==")
+
+      result = test_client.request(
+        "crypto.nacl_secret_box_open",
+        TonSdk::Crypto::ParamsOfNaclSecretBoxOpen.new(
+          encrypted: TonSdk::Helper.base64_from_hex("24bede8ca59ed8a5e6aec9ece35c9f5e8405d2dfc2d50f111b2cd0d8"),
+          nonce: "2a33564717595ebe53d91a785b9e068aba625c8453a76e45",
+          key: "8f68445b4e78c000fe4d6b7fc826879c1e63e3118379219a754ae66327764bd8"
+        )
+      )
+
+      expect(Base64.strict_decode64(result.decrypted)).to eq("Test Message")
+
+      e = test_client.request(
+        "crypto.nacl_secret_box",
+        TonSdk::Crypto::ParamsOfNaclSecretBox.new(
+          decrypted: Base64.strict_encode64("Text with ' and \" and : {}"),
+          nonce: "2a33564717595ebe53d91a785b9e068aba625c8453a76e45",
+          key: "8f68445b4e78c000fe4d6b7fc826879c1e63e3118379219a754ae66327764bd8"
+        )
+      )
+      d = test_client.request(
+        "crypto.nacl_secret_box_open",
+        TonSdk::Crypto::ParamsOfNaclSecretBoxOpen.new(
+          encrypted: e.encrypted,
+          nonce: "2a33564717595ebe53d91a785b9e068aba625c8453a76e45",
+          key: "8f68445b4e78c000fe4d6b7fc826879c1e63e3118379219a754ae66327764bd8"
+        )
+      )
+
+      expect(Base64.strict_decode64(d.decrypted)).to eq("Text with ' and \" and : {}")
     end
   end
 end
