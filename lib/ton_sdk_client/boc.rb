@@ -17,7 +17,7 @@ module TonSdk
     ParamsOfGetBocDepth = KwStruct.new(:boc)
     ResultOfGetBocDepth = KwStruct.new(:depth)
 
-    ParamsOfGetCodeFromTvc = KwStruct.new(:hash)
+    ParamsOfGetCodeFromTvc = KwStruct.new(:tvc)
     ResultOfGetCodeFromTvc = KwStruct.new(:code)
     ParamsOfBocCacheGet = KwStruct.new(:boc_ref)
 
