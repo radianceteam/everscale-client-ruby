@@ -247,18 +247,12 @@ module TonSdk
     RegisteredSigningBox = KwStruct.new(:handle)
     ResultOfSigningBoxGetPublicKey = KwStruct.new(:pubkey)
 
-    class ParamsOfNaclSignDetachedVerify
-      attr_reader :unsigned, :signature, :public
-
-      def initialize(unsigned:, signature:, public_:)
-        @unsigned, @signature, @public_ = unsigned, signature, public_
-      end
-
+    ParamsOfNaclSignDetachedVerify = KwStruct.new(:unsigned, :signature, :public_) do
       def to_h
         {
-          unsigned: @unsigned,
-          signature: @signature,
-          public: @public_
+          unsigned: unsigned,
+          signature: signature,
+          public: public_
         }
       end
     end
