@@ -171,6 +171,17 @@ describe TonSdk::Boc do
       expect(boc.boc).to eq(boc2)
     end
 
+    it "#get_boc_hash" do
+      result = test_client.request(
+        "boc.get_boc_hash",
+        TonSdk::Boc::ParamsOfGetBocHash.new(
+          boc: "te6ccgEBAQEAWAAAq2n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE/zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzSsG8DgAAAAAjuOu9NAL7BxYpA"
+        )
+      )
+
+      expect(result.hash).to eq("dfd47194f3058ee058bfbfad3ea40cbbd9ad17ca77cd0904d4d9f18a48c2fbca")
+    end
+
     it "#get_boc_depth" do
       boc = load_boc(name: "account")
       result = test_client.request(
@@ -268,17 +279,6 @@ describe TonSdk::Boc do
 
       cont_boc = File.read("spec/data/boc/get_blockchain_config2.txt")
       expect(@res.result.config_boc).to eq cont_boc
-    end
-
-    it "#get_boc_hash" do
-      pr1 = TonSdk::Boc::ParamsOfGetBocHash.new(boc: "te6ccgEBAQEAWAAAq2n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE/zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzSsG8DgAAAAAjuOu9NAL7BxYpA")
-
-      expect { |b| TonSdk::Boc.get_boc_hash(@c_ctx.context, pr1, &b) }.to yield_control
-      expect { |b| TonSdk::Boc.get_boc_hash(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
-
-      TonSdk::Boc.get_boc_hash(@c_ctx.context, pr1) { |a| @res = a }
-      expect(@res.success?).to eq true
-      expect(@res.result.hash).to eq "dfd47194f3058ee058bfbfad3ea40cbbd9ad17ca77cd0904d4d9f18a48c2fbca"
     end
 
     context "code_salt" do
