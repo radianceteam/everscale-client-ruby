@@ -278,18 +278,23 @@ describe TonSdk::Boc do
     end
 
     it "#get_blockchain_config" do
-      pr1 = TonSdk::Boc::ParamsOfGetBlockchainConfig.new(
-        block_boc: File.read("spec/data/boc/get_blockchain_config1.txt")
+      result = test_client.request(
+        "boc.get_blockchain_config",
+        TonSdk::Boc::ParamsOfGetBlockchainConfig.new(
+          block_boc: load_boc(name: "block")
+        )
       )
 
-      expect { |b| TonSdk::Boc.get_blockchain_config(@c_ctx.context, pr1, &b) }.to yield_control
-      expect { |b| TonSdk::Boc.get_blockchain_config(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
+      expect(result.config_boc).to eq(load_boc(name: "block_config"))
 
-      TonSdk::Boc.get_blockchain_config(@c_ctx.context, pr1) { |a| @res = a }
-      expect(@res.success?).to eq true
+      result = test_client.request(
+        "boc.get_blockchain_config",
+        TonSdk::Boc::ParamsOfGetBlockchainConfig.new(
+          block_boc: load_boc(name: "zerostate")
+        )
+      )
 
-      cont_boc = File.read("spec/data/boc/get_blockchain_config2.txt")
-      expect(@res.result.config_boc).to eq cont_boc
+      expect(result.config_boc).to eq(load_boc(name: "zerostate_config"))
     end
 
     context "code_salt" do
