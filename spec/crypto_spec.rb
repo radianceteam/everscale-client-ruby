@@ -242,6 +242,20 @@ describe TonSdk::Crypto do
       expect(@res1.success?).to eq true
       expect(@res1.result.words.split(" ").count).to eq 2048
 
+      (1...9).each do |dictionary|
+        [12, 15, 18, 21, 24].each do |word_count|
+          result = test_client.request(
+            "crypto.mnemonic_from_random",
+            TonSdk::Crypto::ParamsOfMnemonicFromRandom.new(
+              dictionary: dictionary,
+              word_count: word_count
+            )
+          )
+
+          expect(result.phrase.split(" ").size).to eq(word_count)
+        end
+      end
+
       # 2
       pr2 = TonSdk::Crypto::ParamsOfMnemonicFromEntropy.new(
         entropy: "00112233445566778899AABBCCDDEEFF",
