@@ -267,6 +267,28 @@ describe TonSdk::Crypto do
       expect(@res2.success?).to eq true
       expect(@res2.result.phrase).to eq "abandon math mimic master filter design carbon crystal rookie group knife young"
 
+      (1...9).each do |dictionary|
+        [12, 15, 18, 21, 24].each do |word_count|
+          result = test_client.request(
+            "crypto.mnemonic_from_random",
+            TonSdk::Crypto::ParamsOfMnemonicFromRandom.new(
+              dictionary: dictionary,
+              word_count: word_count
+            )
+          )
+          verify_result = test_client.request(
+            "crypto.mnemonic_verify",
+            TonSdk::Crypto::ParamsOfMnemonicVerify.new(
+              phrase: result.phrase,
+              dictionary: dictionary,
+              word_count: word_count
+            )
+          )
+
+          expect(verify_result.valid).to eq(true)
+        end
+      end
+
       # 3
       pr3 = TonSdk::Crypto::ParamsOfMnemonicVerify.new(
         phrase: "one two"
@@ -275,6 +297,116 @@ describe TonSdk::Crypto do
       TonSdk::Crypto.mnemonic_verify(@c_ctx.context, pr3) { |a| @res3 = a }
       expect(@res3.success?).to eq true
       expect(@res3.result.valid).to eq false
+
+      result = test_client.request(
+        "crypto.mnemonic_derive_sign_keys",
+        TonSdk::Crypto::ParamsOfMnemonicDeriveSignKeys.new(
+          phrase: "unit follow zone decline glare flower crisp vocal adapt magic much mesh cherry teach mechanic rain float vicious solution assume hedgehog rail sort chuckle",
+          path: nil,
+          dictionary: 0,
+          word_count: 24
+        )
+      )
+      result = test_client.request(
+        "crypto.convert_public_key_to_ton_safe_format",
+        TonSdk::Crypto::ParamsOfConvertPublicKeyToTonSafeFormat.new(
+          public_key: result.public_
+        )
+      )
+
+      expect(result.ton_public_key).to eq("PuYTvCuf__YXhp-4jv3TXTHL0iK65ImwxG0RGrYc1sP3H4KS")
+
+      result = test_client.request(
+        "crypto.mnemonic_derive_sign_keys",
+        TonSdk::Crypto::ParamsOfMnemonicDeriveSignKeys.new(
+          phrase: "unit follow zone decline glare flower crisp vocal adapt magic much mesh cherry teach mechanic rain float vicious solution assume hedgehog rail sort chuckle",
+          path: "m",
+          dictionary: 0,
+          word_count: 24
+        )
+      )
+      result = test_client.request(
+        "crypto.convert_public_key_to_ton_safe_format",
+        TonSdk::Crypto::ParamsOfConvertPublicKeyToTonSafeFormat.new(
+          public_key: result.public_
+        )
+      )
+
+      expect(result.ton_public_key).to eq("PubDdJkMyss2qHywFuVP1vzww0TpsLxnRNnbifTCcu-XEgW0")
+
+      result = test_client.request(
+        "crypto.mnemonic_derive_sign_keys",
+        TonSdk::Crypto::ParamsOfMnemonicDeriveSignKeys.new(
+          phrase: "abandon math mimic master filter design carbon crystal rookie group knife young",
+          path: nil,
+          dictionary: nil,
+          word_count: nil
+        )
+      )
+      result = test_client.request(
+        "crypto.convert_public_key_to_ton_safe_format",
+        TonSdk::Crypto::ParamsOfConvertPublicKeyToTonSafeFormat.new(
+          public_key: result.public_
+        )
+      )
+
+      expect(result.ton_public_key).to eq("PuZhw8W5ejPJwKA68RL7sn4_RNmeH4BIU_mEK7em5d4_-cIx")
+
+      result = test_client.request(
+        "crypto.mnemonic_from_random",
+        TonSdk::Crypto::ParamsOfMnemonicFromRandom.new(
+          dictionary: nil,
+          word_count: nil
+        )
+      )
+
+      expect(result.phrase.split(" ").size).to eq(12)
+
+      result = test_client.request(
+        "crypto.mnemonic_from_random",
+        TonSdk::Crypto::ParamsOfMnemonicFromRandom.new(
+          dictionary: 0,
+          word_count: 12
+        )
+      )
+
+      expect(result.phrase.split(" ").size).to eq(12)
+
+      result = test_client.request(
+        "crypto.mnemonic_from_random",
+        TonSdk::Crypto::ParamsOfMnemonicFromRandom.new(
+          dictionary: 1,
+          word_count: 12
+        )
+      )
+
+      expect(result.phrase.split(" ").size).to eq(12)
+
+      result = test_client.request(
+        "crypto.mnemonic_from_entropy",
+        TonSdk::Crypto::ParamsOfMnemonicFromEntropy.new(
+          entropy: "2199ebe996f14d9e4e2595113ad1e627",
+          dictionary: nil,
+          word_count: nil
+        )
+      )
+      result = test_client.request(
+        "crypto.mnemonic_derive_sign_keys",
+        TonSdk::Crypto::ParamsOfMnemonicDeriveSignKeys.new(
+          phrase: result.phrase,
+          path: nil,
+          dictionary: nil,
+          word_count: nil
+        )
+      )
+      result = test_client.request(
+        "crypto.convert_public_key_to_ton_safe_format",
+        TonSdk::Crypto::ParamsOfConvertPublicKeyToTonSafeFormat.new(
+          public_key: result.public_
+        )
+      )
+
+      expect(result.ton_public_key).to eq("PuZdw_KyXIzo8IksTrERN3_WoAoYTyK7OvM-yaLk711sUIB3")
     end
 
     it "#signing_box" do

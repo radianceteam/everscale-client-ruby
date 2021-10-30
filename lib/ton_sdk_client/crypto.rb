@@ -101,85 +101,27 @@ module TonSdk
     ParamsOfNaclBox = KwStruct.new(:decrypted, :nonce, :their_public, :secret)
 
     ResultOfNaclBox = KwStruct.new(:encrypted)
-    ParamsOfNaclBoxOpen = KwStruct.new(:encrypted, :nonce, :their_public, :secret) do
-      def initialize(encrypted:, nonce:, their_public:, secret:)
-        super
-      end
-    end
+    ParamsOfNaclBoxOpen = KwStruct.new(:encrypted, :nonce, :their_public, :secret)
 
     ResultOfNaclBoxOpen = KwStruct.new(:decrypted)
     ParamsOfNaclSecretBox = KwStruct.new(:decrypted, :nonce, :key)
 
-    ParamsOfNaclSecretBoxOpen = KwStruct.new(:encrypted, :nonce, :key) do
-      def initialize(encrypted:, nonce:, key:)
-        super
-      end
-    end
+    ParamsOfNaclSecretBoxOpen = KwStruct.new(:encrypted, :nonce, :key)
 
     ParamsOfMnemonicWords = KwStruct.new(:dictionary)
     ResultOfMnemonicWords = KwStruct.new(:words)
     ParamsOfMnemonicFromRandom = KwStruct.new(:dictionary, :word_count)
     ResultOfMnemonicFromRandom = KwStruct.new(:phrase)
 
-    class ParamsOfMnemonicFromEntropy
-      attr_reader :entropy, :dictionary, :word_count
-
-      def initialize(entropy:, dictionary: nil, word_count: nil)
-        @entropy = entropy
-        @dictionary = dictionary
-        @word_count = word_count
-      end
-
-      def to_h
-        {
-          entropy: @entropy,
-          dictionary: @dictionary,
-          word_count: @word_count
-        }
-      end
-    end
+    ParamsOfMnemonicFromEntropy = KwStruct.new(:entropy, :dictionary, :word_count)
 
     ResultOfMnemonicFromEntropy = KwStruct.new(:phrase)
 
-    class ParamsOfMnemonicVerify
-      attr_reader :phrase, :dictionary, :word_count
-
-      def initialize(phrase:, dictionary: nil, word_count: nil)
-        @phrase = phrase
-        @dictionary = dictionary
-        @word_count = word_count
-      end
-
-      def to_h
-        {
-          phrase: @phrase,
-          dictionary: @dictionary,
-          word_count: @word_count
-        }
-      end
-    end
+    ParamsOfMnemonicVerify = KwStruct.new(:phrase, :dictionary, :word_count)
 
     ResultOfMnemonicVerify = KwStruct.new(:valid)
 
-    class ParamsOfMnemonicDeriveSignKeys
-      attr_reader :phrase, :path, :dictionary, :word_count
-
-      def initialize(phrase:, path: nil, dictionary: nil, word_count: nil)
-        @phrase = phrase
-        @path = path
-        @dictionary = dictionary
-        @word_count = word_count
-      end
-
-      def to_h
-        {
-          phrase: @phrase,
-          path: @path,
-          dictionary: @dictionary,
-          word_count: @word_count
-        }
-      end
-    end
+    ParamsOfMnemonicDeriveSignKeys = KwStruct.new(:phrase, :path, :dictionary, :word_count)
 
     class ParamsOfHDKeyXPrvFromMnemonic
       attr_reader :phrase, :dictionary, :word_count
