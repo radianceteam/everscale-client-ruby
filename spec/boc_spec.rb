@@ -109,6 +109,68 @@ describe TonSdk::Boc do
       expect(boc.boc).to eq(nil)
     end
 
+    it "test_unpinned_cache" do
+      boc1 = load_tvc(name: "testDebot")
+      boc2 = load_tvc(name: "Subscription")
+
+      boc_max_size = [
+        Base64.strict_decode64(boc1).length,
+        Base64.strict_decode64(boc2).length
+      ].max
+
+      test_client = TestClient.new(
+        config: {
+          boc: {
+            cache_max_size: boc_max_size / 1024 + 1
+          }
+        }
+      )
+
+      ref1 = test_client.request(
+        "boc.cache_set",
+        TonSdk::Boc::ParamsOfBocCacheSet.new(
+          boc: boc1,
+          cache_type: TonSdk::Boc::BocCacheType.new(type: :unpinned)
+        )
+      ).boc_ref
+
+      boc = test_client.request(
+        "boc.cache_get",
+        TonSdk::Boc::ParamsOfBocCacheGet.new(
+          boc_ref: ref1
+        )
+      )
+
+      expect(boc.boc).to eq(boc1)
+
+      # add second BOC to remove first BOC by insufficient cache size
+      ref2 = test_client.request(
+        "boc.cache_set",
+        TonSdk::Boc::ParamsOfBocCacheSet.new(
+          boc: boc2,
+          cache_type: TonSdk::Boc::BocCacheType.new(type: :unpinned)
+        )
+      ).boc_ref
+
+      boc = test_client.request(
+        "boc.cache_get",
+        TonSdk::Boc::ParamsOfBocCacheGet.new(
+          boc_ref: ref1
+        )
+      )
+
+      expect(boc.boc).to eq(nil)
+
+      boc = test_client.request(
+        "boc.cache_get",
+        TonSdk::Boc::ParamsOfBocCacheGet.new(
+          boc_ref: ref2
+        )
+      )
+
+      expect(boc.boc).to eq(boc2)
+    end
+
     it "#get_boc_depth" do
       boc = load_boc(name: "account")
       result = test_client.request(

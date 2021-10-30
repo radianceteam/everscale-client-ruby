@@ -12,12 +12,12 @@ module AbiVersion
 end
 
 class TestClient
+  def initialize(config: nil)
+    @config = config || default_config
+  end
+
   def client_config
-    TonSdk::ClientConfig.new(
-      network: TonSdk::NetworkConfig.new(
-        endpoints: ["net.ton.dev"]
-      )
-    )
+    @_client_config ||= TonSdk::ClientConfig.new(config)
   end
 
   def client_context
@@ -66,6 +66,18 @@ class TestClient
     else
       response.error.message
     end
+  end
+
+  private
+
+  attr_reader :config
+
+  def default_config
+    {
+      network: TonSdk::NetworkConfig.new(
+        endpoints: ["net.ton.dev"]
+      )
+    }
   end
 end
 
