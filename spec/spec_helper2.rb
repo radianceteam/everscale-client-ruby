@@ -43,6 +43,9 @@ class TestClient
     klass.send(method_, client_context.context, params) { |r| @response = r }
     response = @response
     @response = nil
+
+    return if response.nil?
+
     if response.success?
       response.result
     else

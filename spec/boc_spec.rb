@@ -2,6 +2,113 @@ require 'spec_helper'
 
 describe TonSdk::Boc do
   context "methods of boc" do
+    it "test_pinned_cache" do
+      boc1 = load_tvc(name: "Hello")
+      boc2 = load_tvc(name: "Events")
+
+      pin1 = "pin1"
+      pin2 = "pin2"
+
+      ref1 = test_client.request(
+        "boc.cache_set",
+        TonSdk::Boc::ParamsOfBocCacheSet.new(
+          boc: boc1,
+          cache_type: TonSdk::Boc::BocCacheType.new(type: :pinned, pin: pin1)
+        )
+      ).boc_ref
+
+      expect(ref1[0]).to eq("*")
+      expect(ref1.length).to eq(65)
+
+      boc = test_client.request(
+        "boc.cache_get",
+        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
+      )
+
+      expect(boc.boc).to eq(boc1)
+
+      ref2 = test_client.request(
+        "boc.cache_set",
+        TonSdk::Boc::ParamsOfBocCacheSet.new(
+          boc: boc2,
+          cache_type: TonSdk::Boc::BocCacheType.new(type: :pinned, pin: pin1)
+        )
+      ).boc_ref
+
+      expect(ref1).not_to eq(ref2)
+
+      ref3 = test_client.request(
+        "boc.cache_set",
+        TonSdk::Boc::ParamsOfBocCacheSet.new(
+          boc: boc1,
+          cache_type: TonSdk::Boc::BocCacheType.new(type: :pinned, pin: pin2)
+        )
+      ).boc_ref
+
+      expect(ref3).to eq(ref1)
+
+      # unpin pin1 and check that boc2 which had only this pin is removed from cache but boc1 which
+      # had both pins is still in cache
+      test_client.request(
+        "boc.cache_unpin",
+        TonSdk::Boc::ParamsOfBocCacheUnpin.new(pin: pin1)
+      )
+
+      boc = test_client.request(
+        "boc.cache_get",
+        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
+      )
+
+      expect(boc.boc).to eq(boc1)
+
+      boc = test_client.request(
+        "boc.cache_get",
+        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref2)
+      )
+
+      expect(boc.boc).to eq(nil)
+
+      ref4 = test_client.request(
+        "boc.cache_set",
+        TonSdk::Boc::ParamsOfBocCacheSet.new(
+          boc: boc2,
+          cache_type: TonSdk::Boc::BocCacheType.new(type: :pinned, pin: pin2)
+        )
+      ).boc_ref
+
+      # unpin pin2 with particular ref and that only this ref is removed from cache
+      test_client.request(
+        "boc.cache_unpin",
+        TonSdk::Boc::ParamsOfBocCacheUnpin.new(boc_ref: ref4, pin: pin2)
+      )
+
+      boc = test_client.request(
+        "boc.cache_get",
+        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
+      )
+
+      expect(boc.boc).to eq(boc1)
+
+      boc = test_client.request(
+        "boc.cache_get",
+        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref4)
+      )
+
+      expect(boc.boc).to eq(nil)
+
+      test_client.request(
+        "boc.cache_unpin",
+        TonSdk::Boc::ParamsOfBocCacheUnpin.new(pin: pin2)
+      )
+
+      boc = test_client.request(
+        "boc.cache_get",
+        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
+      )
+
+      expect(boc.boc).to eq(nil)
+    end
+
     it "#get_boc_depth" do
       boc = load_boc(name: "account")
       result = test_client.request(

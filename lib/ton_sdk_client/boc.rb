@@ -24,47 +24,39 @@ module TonSdk
     ResultOfBocCacheGet = KwStruct.new(:boc)
 
     class BocCacheType
-      private_class_method :new
+      TYPES = [
+        :pinned,
+        :unpinned
+      ]
 
-      attr_reader :type_, :pin
+      attr_reader :type, :pin
 
-      def self.new_with_type_pinned(pin)
-        @type_ = :pinned
+      def initialize(type:, pin: nil)
+        unless TYPES.include?(type)
+          raise ArgumentError.new("type #{type} is unknown; known types: #{TYPES}")
+        end
+        @type = type
         @pin = pin
       end
 
-      def self.new_with_type_unpinned
-        @type_ = :unpinned
-      end
-
       def to_h
-        h1 = {
-          type: Helper.sym_to_capitalized_case_str(@type_)
-        }
-
-        h2 = if @type_ == :pinned
-          {
-            pin: @pin
-          }
-        else
-          { }
-        end
-
-        h1.merge(h2)
+        hash = {type: Helper.sym_to_capitalized_case_str(type)}
+        hash[:pin] = pin if type == :pinned
+        hash
       end
     end
 
     ParamsOfBocCacheSet = KwStruct.new(:boc, :cache_type) do
       def to_h
         {
-          boc: @boc,
-          cache_type: @cache_type.to_h
+          boc: boc,
+          cache_type: cache_type.to_h
         }
       end
     end
 
     ResultOfBocCacheSet = KwStruct.new(:boc_ref)
-    ParamsOfBocCacheUnpin = KwStruct.new(:boc, :boc_ref)
+    ParamsOfBocCacheUnpin = KwStruct.new(:pin, :boc_ref)
     ParamsOfEncodeBoc = KwStruct.new(:builder, :boc_cache)
     ResultOfEncodeBoc = KwStruct.new(:boc)
 
