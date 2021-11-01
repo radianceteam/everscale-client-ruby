@@ -39,7 +39,7 @@ module TonSdk
 
         Interop::tc_destroy_string(ptr)
       else
-        raise SdkError.new("unable to create context")
+        raise SdkError.new(message: "unable to create context")
       end
     end
 
