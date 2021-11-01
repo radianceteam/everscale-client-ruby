@@ -52,10 +52,7 @@ module TonSdk
       def self.from_json(j)
         return nil if j.nil?
 
-        self.new(
-          j["name"],
-          j["git_commit"]
-        )
+        self.new(name: j["name"], git_commit: j["git_commit"])
       end
     end
 
@@ -97,8 +94,8 @@ module TonSdk
     ParamsOfResolveAppRequest = KwStruct.new(:app_request_id, :result) do
       def to_h
         {
-          app_request_id: @app_request_id,
-          result: @result.to_h
+          app_request_id: app_request_id,
+          result: result.to_h
         }
       end
     end
