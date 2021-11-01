@@ -168,7 +168,7 @@ module TonSdk
 
     MESSAGE_SOURCE_TYPES = [:encoded, :encoding_params]
     MessageSource = KwStruct.new(
-      :type_,
+      :type,
       :message,
       :abi,
       :address,
@@ -178,7 +178,7 @@ module TonSdk
       :processing_try_index
     ) do
       def initialize(
-        type_:,
+        type:,
         message: nil,
         abi:  nil,
         address: nil,
@@ -187,8 +187,8 @@ module TonSdk
         signer:  nil,
         processing_try_index: 0
       )
-        unless MESSAGE_SOURCE_TYPES.include?(type_)
-          raise ArgumentError.new("unknown type: #{type_}; known types: #{MESSAGE_SOURCE_TYPES}")
+        unless MESSAGE_SOURCE_TYPES.include?(type)
+          raise ArgumentError.new("unknown type: #{type}; known types: #{MESSAGE_SOURCE_TYPES}")
         end
 
         super
@@ -196,23 +196,23 @@ module TonSdk
 
       def to_h
         h1 = {
-          type: Helper.sym_to_capitalized_case_str(@type_)
+          type: Helper.sym_to_capitalized_case_str(type)
         }
 
-        h2 = case @type_
+        h2 = case type
         when :encoded
           {
-            message: @message,
-            abi: @abi.nil? ? nil : @abi.to_h
+            message: message,
+            abi: abi&.to_h
           }
         when :encoding_params
           {
-            abi: @abi.to_h,
-            address: @address,
-            deploy_set: @deploy_set.nil? ? nil : @deploy_set.to_h,
-            call_set: @call_set.nil? ? nil : @call_set.to_h,
-            signer: @signer.to_h,
-            processing_try_index: @processing_try_index
+            abi: abi.to_h,
+            address: address,
+            deploy_set: deploy_set&.to_h,
+            call_set: call_set&.to_h,
+            signer: signer&.to_h,
+            processing_try_index: processing_try_index
           }
         end
 
