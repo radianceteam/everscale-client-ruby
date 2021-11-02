@@ -2,6 +2,12 @@
 
 all the changes are always according to the ones of the main TON SDK library; and on top on that, there may be additional ones
 
+1.24.0
+-----
+* Binaries updated to `1.24.0`;
+* Changes `1.24.0` (https://github.com/tonlabs/TON-SDK/blob/master/CHANGELOG.md#1240--2021-10-18);
+* **BREAKING CHANGE** All Params now require keyword arguments
+
 1.20.x
 -----
 * NetworkConfig and AbiContract have been changed (not mentioned explicitly in Changelog of TON SDK )

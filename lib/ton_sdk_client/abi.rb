@@ -39,9 +39,9 @@ module TonSdk
       end
     end
 
-    FunctionHeader = Struct.new(:expire, :time, :pubkey, keyword_init: true)
+    FunctionHeader = KwStruct.new(:expire, :time, :pubkey)
 
-    CallSet = Struct.new(:function_name, :header, :input, keyword_init: true) do
+    CallSet = KwStruct.new(:function_name, :header, :input) do
       def initialize(function_name:, header: nil, input: nil)
         super
       end
@@ -55,7 +55,7 @@ module TonSdk
       end
     end
 
-    DeploySet = Struct.new(:tvc, :workchain_id, :initial_data, :initial_pubkey, keyword_init: true) do
+    DeploySet = KwStruct.new(:tvc, :workchain_id, :initial_data, :initial_pubkey) do
       def initialize(tvc:, workchain_id: nil, initial_data: nil, initial_pubkey: nil)
         super
       end
@@ -103,19 +103,19 @@ module TonSdk
     end
 
     STATIC_INIT_SOURCE_TYPES = [:message, :state_init, :tvc]
-    StateInitSource = Struct.new(
-      :type_,
+    # TODO: Refactor with subclasses?
+    StateInitSource = KwStruct.new(
+      :type,
       :source,
       :code,
       :data,
       :library,
       :tvc,
       :public_key,
-      :init_params,
-      keyword_init: true
+      :init_params
     ) do
       def initialize(
-        type_:,
+        type:,
         source: nil,
         code: nil,
         data: nil,
@@ -124,42 +124,42 @@ module TonSdk
         public_key: nil,
         init_params: nil
       )
-        unless STATIC_INIT_SOURCE_TYPES.include?(type_)
-          raise ArgumentError.new("unknown type: #{type_}; known types: #{STATIC_INIT_SOURCE_TYPES}")
+        unless STATIC_INIT_SOURCE_TYPES.include?(type)
+          raise ArgumentError.new("unknown type: #{type}; known types: #{STATIC_INIT_SOURCE_TYPES}")
         end
         super
       end
 
       def to_h
         h1 = {
-          type: Helper.sym_to_capitalized_case_str(@type_)
+          type: Helper.sym_to_capitalized_case_str(type)
         }
 
-        h2 = case @type_
+        h2 = case type
         when :message
           {
-            source: @source.to_h
+            source: source.to_h
           }
         when :state_init
           {
-            code: @code,
-            data: @data,
-            library: @library
+            code: code,
+            data: data,
+            library: library
           }
         when :tvc
           {
-            public_key: @public_key,
-            init_params: @init_params.to_h
+            public_key: public_key,
+            init_params: init_params.to_h
           }
         else
-          raise ArgumentError.new("unknown type: #{@type_}; known types: #{STATIC_INIT_SOURCE_TYPES}")
+          raise ArgumentError.new("unknown type: #{type}; known types: #{STATIC_INIT_SOURCE_TYPES}")
         end
 
         h1.merge(h2)
       end
     end
 
-    StateInitParams = Struct.new(:abi, :value, keyword_init: true) do
+    StateInitParams = KwStruct.new(:abi, :value) do
       def initialize(abi:, value:)
         super
       end
@@ -167,19 +167,18 @@ module TonSdk
 
 
     MESSAGE_SOURCE_TYPES = [:encoded, :encoding_params]
-    MessageSource = Struct.new(
-      :type_,
+    MessageSource = KwStruct.new(
+      :type,
       :message,
       :abi,
       :address,
       :deploy_set,
       :call_set,
       :signer,
-      :processing_try_index,
-      keyword_init: true
+      :processing_try_index
     ) do
       def initialize(
-        type_:,
+        type:,
         message: nil,
         abi:  nil,
         address: nil,
@@ -188,8 +187,8 @@ module TonSdk
         signer:  nil,
         processing_try_index: 0
       )
-        unless MESSAGE_SOURCE_TYPES.include?(type_)
-          raise ArgumentError.new("unknown type: #{type_}; known types: #{MESSAGE_SOURCE_TYPES}")
+        unless MESSAGE_SOURCE_TYPES.include?(type)
+          raise ArgumentError.new("unknown type: #{type}; known types: #{MESSAGE_SOURCE_TYPES}")
         end
 
         super
@@ -197,23 +196,23 @@ module TonSdk
 
       def to_h
         h1 = {
-          type: Helper.sym_to_capitalized_case_str(@type_)
+          type: Helper.sym_to_capitalized_case_str(type)
         }
 
-        h2 = case @type_
+        h2 = case type
         when :encoded
           {
-            message: @message,
-            abi: @abi.nil? ? nil : @abi.to_h
+            message: message,
+            abi: abi&.to_h
           }
         when :encoding_params
           {
-            abi: @abi.to_h,
-            address: @address,
-            deploy_set: @deploy_set.nil? ? nil : @deploy_set.to_h,
-            call_set: @call_set.nil? ? nil : @call_set.to_h,
-            signer: @signer.to_h,
-            processing_try_index: @processing_try_index
+            abi: abi.to_h,
+            address: address,
+            deploy_set: deploy_set&.to_h,
+            call_set: call_set&.to_h,
+            signer: signer&.to_h,
+            processing_try_index: processing_try_index
           }
         end
 
@@ -221,34 +220,50 @@ module TonSdk
       end
     end
 
-    ParamsOfEncodeMessageBody = Struct.new(:abi, :call_set, :is_internal, :signer, :processing_try_index, keyword_init: true) do
-      def initialize(abi:, call_set:, is_internal:, signer:, processing_try_index: 0)
-        super
+    ParamsOfEncodeMessageBody = KwStruct.new(
+      :abi,
+      :call_set,
+      :is_internal,
+      :signer,
+      :processing_try_index
+    ) do
+      def to_h
+        {
+          abi: abi.to_h,
+          call_set: call_set.to_h,
+          is_internal: is_internal,
+          signer: signer.to_h,
+          processing_try_index: processing_try_index
+        }
       end
     end
 
-    ResultOfEncodeMessageBody = Struct.new(:body, :data_to_sign, keyword_init: true) do
+    ResultOfEncodeMessageBody = KwStruct.new(:body, :data_to_sign) do
       def initialize(body:, data_to_sign: nil)
         super
       end
     end
 
-    ParamsOfAttachSignatureToMessageBody = Struct.new(:abi, :public_key, :message, :signature, keyword_init: true) do
-      def initialize(abi:, public_key:, message:, signature:)
-        super
+    ParamsOfAttachSignatureToMessageBody = KwStruct.new(:abi, :public_key, :message, :signature) do
+      def to_h
+        {
+          abi: abi.to_h,
+          public_key: public_key,
+          message: message,
+          signature: signature
+        }
       end
     end
 
-    ResultOfAttachSignatureToMessageBody = Struct.new(:body)
+    ResultOfAttachSignatureToMessageBody = KwStruct.new(:body)
 
-    ParamsOfEncodeMessage = Struct.new(
+    ParamsOfEncodeMessage = KwStruct.new(
       :abi,
       :address,
       :deploy_set,
       :call_set,
       :signer,
-      :processing_try_index,
-      keyword_init: true
+      :processing_try_index
     ) do
       def initialize(
         abi:,
@@ -273,27 +288,43 @@ module TonSdk
       end
     end
 
-    ResultOfEncodeMessage = Struct.new(:message, :data_to_sign, :address, :message_id, keyword_init: true) do
+    ResultOfEncodeMessage = KwStruct.new(:message, :data_to_sign, :address, :message_id) do
       def initialize(message:, data_to_sign: nil, address:, message_id:)
         super
       end
     end
 
-    ParamsOfAttachSignature = Struct.new(:abi, :public_key, :message, :signature, keyword_init: true) do
+    ParamsOfAttachSignature = KwStruct.new(:abi, :public_key, :message, :signature) do
       def initialize(abi:, public_key:, message:, signature:)
         super
       end
+
+      def to_h
+        {
+          abi: abi&.to_h,
+          public_key: public_key,
+          message: message,
+          signature: signature
+        }
+      end
     end
 
-    ResultOfAttachSignature = Struct.new(:message, :message_id, keyword_init: true) do
+    ResultOfAttachSignature = KwStruct.new(:message, :message_id) do
       def initialize(message:, message_id:)
         super
       end
     end
 
-    ParamsOfDecodeMessage = Struct.new(:abi, :message, keyword_init: true) do
+    ParamsOfDecodeMessage = KwStruct.new(:abi, :message) do
       def initialize(abi:, message:)
         super
+      end
+
+      def to_h
+        {
+          abi: abi&.to_h,
+          message: message
+        }
       end
     end
 
@@ -360,19 +391,39 @@ module TonSdk
       end
     end
 
-    ParamsOfDecodeMessageBody = Struct.new(:abi, :body, :is_internal, keyword_init: true) do
+    ParamsOfDecodeMessageBody = KwStruct.new(:abi, :body, :is_internal) do
       def initialize(abi:, body:, is_internal:)
         super
       end
-    end
 
-    ParamsOfEncodeAccount = Struct.new(:state_init, :balance, :last_trans_lt, :last_paid, keyword_init: true) do
-      def initialize(state_init:, balance: nil, last_trans_lt: nil, last_paid: nil)
-        super
+      def to_h
+        {
+          abi: abi&.to_h,
+          body: body,
+          is_internal: is_internal
+        }
       end
     end
 
-    ResultOfEncodeAccount = Struct.new(:account, :id_, keyword_init: true) do
+    ParamsOfEncodeAccount = KwStruct.new(
+      :state_init,
+      :balance,
+      :last_trans_lt,
+      :last_paid,
+      :boc_cache
+    ) do
+      def to_h
+        {
+          state_init: state_init.to_h,
+          balance: balance,
+          last_trans_lt: last_trans_lt,
+          last_paid: last_paid,
+          boc_cache: boc_cache&.to_h
+        }
+      end
+    end
+
+    ResultOfEncodeAccount = KwStruct.new(:account, :id_) do
       def initialize(account:, id_:)
         super
       end
@@ -640,7 +691,7 @@ module TonSdk
       end
     end
 
-    ParamsOfEncodeInternalMessage = Struct.new(
+    ParamsOfEncodeInternalMessage = KwStruct.new(
       :abi,
       :address,
       :src_address,
@@ -648,8 +699,7 @@ module TonSdk
       :call_set,
       :value,
       :bounce,
-      :enable_ihr,
-      keyword_init: true
+      :enable_ihr
     ) do
       def initialize(
         abi: nil,
@@ -665,20 +715,57 @@ module TonSdk
       end
     end
 
-    ResultOfEncodeInternalMessage = Struct.new(
+    ResultOfEncodeInternalMessage = KwStruct.new(
       :message,
       :address,
-      :message_id,
-      keyword_init: true
+      :message_id
     ) do
       def initialize(message:, address:, message_id:)
         super
       end
     end
 
-    ParamsOfDecodeAccountData = Struct.new(:abi, :data, keyword_init: true)
-    ResultOfDecodeData = Struct.new(:data)
+    ParamsOfDecodeAccountData = KwStruct.new(:abi, :data) do
+      def to_h
+        {
+          abi: abi&.to_h,
+          data: data
+        }
+      end
+    end
 
+    ResultOfDecodeData = KwStruct.new(:data)
+
+    ParamsOfUpdateInitialData = KwStruct.new(
+      :data,
+      :abi,
+      :initial_data,
+      :initial_pubkey,
+      :boc_cache
+    ) do
+      def to_h
+        {
+          data: data,
+          abi: abi&.to_h,
+          initial_data: initial_data,
+          initial_pubkey: initial_pubkey,
+          boc_cache: boc_cache&.to_h
+        }
+      end
+    end
+
+    ResultOfUpdateInitialData = KwStruct.new(:data)
+
+    ParamsOfDecodeInitialData = KwStruct.new(:data, :abi) do
+      def to_h
+        {
+          data: data,
+          abi: abi&.to_h
+        }
+      end
+    end
+
+    ResultOfDecodeInitialData = KwStruct.new(:initial_pubkey, :initial_data)
 
     #
     # functions
@@ -702,7 +789,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "abi.attach_signature_to_message_body", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfAttachSignatureToMessageBody.new(resp.result["body"])
+            result: ResultOfAttachSignatureToMessageBody.new(body: resp.result["body"])
           )
         else
           yield resp
@@ -801,7 +888,7 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             result: ResultOfDecodeData.new(
-              resp.result["data"]
+              data: resp.result["data"]
             )
           )
         else
@@ -810,7 +897,33 @@ module TonSdk
       end
     end
 
+    def self.update_initial_data(ctx, params)
+      Interop::request_to_native_lib(ctx, "abi.update_initial_data", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfUpdateInitialData.new(
+              data: resp.result["data"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
 
-
+    def self.decode_initial_data(ctx, params)
+      Interop::request_to_native_lib(ctx, "abi.decode_initial_data", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfDecodeInitialData.new(
+              initial_pubkey: resp.result["initial_pubkey"],
+              initial_data: resp.result["initial_data"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
   end
 end

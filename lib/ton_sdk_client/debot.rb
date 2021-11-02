@@ -23,7 +23,7 @@ module TonSdk
       OPERATION_REJECTED = 812
     end
 
-    DebotAction = Struct.new(:description, :name, :action_type, :to, :attributes, :misc, keyword_init: true) do
+    DebotAction = KwStruct.new(:description, :name, :action_type, :to, :attributes, :misc) do
       def to_h
         {
           description: self.description,
@@ -49,9 +49,9 @@ module TonSdk
       end
     end
 
-    ParamsOfStart = Struct.new(:debot_handle)
+    ParamsOfStart = KwStruct.new(:debot_handle)
 
-    RegisteredDebot = Struct.new(:debot_handle, :debot_abi, :info) do
+    RegisteredDebot = KwStruct.new(:debot_handle, :debot_abi, :info) do
       def to_h = {
         debot_handle: @debot_handle,
         debot_abi: @debot_abi,
@@ -207,9 +207,9 @@ module TonSdk
       end
     end
 
-    ParamsOfFetch = Struct.new(:address)
+    ParamsOfFetch = KwStruct.new(:address)
 
-    ParamsOfExecute = Struct.new(:debot_handle, :action) do
+    ParamsOfExecute = KwStruct.new(:debot_handle, :action) do
       def to_h
         {
           debot_handle: @debot_handle,
@@ -218,9 +218,9 @@ module TonSdk
       end
     end
 
-    ParamsOfSend = Struct.new(:debot_handle, :message)
-    ParamsOfInit = Struct.new(:address)
-    DebotInfo = Struct.new(
+    ParamsOfSend = KwStruct.new(:debot_handle, :message)
+    ParamsOfInit = KwStruct.new(:address)
+    DebotInfo = KwStruct.new(
       :name,
       :version,
       :publisher,
@@ -231,8 +231,7 @@ module TonSdk
       :language,
       :dabi,
       :icon,
-      :interfaces,
-      keyword_init: true
+      :interfaces
     ) do
       def initialize(
         name: nil,
@@ -251,8 +250,8 @@ module TonSdk
       end
     end
 
-    ResultOfFetch = Struct.new(:info)
-    Spending = Struct.new(:amount, :dst)
+    ResultOfFetch = KwStruct.new(:info)
+    Spending = KwStruct.new(:amount, :dst)
 
     class DebotActivity
       private_class_method :new
@@ -320,7 +319,7 @@ module TonSdk
         if resp.success?
           yield NativeLibResponsetResult.new(
             # TODO: parse DebotInfo
-            result: ResultOfFetch.new(resp.result["info"])
+            result: ResultOfFetch.new(info: resp.result["info"])
           )
         else
           yield resp

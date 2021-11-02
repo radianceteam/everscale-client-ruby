@@ -62,8 +62,6 @@ TonSdk::Abi::encode_message_body(@graphql_c_ctx.context, pr_s) do |res|
 
     pr_s2 = ParamsOfProcessMessage.new(
       message_encode_params: enc_pr_s,
-
-      # send_events: true
       send_events: false
     )
 
@@ -75,12 +73,10 @@ TonSdk::Abi::encode_message_body(@graphql_c_ctx.context, pr_s) do |res|
       if res2.success?
         puts "process_message result: #{res2.result}"
       else
-        puts "error process_message #{res2.error}"
+        puts "error process_message #{res2.error.message}"
       end
     end
-
-
   else
-    puts "error encode_message_body #{res.error}"
+    puts "error encode_message_body #{res.error.message}"
   end
 end

@@ -137,7 +137,7 @@ module TonSdk
       is_single_thread_only: true
     )
       function_name_tc_str = TcStringData.from_string(function_name)
-      function_params_json_str = function_params&.to_h.to_json || ""
+      function_params_json_str = function_params&.to_h&.to_json || ""
       function_params_json_tc_str = TcStringData.from_string(function_params_json_str)
 
       @sm = Concurrent::Semaphore.new(1)

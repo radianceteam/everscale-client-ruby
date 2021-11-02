@@ -37,7 +37,7 @@ module TonSdk
       end
     end
 
-    ParamsOfQueryCollection = Struct.new(:collection, :filter, :result, :order, :limit, keyword_init: true) do
+    ParamsOfQueryCollection = KwStruct.new(:collection, :filter, :result, :order, :limit) do
       def initialize(collection: , filter: nil, result: , order: [], limit: nil)
         super
       end
@@ -58,32 +58,32 @@ module TonSdk
       end
     end
 
-    ResultOfQueryCollection = Struct.new(:result)
-    ResultOfWaitForCollection = Struct.new(:result)
-    ResultOfQuery = Struct.new(:result)
-    ResultOfBatchQuery = Struct.new(:results)
-    ParamsOfWaitForCollection = Struct.new(:collection, :filter, :result, :timeout, keyword_init: true) do
+    ResultOfQueryCollection = KwStruct.new(:result)
+    ResultOfWaitForCollection = KwStruct.new(:result)
+    ResultOfQuery = KwStruct.new(:result)
+    ResultOfBatchQuery = KwStruct.new(:results)
+    ParamsOfWaitForCollection = KwStruct.new(:collection, :filter, :result, :timeout) do
       def initialize(collection:, filter: nil, result:, timeout: nil)
         super
       end
     end
 
-    ParamsOfSubscribeCollection = Struct.new(:collection, :filter, :result, keyword_init: true) do
+    ParamsOfSubscribeCollection = KwStruct.new(:collection, :filter, :result) do
       def initialize(collection:, filter: nil, result:)
         super
       end
     end
 
-    ResultOfSubscribeCollection = Struct.new(:handle)
-    ParamsOfQuery = Struct.new(:query, :variables, keyword_init: true) do
+    ResultOfSubscribeCollection = KwStruct.new(:handle)
+    ParamsOfQuery = KwStruct.new(:query, :variables) do
       def initialize(query:, variables: nil)
         super
       end
     end
 
-    ParamsOfFindLastShardBlock = Struct.new(:address)
-    ResultOfFindLastShardBlock = Struct.new(:block_id)
-    EndpointsSet = Struct.new(:endpoints)
+    ParamsOfFindLastShardBlock = KwStruct.new(:address)
+    ResultOfFindLastShardBlock = KwStruct.new(:block_id)
+    EndpointsSet = KwStruct.new(:endpoints)
 
     class ParamsOfQueryOperation
       private_class_method :new
@@ -120,7 +120,7 @@ module TonSdk
       end
     end
 
-    ParamsOfBatchQuery = Struct.new(:operations) do
+    ParamsOfBatchQuery = KwStruct.new(:operations) do
       def to_h
         {
           operations: self.operations.compact.map(&:to_h)
@@ -128,7 +128,7 @@ module TonSdk
       end
     end
 
-    ParamsOfAggregateCollection = Struct.new(:collection, :filter, :fields) do
+    ParamsOfAggregateCollection = KwStruct.new(:collection, :filter, :fields) do
       def initialize(collection:, filter: nil, fields: [])
         super
       end
@@ -167,32 +167,31 @@ module TonSdk
       end
     end
 
-    ResultOfAggregateCollection = Struct.new(:values)
+    ResultOfAggregateCollection = KwStruct.new(:values)
 
-    ParamsOfQueryCounterparties = Struct.new(:account, :result, :first, :after, keyword_init: true) do
+    ParamsOfQueryCounterparties = KwStruct.new(:account, :result, :first, :after) do
       def initialize(account:, result:, first: nil, after: nil)
         super
       end
     end
 
-    ResultOfGetEndpoints = Struct.new(:query, :endpoints, keyword_init: true)
+    ResultOfGetEndpoints = KwStruct.new(:query, :endpoints)
 
-    TransactionNode = Struct.new(
+    TransactionNode = KwStruct.new(
       :id_,
       :in_msg,
       :out_msgs,
       :account_addr,
       :total_fees,
       :aborted,
-      :exit_code,
-      keyword_init: true
+      :exit_code
     ) do
       def initialize(id_:, in_msg:, out_msgs:, account_addr:, total_fees:, aborted:, exit_code: nil)
         super
       end
     end
 
-    MessageNode = Struct.new(
+    MessageNode = KwStruct.new(
       :id_,
       :src_transaction_id,
       :dst_transaction_id,
@@ -200,8 +199,7 @@ module TonSdk
       :dst,
       :value,
       :bounce,
-      :decoded_body,
-      keyword_init: true
+      :decoded_body
     ) do
       def initialize(
         id_:,
@@ -217,7 +215,7 @@ module TonSdk
       end
     end
 
-    ParamsOfQueryTransactionTree = Struct.new(:in_msg, :abi_registry, :timeout, keyword_init: true) do
+    ParamsOfQueryTransactionTree = KwStruct.new(:in_msg, :abi_registry, :timeout) do
       def initialize(in_msg:, abi_registry: [], timeout: nil)
         super
       end
@@ -228,23 +226,23 @@ module TonSdk
         h
       end
     end
-    ResultOfQueryTransactionTree = Struct.new(:messages, :transactions, keyword_init: true)
+    ResultOfQueryTransactionTree = KwStruct.new(:messages, :transactions)
 
-    ParamsOfCreateBlockIterator = Struct.new(:start_time, :end_time, :shard_filter, :result, keyword_init: true)
-    RegisteredIterator = Struct.new(:handle)
-    ParamsOfResumeBlockIterator = Struct.new(:resume_state)
-    ParamsOfCreateTransactionIterator = Struct.new(:start_time, :end_time, :shard_filter, :accounts_filter, :result, :include_transfers, keyword_init: true)
-    ParamsOfResumeTransactionIterator = Struct.new(:resume_state, :accounts_filter, keyword_init: true) do
+    ParamsOfCreateBlockIterator = KwStruct.new(:start_time, :end_time, :shard_filter, :result)
+    RegisteredIterator = KwStruct.new(:handle)
+    ParamsOfResumeBlockIterator = KwStruct.new(:resume_state)
+    ParamsOfCreateTransactionIterator = KwStruct.new(:start_time, :end_time, :shard_filter, :accounts_filter, :result, :include_transfers)
+    ParamsOfResumeTransactionIterator = KwStruct.new(:resume_state, :accounts_filter) do
       def initialize(resume_state:, accounts_filter: nil)
         super
       end
     end
-    ParamsOfIteratorNext = Struct.new(:iterator, :limit, :return_resume_state, keyword_init: true) do
+    ParamsOfIteratorNext = KwStruct.new(:iterator, :limit, :return_resume_state) do
       def initialize(iterator:, limit: nil, return_resume_state: nil)
         super
       end
     end
-    ResultOfIteratorNext = Struct.new(:items, :has_more, :resume_state, keyword_init: true) do
+    ResultOfIteratorNext = KwStruct.new(:items, :has_more, :resume_state) do
       def initialize(items: [], has_more:, resume_state: nil)
         super
       end
@@ -264,7 +262,7 @@ module TonSdk
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfQueryCollection.new(resp.result["result"])
+            result: ResultOfQueryCollection.new(result: resp.result["result"])
           )
         else
           yield resp
@@ -281,7 +279,7 @@ module TonSdk
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfWaitForCollection.new(resp.result["result"])
+            result: ResultOfWaitForCollection.new(result: resp.result["result"])
           )
         else
           yield resp
@@ -311,7 +309,7 @@ module TonSdk
       ) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfSubscribeCollection.new(resp.result["handle"])
+            result: ResultOfSubscribeCollection.new(handle: resp.result["handle"])
           )
         else
           yield resp
@@ -323,7 +321,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "net.query", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfQuery.new(resp.result["result"])
+            result: ResultOfQuery.new(result: resp.result["result"])
           )
         else
           yield resp
@@ -355,7 +353,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "net.find_last_shard_block", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfFindLastShardBlock.new(resp.result["block_id"])
+            result: ResultOfFindLastShardBlock.new(block_id: resp.result["block_id"])
           )
         else
           yield resp
@@ -367,7 +365,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "net.fetch_endpoints") do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: EndpointsSet.new(resp.result["endpoints"])
+            result: EndpointsSet.new(endpoints: resp.result["endpoints"])
           )
         else
           yield resp
@@ -391,7 +389,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "net.batch_query", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfBatchQuery.new(resp.result["results"])
+            result: ResultOfBatchQuery.new(results: resp.result["results"])
           )
         else
           yield resp
@@ -403,7 +401,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "net.aggregate_collection", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfAggregateCollection.new(resp.result["values"])
+            result: ResultOfAggregateCollection.new(values: resp.result["values"])
           )
         else
           yield resp
@@ -430,7 +428,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "net.query_counterparties", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfQueryCollection.new(resp.result["result"])
+            result: ResultOfQueryCollection.new(result: resp.result["result"])
           )
         else
           yield resp
@@ -457,7 +455,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "net.create_block_iterator", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: RegisteredIterator.new(resp.result["handle"])
+            result: RegisteredIterator.new(handle: resp.result["handle"])
           )
         else
           yield resp
@@ -469,7 +467,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "net.resume_block_iterator", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: RegisteredIterator.new(resp.result["handle"])
+            result: RegisteredIterator.new(handle: resp.result["handle"])
           )
         else
           yield resp
@@ -481,7 +479,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "net.create_transaction_iterator", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: RegisteredIterator.new(resp.result["handle"])
+            result: RegisteredIterator.new(handle: resp.result["handle"])
           )
         else
           yield resp
@@ -493,7 +491,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "net.resume_transaction_iterator", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: RegisteredIterator.new(resp.result["handle"])
+            result: RegisteredIterator.new(handle: resp.result["handle"])
           )
         else
           yield resp

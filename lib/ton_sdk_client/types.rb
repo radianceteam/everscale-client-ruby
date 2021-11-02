@@ -32,6 +32,7 @@ module TonSdk
           data: error["data"]
         )
       else
+        # Some methods like unsubscribe will trigger this error. Should be refactored
         raise ArgumentError.new('some arguments are wrong; provide either result or error')
       end
 

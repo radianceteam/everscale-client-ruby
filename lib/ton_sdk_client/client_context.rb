@@ -1,5 +1,6 @@
 require 'json'
 
+require_relative './kw_struct.rb'
 require_relative './interop.rb'
 require_relative './types.rb'
 require_relative './helper.rb'
@@ -38,7 +39,7 @@ module TonSdk
 
         Interop::tc_destroy_string(ptr)
       else
-        raise SdkError.new("unable to create context")
+        raise SdkError.new(message: "unable to create context")
       end
     end
 

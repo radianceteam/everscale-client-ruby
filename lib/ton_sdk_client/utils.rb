@@ -32,27 +32,27 @@ module TonSdk
       end
     end
 
-    ParamsOfConvertAddress = Struct.new(:address, :output_format, keyword_init: true) do
+    ParamsOfConvertAddress = KwStruct.new(:address, :output_format) do
       def to_h
         {
-          address: @address,
-          output_format: @output_format.to_h
+          address: address,
+          output_format: output_format.to_h
         }
       end
     end
 
-    ResultOfConvertAddress = Struct.new(:address)
-    ParamsOfCalcStorageFee = Struct.new(:account, :period, keyword_init: true)
-    ResultOfCalcStorageFee = Struct.new(:fee)
+    ResultOfConvertAddress = KwStruct.new(:address)
+    ParamsOfCalcStorageFee = KwStruct.new(:account, :period)
+    ResultOfCalcStorageFee = KwStruct.new(:fee)
 
-    ParamsOfCompressZstd = Struct.new(:uncompressed, :level, keyword_init: true)
-    ResultOfCompressZstd = Struct.new(:compressed)
+    ParamsOfCompressZstd = KwStruct.new(:uncompressed, :level)
+    ResultOfCompressZstd = KwStruct.new(:compressed)
 
-    ParamsOfDecompressZstd = Struct.new(:compressed)
-    ResultOfDecompressZstd = Struct.new(:decompressed)
+    ParamsOfDecompressZstd = KwStruct.new(:compressed)
+    ResultOfDecompressZstd = KwStruct.new(:decompressed)
 
-    ParamsOfGetAddressType = Struct.new(:address)
-    ResultOfGetAddressType = Struct.new(:address_type)
+    ParamsOfGetAddressType = KwStruct.new(:address)
+    ResultOfGetAddressType = KwStruct.new(:address_type)
 
 
     #
@@ -63,7 +63,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "utils.convert_address", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfConvertAddress.new(resp.result["address"])
+            result: ResultOfConvertAddress.new(address: resp.result["address"])
           )
         else
           yield resp
@@ -75,7 +75,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "utils.calc_storage_fee", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfCalcStorageFee.new(resp.result["fee"])
+            result: ResultOfCalcStorageFee.new(fee: resp.result["fee"])
           )
         else
           yield resp
@@ -87,7 +87,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "utils.compress_zstd", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfCompressZstd.new(resp.result["compressed"])
+            result: ResultOfCompressZstd.new(compressed: resp.result["compressed"])
           )
         else
           yield resp
@@ -99,7 +99,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "utils.decompress_zstd", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ParamsOfDecompressZstd.new(resp.result["decompressed"])
+            result: ResultOfDecompressZstd.new(decompressed: resp.result["decompressed"])
           )
         else
           yield resp
@@ -111,7 +111,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "utils.get_address_type", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfGetAddressType.new(resp.result["address_type"])
+            result: ResultOfGetAddressType.new(address_type: resp.result["address_type"])
           )
         else
           yield resp
