@@ -734,7 +734,7 @@ module TonSdk
       end
     end
 
-    ResultOfDecodeData = KwStruct.new(:data)
+    ResultOfDecodeAccountData = KwStruct.new(:data)
 
     ParamsOfUpdateInitialData = KwStruct.new(
       :data,
@@ -766,6 +766,18 @@ module TonSdk
     end
 
     ResultOfDecodeInitialData = KwStruct.new(:initial_pubkey, :initial_data)
+
+    ParamsOfDecodeBoc = KwStruct.new(:params, :boc, :allow_partial) do
+      def to_h
+        {
+          params: params&.map(&:to_h),
+          boc: boc,
+          allow_partial: allow_partial
+        }
+      end
+    end
+
+    ResultOfDecodeBoc = KwStruct.new(:data)
 
     #
     # functions
@@ -887,7 +899,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "abi.decode_account_data", params) do |resp|
         if resp.success?
           yield NativeLibResponsetResult.new(
-            result: ResultOfDecodeData.new(
+            result: ResultOfDecodeAccountData.new(
               data: resp.result["data"]
             )
           )
@@ -918,6 +930,20 @@ module TonSdk
             result: ResultOfDecodeInitialData.new(
               initial_pubkey: resp.result["initial_pubkey"],
               initial_data: resp.result["initial_data"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.decode_boc(ctx, params)
+      Interop::request_to_native_lib(ctx, "abi.decode_boc", params) do |resp|
+        if resp.success?
+          yield NativeLibResponsetResult.new(
+            result: ResultOfDecodeBoc.new(
+              data: resp.result["data"]
             )
           )
         else

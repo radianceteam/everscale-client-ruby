@@ -43,6 +43,7 @@ module TonSdk
       CANNOT_PARSE_NUMBER = 32
       INTERNAL_ERROR = 33
       INVALID_HANDLE = 34
+      LOCAL_STORAGE_ERROR = 35
     end
 
     ResultOfVersion = KwStruct.new(:version)
