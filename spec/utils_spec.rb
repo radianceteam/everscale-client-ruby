@@ -16,7 +16,7 @@ describe TonSdk::Utils do
       )
 
       expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr1, &b) }.to yield_control
-      expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
+      expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponseResult)
 
       TonSdk::Utils.convert_address(@c_ctx.context, pr1) { |a| @res1 = a }
       expect(@res1.success?).to eq true
@@ -30,7 +30,7 @@ describe TonSdk::Utils do
       )
 
       expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr2, &b) }.to yield_control
-      expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr2, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
+      expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr2, &b) }.to yield_with_args(TonSdk::NativeLibResponseResult)
 
       TonSdk::Utils.convert_address(@c_ctx.context, pr2) { |a| @res2 = a }
       expect(@res2.success?).to eq true
@@ -48,7 +48,7 @@ describe TonSdk::Utils do
       )
 
       expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr3, &b) }.to yield_control
-      expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr3, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
+      expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr3, &b) }.to yield_with_args(TonSdk::NativeLibResponseResult)
 
       TonSdk::Utils.convert_address(@c_ctx.context, pr3) { |a| @res3 = a }
       expect(@res3.success?).to eq true
@@ -66,7 +66,7 @@ describe TonSdk::Utils do
       )
 
       expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr4, &b) }.to yield_control
-      expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr4, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
+      expect { |b| TonSdk::Utils.convert_address(@c_ctx.context, pr4, &b) }.to yield_with_args(TonSdk::NativeLibResponseResult)
 
       TonSdk::Utils.convert_address(@c_ctx.context, pr4) { |a| @res4 = a }
       expect(@res4.success?).to eq true

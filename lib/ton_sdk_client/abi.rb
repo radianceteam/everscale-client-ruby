@@ -786,7 +786,7 @@ module TonSdk
     def self.encode_message_body(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.encode_message_body", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfEncodeMessageBody.new(
               body: resp.result["body"],
               data_to_sign: resp.result["data_to_sign"])
@@ -800,7 +800,7 @@ module TonSdk
     def self.attach_signature_to_message_body(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.attach_signature_to_message_body", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfAttachSignatureToMessageBody.new(body: resp.result["body"])
           )
         else
@@ -812,7 +812,7 @@ module TonSdk
     def self.encode_message(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.encode_message", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfEncodeMessage.new(
               message: resp.result["message"],
               data_to_sign: resp.result["data_to_sign"],
@@ -829,7 +829,7 @@ module TonSdk
     def self.attach_signature(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.attach_signature", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfAttachSignature.new(
               message: resp.result["message"],
               message_id: resp.result["message_id"])
@@ -843,7 +843,7 @@ module TonSdk
     def self.decode_message(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.decode_message", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: DecodedMessageBody.from_json(resp.result)
           )
         else
@@ -855,7 +855,7 @@ module TonSdk
     def self.decode_message_body(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.decode_message_body", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: DecodedMessageBody.from_json(resp.result)
           )
         else
@@ -867,7 +867,7 @@ module TonSdk
     def self.encode_account(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.encode_account", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfEncodeAccount.new(
               account: resp.result["account"],
               id_: resp.result["id"]
@@ -882,7 +882,7 @@ module TonSdk
     def self.encode_internal_message(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.encode_internal_message", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfEncodeInternalMessage.new(
               message: resp.result["message"],
               address: resp.result["address"],
@@ -898,7 +898,7 @@ module TonSdk
     def self.decode_account_data(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.decode_account_data", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfDecodeAccountData.new(
               data: resp.result["data"]
             )
@@ -912,7 +912,7 @@ module TonSdk
     def self.update_initial_data(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.update_initial_data", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfUpdateInitialData.new(
               data: resp.result["data"]
             )
@@ -926,7 +926,7 @@ module TonSdk
     def self.decode_initial_data(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.decode_initial_data", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfDecodeInitialData.new(
               initial_pubkey: resp.result["initial_pubkey"],
               initial_data: resp.result["initial_data"]
@@ -941,7 +941,7 @@ module TonSdk
     def self.decode_boc(ctx, params)
       Interop::request_to_native_lib(ctx, "abi.decode_boc", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfDecodeBoc.new(
               data: resp.result["data"]
             )

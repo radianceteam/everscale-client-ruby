@@ -17,7 +17,7 @@ module TonSdk
     end
   end
 
-  class NativeLibResponsetResult
+  class NativeLibResponseResult
     attr_reader :result, :error
 
     def initialize(result: nil, error: nil)

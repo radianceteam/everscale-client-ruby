@@ -189,7 +189,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfRunExecutor.new(
               transaction: resp.result["transaction"],
               out_messages: resp.result["out_messages"],
@@ -212,7 +212,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfRunTvm.new(
               out_messages: resp.result["out_messages"],
               decoded: resp.result["decoded"],
@@ -233,7 +233,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfRunGet.new(output: resp.result["output"])
           )
         else

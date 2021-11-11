@@ -172,12 +172,12 @@ module TonSdk
 
           when TcResponseCodes::SUCCESS
             if block_given?
-              yield NativeLibResponsetResult.new(result: tc_data_json_content)
+              yield NativeLibResponseResult.new(result: tc_data_json_content)
             end
   
           when TcResponseCodes::ERROR
             if block_given?
-              yield NativeLibResponsetResult.new(error: tc_data_json_content)
+              yield NativeLibResponseResult.new(error: tc_data_json_content)
             end
 
           when TcResponseCodes::NOP

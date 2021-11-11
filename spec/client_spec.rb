@@ -4,7 +4,7 @@ describe TonSdk::Client do
   context "methods of client" do
     it "#version" do
       expect { |b| TonSdk::Client.version(@c_ctx.context, &b) }.to yield_control
-      expect { |b| TonSdk::Client.version(@c_ctx.context, &b) }.to yield_with_args(TonSdk::NativeLibResponsetResult)
+      expect { |b| TonSdk::Client.version(@c_ctx.context, &b) }.to yield_with_args(TonSdk::NativeLibResponseResult)
 
       # NOTE
       # rspec isn't capable of validating a result in a different thread

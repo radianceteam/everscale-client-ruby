@@ -113,7 +113,7 @@ module TonSdk
     def self.version(ctx)
       Interop::request_to_native_lib(ctx, "client.version") do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfVersion.new(version: resp.result["version"])
           )
         else
@@ -125,7 +125,7 @@ module TonSdk
     def self.get_api_reference(ctx)
       Interop::request_to_native_lib(ctx, "client.get_api_reference") do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfGetApiReference.new(api: resp.result["api"])
           )
         else
@@ -138,7 +138,7 @@ module TonSdk
       Interop::request_to_native_lib(ctx, "client.build_info") do |resp|
         if resp.success?
           dp_s = resp.result["dependencies"].map { |x| BuildInfoDependency.from_json(x) }
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfBuildInfo.new(
               build_number: resp.result["build_number"],
               dependencies: dp_s
@@ -153,7 +153,7 @@ module TonSdk
     def self.resolve_app_request(ctx, params)
       Interop::request_to_native_lib(ctx, "client.resolve_app_request", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ""
           )
         else

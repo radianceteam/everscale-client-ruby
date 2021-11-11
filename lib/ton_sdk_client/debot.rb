@@ -283,7 +283,7 @@ module TonSdk
     def self.init(ctx, params, app_browser_obj)
       Interop::request_to_native_lib(ctx, "debot.init", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: nil
           )
         else
@@ -300,7 +300,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: nil
           )
         else
@@ -317,7 +317,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             # TODO: parse DebotInfo
             result: ResultOfFetch.new(info: resp.result["info"])
           )
@@ -330,7 +330,7 @@ module TonSdk
     def self.execute(ctx, params)
       Interop::request_to_native_lib(ctx, "debot.execute", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: nil
           )
         else
@@ -342,7 +342,7 @@ module TonSdk
     def self.remove(ctx, params)
       Interop::request_to_native_lib(ctx, "debot.remove", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: nil
           )
         else
@@ -354,7 +354,7 @@ module TonSdk
     def self.send(ctx, params)
       Interop::request_to_native_lib(ctx, "debot.send", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: nil
           )
         else

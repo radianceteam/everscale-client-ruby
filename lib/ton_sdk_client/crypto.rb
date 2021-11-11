@@ -243,7 +243,7 @@ module TonSdk
     def self.factorize(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.factorize", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfFactorize.new(factors: resp.result["factors"])
           )
         else
@@ -255,7 +255,7 @@ module TonSdk
     def self.modular_power(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.modular_power", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfModularPower.new(modular_power: resp.result["modular_power"])
           )
         else
@@ -267,7 +267,7 @@ module TonSdk
     def self.ton_crc16(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.ton_crc16", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfTonCrc16.new(crc: resp.result["crc"])
           )
         else
@@ -279,7 +279,7 @@ module TonSdk
     def self.generate_random_bytes(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.generate_random_bytes", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfGenerateRandomBytes.new(bytes: resp.result["bytes"])
           )
         else
@@ -291,7 +291,7 @@ module TonSdk
     def self.convert_public_key_to_ton_safe_format(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.convert_public_key_to_ton_safe_format", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfConvertPublicKeyToTonSafeFormat.new(ton_public_key: resp.result["ton_public_key"])
           )
         else
@@ -303,7 +303,7 @@ module TonSdk
     def self.generate_random_sign_keys(ctx, is_single_thread_only: false)
       Interop::request_to_native_lib(ctx, "crypto.generate_random_sign_keys", nil, is_single_thread_only: is_single_thread_only) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: KeyPair.new(
               public_: resp.result["public"],
               secret: resp.result["secret"]
@@ -318,7 +318,7 @@ module TonSdk
     def self.sign(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.sign", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfSign.new(
               signed: resp.result["signed"],
               signature: resp.result["signature"]
@@ -333,7 +333,7 @@ module TonSdk
     def self.verify_signature(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.verify_signature", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfVerifySignature.new(unsigned: resp.result["unsigned"])
           )
         else
@@ -345,7 +345,7 @@ module TonSdk
     def self.sha256(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.sha256", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfHash.new(hash: resp.result["hash"])
           )
         else
@@ -357,7 +357,7 @@ module TonSdk
     def self.sha512(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.sha512", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfHash.new(hash: resp.result["hash"])
           )
         else
@@ -369,7 +369,7 @@ module TonSdk
     def self.scrypt(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.scrypt", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfScrypt.new(key: resp.result["key"])
           )
         else
@@ -381,7 +381,7 @@ module TonSdk
     def self.nacl_sign_keypair_from_secret_key(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.nacl_sign_keypair_from_secret_key", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: KeyPair.new(
               public_: resp.result["public"],
               secret: resp.result["secret"]
@@ -396,7 +396,7 @@ module TonSdk
     def self.nacl_sign(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.nacl_sign", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfNaclSign.new(signed: resp.result["signed"])
           )
         else
@@ -408,7 +408,7 @@ module TonSdk
     def self.nacl_sign_open(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.nacl_sign_open", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfNaclSignOpen.new(unsigned: resp.result["unsigned"])
           )
         else
@@ -420,7 +420,7 @@ module TonSdk
     def self.nacl_sign_detached(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.nacl_sign_detached", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfNaclSignDetached.new(signature: resp.result["signature"])
           )
         else
@@ -432,7 +432,7 @@ module TonSdk
     def self.nacl_sign_detached_verify(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.nacl_sign_detached_verify", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfNaclSignDetachedVerify.new(succeeded: resp.result["succeeded"])
           )
         else
@@ -444,7 +444,7 @@ module TonSdk
     def self.nacl_box_keypair(ctx)
       Interop::request_to_native_lib(ctx, "crypto.nacl_box_keypair") do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: KeyPair.new(
               public_: resp.result["public"],
               secret: resp.result["secret"]
@@ -459,7 +459,7 @@ module TonSdk
     def self.nacl_box_keypair_from_secret_key(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.nacl_box_keypair_from_secret_key", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: KeyPair.new(
               public_: resp.result["public"],
               secret: resp.result["secret"]
@@ -474,7 +474,7 @@ module TonSdk
     def self.nacl_box(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.nacl_box", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfNaclBox.new(encrypted: resp.result["encrypted"])
           )
         else
@@ -486,7 +486,7 @@ module TonSdk
     def self.nacl_box_open(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.nacl_box_open", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfNaclBoxOpen.new(decrypted: resp.result["decrypted"])
           )
         else
@@ -498,7 +498,7 @@ module TonSdk
     def self.nacl_secret_box(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.nacl_secret_box", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfNaclBox.new(encrypted: resp.result["encrypted"])
           )
         else
@@ -510,7 +510,7 @@ module TonSdk
     def self.nacl_secret_box_open(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.nacl_secret_box_open", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfNaclBoxOpen.new(decrypted: resp.result["decrypted"])
           )
         else
@@ -522,7 +522,7 @@ module TonSdk
     def self.mnemonic_words(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.mnemonic_words", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfMnemonicWords.new(words: resp.result["words"])
           )
         else
@@ -534,7 +534,7 @@ module TonSdk
     def self.mnemonic_from_random(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.mnemonic_from_random", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfMnemonicFromRandom.new(phrase: resp.result["phrase"])
           )
         else
@@ -546,7 +546,7 @@ module TonSdk
     def self.mnemonic_from_entropy(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.mnemonic_from_entropy", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfMnemonicFromEntropy.new(phrase: resp.result["phrase"])
           )
         else
@@ -558,7 +558,7 @@ module TonSdk
     def self.mnemonic_verify(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.mnemonic_verify", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfMnemonicVerify.new(valid: resp.result["valid"])
           )
         else
@@ -570,7 +570,7 @@ module TonSdk
     def self.mnemonic_derive_sign_keys(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.mnemonic_derive_sign_keys", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: KeyPair.new(
               public_: resp.result["public"],
               secret: resp.result["secret"]
@@ -585,7 +585,7 @@ module TonSdk
     def self.hdkey_xprv_from_mnemonic(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.hdkey_xprv_from_mnemonic", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfHDKeyXPrvFromMnemonic.new(xprv: resp.result["xprv"])
           )
         else
@@ -597,7 +597,7 @@ module TonSdk
     def self.hdkey_derive_from_xprv(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.hdkey_derive_from_xprv", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfHDKeyDeriveFromXPrv.new(xprv: resp.result["xprv"])
           )
         else
@@ -609,7 +609,7 @@ module TonSdk
     def self.hdkey_derive_from_xprv_path(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.hdkey_derive_from_xprv_path", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfHDKeyDeriveFromXPrvPath.new(xprv: resp.result["xprv"])
           )
         else
@@ -621,7 +621,7 @@ module TonSdk
     def self.hdkey_secret_from_xprv(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.hdkey_secret_from_xprv", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfHDKeySecretFromXPrv.new(secret: resp.result["secret"])
           )
         else
@@ -633,7 +633,7 @@ module TonSdk
     def self.hdkey_public_from_xprv(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.hdkey_public_from_xprv", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfHDKeyPublicFromXPrv.new(public_: resp.result["public"])
           )
         else
@@ -645,7 +645,7 @@ module TonSdk
     def self.chacha20(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.chacha20", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfChaCha20.new(data: resp.result["data"])
           )
         else
@@ -684,7 +684,7 @@ module TonSdk
         is_single_thread_only: is_single_thread_only
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: RegisteredSigningBox.new(handle: resp.result["handle"])
           )
         else
@@ -696,7 +696,7 @@ module TonSdk
     def self.get_signing_box(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.get_signing_box", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: RegisteredSigningBox.new(handle: resp.result["handle"])
           )
         else
@@ -713,7 +713,7 @@ module TonSdk
         is_single_thread_only: is_single_thread_only
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfSigningBoxGetPublicKey.new(pubkey: resp.result["pubkey"])
           )
         else
@@ -725,7 +725,7 @@ module TonSdk
     def self.signing_box_sign(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.signing_box_sign", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfSigningBoxSign.new(signature: resp.result["signature"])
           )
         else
@@ -737,7 +737,7 @@ module TonSdk
     def self.remove_signing_box(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.remove_signing_box", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: nil
           )
         else
@@ -777,7 +777,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: RegisteredEncryptionBox.new(handle: resp.result["handle"])
           )
         else
@@ -789,7 +789,7 @@ module TonSdk
     def self.encryption_box_get_info(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.encryption_box_get_info", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfEncryptionBoxGetInfo.new(info: resp.result["info"])
           )
         else
@@ -801,7 +801,7 @@ module TonSdk
     def self.create_encryption_box(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.create_encryption_box", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: RegisteredEncryptionBox.new(handle: resp.result["handle"])
           )
         else

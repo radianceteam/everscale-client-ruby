@@ -23,7 +23,7 @@ module TonSdk
     def self.proof_block_data(ctx, params)
       Interop::request_to_native_lib(ctx, "proofs.proof_block_data", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ""
           )
         else
@@ -35,7 +35,7 @@ module TonSdk
     def self.proof_transaction_data(ctx, params)
       Interop::request_to_native_lib(ctx, "proofs.proof_transaction_data", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ""
           )
         else

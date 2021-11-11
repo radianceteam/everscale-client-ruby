@@ -141,7 +141,7 @@ module TonSdk
     def self.parse_message(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.parse_message", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfParse.new(parsed: resp.result["parsed"])
           )
         else
@@ -153,7 +153,7 @@ module TonSdk
     def self.parse_transaction(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.parse_transaction", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfParse.new(parsed: resp.result["parsed"])
           )
         else
@@ -165,7 +165,7 @@ module TonSdk
     def self.parse_account(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.parse_account", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfParse.new(parsed: resp.result["parsed"])
           )
         else
@@ -177,7 +177,7 @@ module TonSdk
     def self.parse_block(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.parse_block", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfParse.new(parsed: resp.result["parsed"])
           )
         else
@@ -189,7 +189,7 @@ module TonSdk
     def self.parse_shardstate(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.parse_shardstate", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfParse.new(parsed: resp.result["parsed"])
           )
         else
@@ -201,7 +201,7 @@ module TonSdk
     def self.get_boc_hash(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.get_boc_hash", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfGetBocHash.new(hash: resp.result["hash"])
           )
         else
@@ -213,7 +213,7 @@ module TonSdk
     def self.get_blockchain_config(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.get_blockchain_config", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfGetBlockchainConfig.new(
               config_boc: resp.result["config_boc"]
             )
@@ -227,7 +227,7 @@ module TonSdk
     def self.get_boc_depth(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.get_boc_depth", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfGetBocDepth.new(
               depth: resp.result["depth"]
             )
@@ -241,7 +241,7 @@ module TonSdk
     def self.get_code_from_tvc(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.get_code_from_tvc", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfGetCodeFromTvc.new(code: resp.result["code"])
           )
         else
@@ -253,7 +253,7 @@ module TonSdk
     def self.cache_get(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.cache_get", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfBocCacheGet.new(
               boc: resp.result["boc"]
             )
@@ -267,7 +267,7 @@ module TonSdk
     def self.cache_set(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.cache_set", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfBocCacheSet.new(
               boc_ref: resp.result["boc_ref"]
             )
@@ -281,7 +281,7 @@ module TonSdk
     def self.cache_unpin(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.cache_unpin", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: nil
           )
         else
@@ -293,7 +293,7 @@ module TonSdk
     def self.encode_boc(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.encode_boc", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfEncodeBoc.new(
               boc: resp.result["boc"]
             )
@@ -307,7 +307,7 @@ module TonSdk
     def self.get_code_salt(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.get_code_salt", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfGetCodeSalt.new(
               salt: resp.result["salt"]
             )
@@ -321,7 +321,7 @@ module TonSdk
     def self.set_code_salt(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.set_code_salt", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfSetCodeSalt.new(
               code: resp.result["code"]
             )
@@ -335,7 +335,7 @@ module TonSdk
     def self.decode_tvc(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.decode_tvc", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfDecodeTvc.new(
               code: resp.result["code"],
               code_depth: resp.result["code_depth"],
@@ -359,7 +359,7 @@ module TonSdk
     def self.encode_tvc(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.encode_tvc", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfEncodeTvc.new(
               tvc: resp.result["tvc"]
             )
@@ -373,7 +373,7 @@ module TonSdk
     def self.get_compiler_version(ctx, params)
       Interop::request_to_native_lib(ctx, "boc.get_compiler_version", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfGetCompilerVersion.new(
               version: resp.result["version"]
             )

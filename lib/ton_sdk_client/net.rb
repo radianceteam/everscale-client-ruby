@@ -261,7 +261,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfQueryCollection.new(result: resp.result["result"])
           )
         else
@@ -278,7 +278,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfWaitForCollection.new(result: resp.result["result"])
           )
         else
@@ -290,7 +290,7 @@ module TonSdk
     def self.unsubscribe(ctx, params)
       Interop::request_to_native_lib(ctx, "net.unsubscribe", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ""
           )
         else
@@ -308,7 +308,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfSubscribeCollection.new(handle: resp.result["handle"])
           )
         else
@@ -320,7 +320,7 @@ module TonSdk
     def self.query(ctx, params)
       Interop::request_to_native_lib(ctx, "net.query", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfQuery.new(result: resp.result["result"])
           )
         else
@@ -332,7 +332,7 @@ module TonSdk
     def self.suspend(ctx)
       Interop::request_to_native_lib(ctx, "net.suspend") do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(result: "")
+          yield NativeLibResponseResult.new(result: "")
         else
           yield resp
         end
@@ -342,7 +342,7 @@ module TonSdk
     def self.resume(ctx)
       Interop::request_to_native_lib(ctx, "net.resume") do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(result: "")
+          yield NativeLibResponseResult.new(result: "")
         else
           yield resp
         end
@@ -352,7 +352,7 @@ module TonSdk
     def self.find_last_shard_block(ctx, params)
       Interop::request_to_native_lib(ctx, "net.find_last_shard_block", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfFindLastShardBlock.new(block_id: resp.result["block_id"])
           )
         else
@@ -364,7 +364,7 @@ module TonSdk
     def self.fetch_endpoints(ctx)
       Interop::request_to_native_lib(ctx, "net.fetch_endpoints") do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: EndpointsSet.new(endpoints: resp.result["endpoints"])
           )
         else
@@ -376,7 +376,7 @@ module TonSdk
     def self.set_endpoints(ctx, params)
       Interop::request_to_native_lib(ctx, "net.set_endpoints", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: nil
           )
         else
@@ -388,7 +388,7 @@ module TonSdk
     def self.batch_query(ctx, params)
       Interop::request_to_native_lib(ctx, "net.batch_query", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfBatchQuery.new(results: resp.result["results"])
           )
         else
@@ -400,7 +400,7 @@ module TonSdk
     def self.aggregate_collection(ctx, params)
       Interop::request_to_native_lib(ctx, "net.aggregate_collection", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfAggregateCollection.new(values: resp.result["values"])
           )
         else
@@ -412,7 +412,7 @@ module TonSdk
     def self.get_endpoints(ctx, params)
       Interop::request_to_native_lib(ctx, "net.get_endpoints", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfGetEndpoints.new(
               query: resp.result["query"],
               endpoints: resp.result["endpoints"],
@@ -427,7 +427,7 @@ module TonSdk
     def self.query_counterparties(ctx, params)
       Interop::request_to_native_lib(ctx, "net.query_counterparties", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfQueryCollection.new(result: resp.result["result"])
           )
         else
@@ -439,7 +439,7 @@ module TonSdk
     def self.query_transaction_tree(ctx, params)
       Interop::request_to_native_lib(ctx, "net.query_transaction_tree", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfQueryTransactionTree.new(
               messages: resp.result["messages"],
               transactions: resp.result["transactions"],
@@ -454,7 +454,7 @@ module TonSdk
     def self.create_block_iterator(ctx, params)
       Interop::request_to_native_lib(ctx, "net.create_block_iterator", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: RegisteredIterator.new(handle: resp.result["handle"])
           )
         else
@@ -466,7 +466,7 @@ module TonSdk
     def self.resume_block_iterator(ctx, params)
       Interop::request_to_native_lib(ctx, "net.resume_block_iterator", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: RegisteredIterator.new(handle: resp.result["handle"])
           )
         else
@@ -478,7 +478,7 @@ module TonSdk
     def self.create_transaction_iterator(ctx, params)
       Interop::request_to_native_lib(ctx, "net.create_transaction_iterator", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: RegisteredIterator.new(handle: resp.result["handle"])
           )
         else
@@ -490,7 +490,7 @@ module TonSdk
     def self.resume_transaction_iterator(ctx, params)
       Interop::request_to_native_lib(ctx, "net.resume_transaction_iterator", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: RegisteredIterator.new(handle: resp.result["handle"])
           )
         else
@@ -502,7 +502,7 @@ module TonSdk
     def self.iterator_next(ctx, params)
       Interop::request_to_native_lib(ctx, "net.iterator_next", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfIteratorNext.new(
               items: resp.result["items"],
               has_more: resp.result["has_more"],
@@ -518,7 +518,7 @@ module TonSdk
     def self.remove_iterator(ctx, params)
       Interop::request_to_native_lib(ctx, "net.remove_iterator", params) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: nil
           )
         else
