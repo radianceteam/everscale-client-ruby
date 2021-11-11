@@ -13,6 +13,7 @@ require_relative './abi.rb'
 require_relative './boc.rb'
 require_relative './net.rb'
 require_relative './tvm.rb'
+require_relative './proofs.rb'
 require_relative './processing.rb'
 require_relative './debot.rb'
 

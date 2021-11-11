@@ -316,5 +316,98 @@ describe TonSdk::Abi do
       expect(decoded.initial_data['s']).to eq(initial_data[:s])
       expect(decoded.initial_pubkey).to eq(initial_pubkey)
     end
+
+    it "test_decode_account_data" do
+      abi = TonSdk::Abi::Abi.new(type_: :json, value: '{
+	"ABI version": 2,
+	"version": "2.1",
+	"header": ["time"],
+	"functions": [],
+	"data": [],
+	"events": [],
+	"fields": [
+		{"name":"__pubkey","type":"uint256"},
+		{"name":"__timestamp","type":"uint64"},
+		{"name":"fun","type":"uint32"},
+		{"name":"opt","type":"optional(bytes)"},
+        {
+            "name":"big",
+            "type":"optional(tuple)",
+            "components":[
+                {"name":"value0","type":"uint256"},
+                {"name":"value1","type":"uint256"},
+                {"name":"value2","type":"uint256"},
+                {"name":"value3","type":"uint256"}
+            ]
+        },
+		{"name":"a","type":"bytes"},
+		{"name":"b","type":"bytes"},
+		{"name":"length","type":"uint256"}
+	]
+}')
+      data = "te6ccgEBBwEA8AAEWeix2Dmr4nsqu51KKUOpFDqcfirgZ5m9JN7B16iJGuXdAAABeqRZIJYAAAAW4AYEAwEBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAgAAABRJIGxpa2UgaXQuAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIFAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKSGVsbG8="
+
+      decoded = test_client.request(
+        "abi.decode_account_data",
+        TonSdk::Abi::ParamsOfDecodeAccountData.new(abi: abi, data: data)
+      ).data
+
+      expect(decoded).to eq({
+                              "__pubkey" => "0xe8b1d839abe27b2abb9d4a2943a9143a9c7e2ae06799bd24dec1d7a8891ae5dd",
+                              "__timestamp" => "1626254942358",
+                              "fun" => "22",
+                              "opt" => "48656c6c6f",
+                              "big" => {
+                                "value0" => "0x0000000000000000000000000000000000000000000000000000000000000002",
+                                "value1" => "0x0000000000000000000000000000000000000000000000000000000000000008",
+                                "value2" => "0x0000000000000000000000000000000000000000000000000000000000000002",
+                                "value3" => "0x0000000000000000000000000000000000000000000000000000000000000000"
+                              },
+                              "a" => "49206c696b652069742e",
+                              "b" => "",
+                              "length" => "0x000000000000000000000000000000000000000000000000000000000000000f"
+                            })
+    end
+
+    it "test_decode_boc" do
+      boc = "te6ccgEBAgEAEgABCQAAAADAAQAQAAAAAAAAAHs="
+
+      params = [
+        TonSdk::Abi::AbiParam.new(
+          name: "a",
+          type_: "uint32"
+        ),
+        TonSdk::Abi::AbiParam.new(
+          name: "b",
+          type_: "ref(int64)"
+        ),
+        TonSdk::Abi::AbiParam.new(
+          name: "c",
+          type_: "bool"
+        )
+      ]
+
+      decoded = test_client.request(
+        "abi.decode_boc",
+        TonSdk::Abi::ParamsOfDecodeBoc.new(
+          boc: boc,
+          params: params,
+          allow_partial: false
+        )
+      ).data
+
+      expect(decoded).to eq({"a"=>"0", "b"=>"123", "c"=>true})
+
+      decoded = test_client.request(
+        "abi.decode_boc",
+        TonSdk::Abi::ParamsOfDecodeBoc.new(
+          boc: boc,
+          params: params[0..1],
+          allow_partial: true
+        )
+      ).data
+
+      expect(decoded).to eq({"a"=>"0", "b"=>"123"})
+    end
   end
 end

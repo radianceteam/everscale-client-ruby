@@ -162,7 +162,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfSendMessage.new(shard_block_id: resp.result["shard_block_id"])
           )
         else
@@ -184,7 +184,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfProcessMessage.new(
               transaction: resp.result["transaction"],
               out_messages: resp.result["out_messages"],
@@ -211,7 +211,7 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
-          yield NativeLibResponsetResult.new(
+          yield NativeLibResponseResult.new(
             result: ResultOfProcessMessage.new(
               transaction: resp.result["transaction"],
               out_messages: resp.result["out_messages"],
