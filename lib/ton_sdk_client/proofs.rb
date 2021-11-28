@@ -16,6 +16,8 @@ module TonSdk
 
     ParamsOfProofTransactionData = KwStruct.new(:transaction)
 
+    ParamsOfProofMessageData = KwStruct.new(:message)
+
     #
     # functions
     #
@@ -34,6 +36,18 @@ module TonSdk
 
     def self.proof_transaction_data(ctx, params)
       Interop::request_to_native_lib(ctx, "proofs.proof_transaction_data", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: ""
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.proof_message_data(ctx, params)
+      Interop::request_to_native_lib(ctx, "proofs.proof_message_data", params) do |resp|
         if resp.success?
           yield NativeLibResponseResult.new(
             result: ""
