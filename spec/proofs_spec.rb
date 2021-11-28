@@ -15,7 +15,7 @@ describe TonSdk::Proofs do
     )
   end
 
-  it "proof_block_data_test" do
+  it "test_proof_block_data" do
     block_json = load_json("block")
     response = test_client.request(
       "proofs.proof_block_data",
@@ -48,7 +48,7 @@ describe TonSdk::Proofs do
     expect(response).to eq('Data differs from the proven: field `blocks.id`: expected String("8bde590a572437332977e68bace66fa00f9cebac6baa57f6bf2d2f1276db2848"), actual String("8ade590a572437332977e68bace66fa00f9cebac6baa57f6bf2d2f1276db2848")')
   end
 
-  it "proof_transaction_data_test" do
+  it "test_proof_transaction_data" do
     transaction_json = load_json("transaction")
     response = test_client.request(
       "proofs.proof_transaction_data",
@@ -77,5 +77,36 @@ describe TonSdk::Proofs do
     )
 
     expect(response).to eq('Data differs from the proven: field `transactions.id`: expected String("0c7e395e8eb14c173d2dde7189200f28787a05df1fa188b19224f6e19a439dc6"), actual String("1c7e395e8eb14c173d2dde7189200f28787a05df1fa188b19224f6e19a439dc6")')
+  end
+
+  it "test_proof_message_data" do
+    message = load_json("message")
+    response = test_client.request(
+      "proofs.proof_message_data",
+      TonSdk::Proofs::ParamsOfProofMessageData.new(
+        message: message
+      )
+    )
+
+    expect(response).to eq(nil)
+
+    response = test_client.request(
+      "proofs.proof_message_data",
+      TonSdk::Proofs::ParamsOfProofMessageData.new(
+        message: nil
+      )
+    )
+
+    expect(response).to eq("Invalid data: Message's `boc` or `id` are required")
+
+    message["id"] = "1a9389e2fa34a83db0c814674bc4c7569fd3e92042289e2b2d4802231ecabec9"
+    response = test_client.request(
+      "proofs.proof_message_data",
+      TonSdk::Proofs::ParamsOfProofMessageData.new(
+        message: message
+      )
+    )
+
+    expect(response).to eq("Proof check failed: Unable to download message data from DApp server")
   end
 end
