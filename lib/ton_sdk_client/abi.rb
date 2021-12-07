@@ -756,6 +756,19 @@ module TonSdk
 
     ResultOfUpdateInitialData = KwStruct.new(:data)
 
+    ParamsOfEncodeInitialData = KwStruct.new(:abi, :initial_data, :initial_pubkey, :boc_cache) do
+      def to_h
+        {
+          abi: abi&.to_h,
+          initial_data: initial_data,
+          initial_pubkey: initial_pubkey,
+          boc_cache: boc_cache&.to_h
+        }
+      end
+    end
+
+    ResultOfEncodeInitialData = KwStruct.new(:data)
+
     ParamsOfDecodeInitialData = KwStruct.new(:data, :abi) do
       def to_h
         {
@@ -914,6 +927,20 @@ module TonSdk
         if resp.success?
           yield NativeLibResponseResult.new(
             result: ResultOfUpdateInitialData.new(
+              data: resp.result["data"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.encode_initial_data(ctx, params)
+      Interop::request_to_native_lib(ctx, "abi.encode_initial_data", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: ResultOfEncodeInitialData.new(
               data: resp.result["data"]
             )
           )
