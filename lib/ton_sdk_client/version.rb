@@ -1,4 +1,4 @@
 module TonSdk
-  VERSION = "1.26.0"
-  NATIVE_SDK_VERSION = "1.26.0"
+  VERSION = "1.27.0"
+  NATIVE_SDK_VERSION = "1.27.0"
 end

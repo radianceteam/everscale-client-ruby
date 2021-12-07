@@ -276,7 +276,7 @@ describe TonSdk::Abi do
       match_events.call(expected, decode_events.call("te6ccgEBAQEAVQAApeACvg5/pmQpY4m61HmJ0ne+zjHJu3MNG8rJxUDLbHKBu/AAAAAAAAAMKr6z6rxK3xYJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA"))
     end
 
-    it "#decode_update_initial_data" do
+    fit "#decode_update_initial_data" do
       initdata_abi_json = File.read("#{TESTS_DATA_DIR}/contracts/abi_v2/t24_initdata.abi.json")
       abi = TonSdk::Abi::Abi.new(
         type_: :json,
@@ -296,6 +296,8 @@ describe TonSdk::Abi do
       expect(decoded.initial_pubkey).to eq('00' * 32)
       expect(decoded.initial_data).to eq({})
 
+      encode_initial_data = 'te6ccgEBBwEARwABAcABAgPPoAQCAQFIAwAWc29tZSBzdHJpbmcCASAGBQADHuAAQQiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIoA=='
+
       # Update initial data
       initial_data = {'a': "123", 's': 'some string'}
       initial_pubkey = '22' * 32
@@ -305,7 +307,19 @@ describe TonSdk::Abi do
       TonSdk::Abi.update_initial_data(@c_ctx.context, params) { |r| @response = r }
       data_updated = @response.result.data
 
-      expect(data_updated).to eq('te6ccgEBBwEARwABAcABAgPPoAQCAQFIAwAWc29tZSBzdHJpbmcCASAGBQADHuAAQQiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIoA==')
+      expect(data_updated).to eq(encode_initial_data)
+
+      result = test_client.request(
+        "abi.encode_initial_data",
+        TonSdk::Abi::ParamsOfEncodeInitialData.new(
+          abi: abi,
+          initial_data: initial_data,
+          initial_pubkey: initial_pubkey,
+          boc_cache: nil
+        )
+      )
+
+      expect(result.data).to eq(encode_initial_data)
 
       # Decode updated data
       params = TonSdk::Abi::ParamsOfDecodeInitialData.new(data: data_updated, abi: abi)
