@@ -276,7 +276,7 @@ describe TonSdk::Abi do
       match_events.call(expected, decode_events.call("te6ccgEBAQEAVQAApeACvg5/pmQpY4m61HmJ0ne+zjHJu3MNG8rJxUDLbHKBu/AAAAAAAAAMKr6z6rxK3xYJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA"))
     end
 
-    fit "#decode_update_initial_data" do
+    it "#decode_update_initial_data" do
       initdata_abi_json = File.read("#{TESTS_DATA_DIR}/contracts/abi_v2/t24_initdata.abi.json")
       abi = TonSdk::Abi::Abi.new(
         type_: :json,
