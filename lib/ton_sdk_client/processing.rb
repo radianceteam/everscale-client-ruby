@@ -136,6 +136,10 @@ module TonSdk
     end
 
     ParamsOfProcessMessage = KwStruct.new(:message_encode_params, :send_events) do
+      def initialize(message_encode_params:, send_events:)
+        super
+      end
+
       def to_h
         {
           message_encode_params: message_encode_params.to_h,
