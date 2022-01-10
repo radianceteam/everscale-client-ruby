@@ -188,8 +188,11 @@ module TonSdk
             result: ResultOfProcessMessage.new(
               transaction: resp.result["transaction"],
               out_messages: resp.result["out_messages"],
-              decoded: resp.result["decoded"],
-              fees: resp.result["fees"]
+              decoded: DecodedOutput.new(
+                out_messages: resp.result.dig("decoded", "out_messages"),
+                output: resp.result.dig("decoded", "output")
+              ),
+              fees: Tvm::TransactionFees.new(**resp.result["fees"].transform_keys(&:to_sym))
             )
           )
         else
@@ -215,8 +218,11 @@ module TonSdk
             result: ResultOfProcessMessage.new(
               transaction: resp.result["transaction"],
               out_messages: resp.result["out_messages"],
-              decoded: resp.result["decoded"],
-              fees: resp.result["fees"]
+              decoded: DecodedOutput.new(
+                out_messages: resp.result.dig("decoded", "out_messages"),
+                output: resp.result.dig("decoded", "output")
+              ),
+              fees: Tvm::TransactionFees.new(**resp.result["fees"].transform_keys(&:to_sym))
             )
           )
         else
