@@ -2,6 +2,11 @@
 
 all the changes are always according to the ones of the main TON SDK library; and on top on that, there may be additional ones
 
+1.28.0
+-----
+* Changes `1.28.0` https://github.com/tonlabs/TON-SDK/blob/master/CHANGELOG.md#1280--2021-12-24
+* Implement Debot module
+
 1.27.0
 -----
 * Changes `1.27.0` https://github.com/tonlabs/TON-SDK/blob/master/CHANGELOG.md#1270--2021-12-03

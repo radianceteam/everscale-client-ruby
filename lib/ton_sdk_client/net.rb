@@ -135,7 +135,7 @@ module TonSdk
 
       def to_h
         h = super
-        h[:fields] = self.fields.map(&:to_h)
+        h[:fields] = fields.map(&:to_h)
         h
       end
     end
@@ -222,7 +222,7 @@ module TonSdk
 
       def to_h
         h = super
-        h[:abi_registry] = self.abi_registry&.map(&:to_h)
+        h[:abi_registry] = abi_registry&.map(&:to_h)
         h
       end
     end
@@ -409,8 +409,8 @@ module TonSdk
       end
     end
 
-    def self.get_endpoints(ctx, params)
-      Interop::request_to_native_lib(ctx, "net.get_endpoints", params) do |resp|
+    def self.get_endpoints(ctx)
+      Interop::request_to_native_lib(ctx, "net.get_endpoints") do |resp|
         if resp.success?
           yield NativeLibResponseResult.new(
             result: ResultOfGetEndpoints.new(

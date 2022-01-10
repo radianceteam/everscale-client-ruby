@@ -66,7 +66,7 @@ describe TonSdk::Proofs do
       )
     )
 
-    expect(response).to eq("Invalid data: Transaction's BOC or id are required")
+    expect(response).to eq("Invalid data: Transaction's `boc` or id are required")
 
     transaction_json["id"] = "1c7e395e8eb14c173d2dde7189200f28787a05df1fa188b19224f6e19a439dc6"
     response = test_client.request(

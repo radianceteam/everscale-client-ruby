@@ -16,9 +16,9 @@ module TonSdk
 
       def to_h
         {
-          message: @message,
-          abi: @abi.nil? ? nil : @abi.to_h,
-          send_events: @send_events
+          message: message,
+          abi: abi&.to_h,
+          send_events: send_events
         }
       end
     end
@@ -37,10 +37,10 @@ module TonSdk
 
       def to_h
         {
-          abi: @abi.nil? ? nil : @abi.to_h,
-          message: @message,
-          shard_block_id: @shard_block_id,
-          send_events: @send_events
+          abi: abi&.to_h,
+          message: message,
+          shard_block_id: shard_block_id,
+          send_events: send_events
         }
       end
     end
@@ -57,10 +57,10 @@ module TonSdk
 
       def to_h
         {
-          transaction: @transaction,
-          out_messages: @out_messages,
-          decoded: @decoded,
-          fees: @fees
+          transaction: transaction,
+          out_messages: out_messages,
+          decoded: decoded,
+          fees: fees
         }
       end
     end
@@ -136,6 +136,10 @@ module TonSdk
     end
 
     ParamsOfProcessMessage = KwStruct.new(:message_encode_params, :send_events) do
+      def initialize(message_encode_params:, send_events:)
+        super
+      end
+
       def to_h
         {
           message_encode_params: message_encode_params.to_h,
@@ -188,8 +192,11 @@ module TonSdk
             result: ResultOfProcessMessage.new(
               transaction: resp.result["transaction"],
               out_messages: resp.result["out_messages"],
-              decoded: resp.result["decoded"],
-              fees: resp.result["fees"]
+              decoded: DecodedOutput.new(
+                out_messages: resp.result.dig("decoded", "out_messages"),
+                output: resp.result.dig("decoded", "output")
+              ),
+              fees: Tvm::TransactionFees.new(**resp.result["fees"].transform_keys(&:to_sym))
             )
           )
         else
@@ -215,8 +222,11 @@ module TonSdk
             result: ResultOfProcessMessage.new(
               transaction: resp.result["transaction"],
               out_messages: resp.result["out_messages"],
-              decoded: resp.result["decoded"],
-              fees: resp.result["fees"]
+              decoded: DecodedOutput.new(
+                out_messages: resp.result.dig("decoded", "out_messages"),
+                output: resp.result.dig("decoded", "output")
+              ),
+              fees: Tvm::TransactionFees.new(**resp.result["fees"].transform_keys(&:to_sym))
             )
           )
         else
