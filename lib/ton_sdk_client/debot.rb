@@ -1,7 +1,4 @@
 module TonSdk
-
-  # NOTE
-  # as of 28 apr 2021, in the main repository this module is still unstable
   module Debot
 
     #
@@ -21,22 +18,23 @@ module TonSdk
       EXTERNAL_CALL_FAILED = 810
       BROWSER_CALLBACK_FAILED = 811
       OPERATION_REJECTED = 812
+      DEBOT_NO_CODE = 813
     end
 
     DebotAction = KwStruct.new(:description, :name, :action_type, :to, :attributes, :misc) do
       def to_h
         {
-          description: self.description,
-          name: self.name,
-          action_type: self.action_type,
-          to: self.to,
-          attributes: self.attributes,
-          misc: self.misc
+          description: description,
+          name: name,
+          action_type: action_type,
+          to: to,
+          attributes: attributes,
+          misc: misc
         }
       end
 
       def self.from_json(j)
-        return nil if j.nil?
+        return if j.nil?
 
         self.new(
           description: j["description"],
@@ -49,20 +47,59 @@ module TonSdk
       end
     end
 
-    ParamsOfStart = KwStruct.new(:debot_handle)
+    DebotInfo = KwStruct.new(
+      :name,
+      :version,
+      :publisher,
+      :caption,
+      :author,
+      :support,
+      :hello,
+      :language,
+      :dabi,
+      :icon,
+      :interfaces,
+      :dabi_version
+    ) do
+      def initialize(
+        name: nil,
+        version: nil,
+        publisher: nil,
+        caption: nil,
+        author: nil,
+        support: nil,
+        hello: nil,
+        language: nil,
+        dabi: nil,
+        icon: nil,
+        interfaces: [],
+        dabi_version: nil
+      )
+        super
+      end
+    end
+
+    class DebotActivity
+      attr_reader :type, :msg, :dst, :out, :fee, :setcode, :signkey, :signing_box_handle
+    end
+
+    Spending = KwStruct.new(:amount, :dst)
+
+    ParamsOfInit = KwStruct.new(:address)
 
     RegisteredDebot = KwStruct.new(:debot_handle, :debot_abi, :info) do
-      def to_h = {
-        debot_handle: @debot_handle,
-        debot_abi: @debot_abi,
-        info: @info.to_h
-      }
+      def to_h
+        {
+          debot_handle: debot_handle,
+          debot_abi: debot_abi,
+          info: info.to_h
+        }
+      end
     end
 
     class ParamsOfAppDebotBrowser
       private_class_method :new
 
-      # todo remove?
       TYPE_VALUES = [
         :log,
         :switch,
@@ -75,61 +112,61 @@ module TonSdk
         :approve
       ]
 
-      attr_reader :type_, :msg, :context_id, :action, :prompt, :debot_addr, :message, :activity
+      attr_reader :type, :msg, :context_id, :action, :prompt, :debot_addr, :message, :activity
 
       def self.new_with_type_log(msg)
-        @type_ = :log
+        @type = :log
         @msg = msg
       end
 
       def self.new_with_type_switch(context_id)
-        @type_ = :switch
+        @type = :switch
         @context_id = context_id
       end
 
       def self.new_with_type_switch_completed
-        @type_ = :switch_completed
+        @type = :switch_completed
       end
 
       def self.new_with_type_show_action(action)
-        @type_ = :show_action
+        @type = :show_action
         @action = action
       end
 
       def self.new_with_type_input(prompt)
-        @type_ = :input
+        @type = :input
         @prompt = prompt
       end
 
       def self.new_with_type_get_signing_box
-        @type_ = :get_signing_box
+        @type = :get_signing_box
       end
 
       def self.new_with_type_invoke_debot(debot_addr, action)
-        @type_ = :invoke_debot
+        @type = :invoke_debot
         @debot_addr = debot_addr
         @action = action
       end
 
       def self.new_with_type_send(message)
-        @type_ = :send
+        @type = :send
         @message = message
       end
 
       def self.new_with_type_approve(activity)
-        @type_ = :approve
+        @type = :approve
         @activity = activity
       end
 
       def to_h
         {
-          type: Helper.sym_to_capitalized_case_str(@type_),
-          msg: @msg,
-          context_id: @context_id,
-          action: @action,
-          prompt: @prompt,
-          debot_addr: @debot_addr,
-          message: @message
+          type: Helper.sym_to_capitalized_case_str(type),
+          msg: msg,
+          context_id: context_id,
+          action: action,
+          prompt: prompt,
+          debot_addr: debot_addr,
+          message: message
         }
       end
 
@@ -173,118 +210,79 @@ module TonSdk
       private
 
       def self.parse_type(type_str)
-        types_str = TYPE_VALUES.map(Helper.capitalized_case_str_to_snake_case_sym)
-        unless types_str.include?(type_str)
-          raise ArgumentError.new("type #{type_str} is unknown; known types: #{types_str}")
+        parsed_type = Helper.capitalized_case_str_to_snake_case_sym(type_str)
+
+        unless TYPE_VALUES.include?(type_str)
+          raise ArgumentError.new("type #{type_str} is unknown; known types: #{TYPE_VALUES}")
         end
 
-        Helper.capitalized_case_str_to_snake_case_sym(type_str)
+        parsed_type
       end
     end
 
     class ResultOfAppDebotBrowser
       private_class_method :new
 
-      attr_reader :type_, :value, :signing_box, :is_approved
+      attr_reader :type, :value, :signing_box, :is_approved
 
       def self.new_with_type_input(a)
-        @type_ = :input
+        @type = :input
         @value = a
       end
 
       def self.new_with_type_get_signing_box(a)
-        @type_ = :get_signing_box
+        @type = :get_signing_box
         @signing_box = signing_box
       end
 
       def self.new_with_type_invoke_debot
-        @type_ = :invoke_debot
+        @type = :invoke_debot
       end
 
       def self.new_with_type_approve(a)
-        @type_ = :approve
+        @type = :approve
         @is_approved = a
       end
     end
 
+    ParamsOfStart = KwStruct.new(:debot_handle)
+
     ParamsOfFetch = KwStruct.new(:address)
+
+    ResultOfFetch = KwStruct.new(:info)
 
     ParamsOfExecute = KwStruct.new(:debot_handle, :action) do
       def to_h
         {
-          debot_handle: @debot_handle,
-          action: @action.to_h
+          debot_handle: debot_handle,
+          action: action.to_h
         }
       end
     end
 
     ParamsOfSend = KwStruct.new(:debot_handle, :message)
-    ParamsOfInit = KwStruct.new(:address)
-    DebotInfo = KwStruct.new(
-      :name,
-      :version,
-      :publisher,
-      :caption,
-      :author,
-      :support,
-      :hello,
-      :language,
-      :dabi,
-      :icon,
-      :interfaces
-    ) do
-      def initialize(
-        name: nil,
-        version: nil,
-        publisher: nil,
-        caption: nil,
-        author: nil,
-        support: nil,
-        hello: nil,
-        language: nil,
-        dabi: nil,
-        icon: nil,
-        interfaces: []
-      )
-        super
-      end
-    end
 
-    ResultOfFetch = KwStruct.new(:info)
-    Spending = KwStruct.new(:amount, :dst)
-
-    class DebotActivity
-      private_class_method :new
-
-      attr_reader :type_, :msg, :dst, :out, :fee, :setcode, :signkey, :signing_box_handle
-
-      def self.new_with_type_transaction(msg:, dst:, out:, fee:, setcode:, signkey:, signing_box_handle:)
-        @type_ = :transaction
-        @msg = msg
-        @dst = dst
-        @out = out
-        @fee = fee
-        @setcode = setcode
-        @signkey = signkey
-        @signing_box_handle = signing_box_handle
-      end
-
-      def self.from_json(j)
-        # todo
-      end
-    end
-
-
+    ParamsOfRemove = KwStruct.new(:debot_handle)
 
     #
     # functions
     #
 
-    def self.init(ctx, params, app_browser_obj)
-      Interop::request_to_native_lib(ctx, "debot.init", params) do |resp|
+    def self.init(ctx, params, app_browser_obj = nil)
+      Interop::request_to_native_lib(
+        ctx,
+        "debot.init",
+        params
+      ) do |resp|
         if resp.success?
+          debot_info = resp.result["info"].transform_keys(&:to_sym)
+          debot_info[:dabi_version] = debot_info.delete(:dabiVersion)
           yield NativeLibResponseResult.new(
-            result: nil
+            result: RegisteredDebot.new(
+              debot_handle: resp.result["debot_handle"],
+              debot_abi: resp.result["debot_abi"],
+              info: DebotInfo.new(**debot_info)
+            )
           )
         else
           yield resp
@@ -317,9 +315,12 @@ module TonSdk
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
+          debot_info = resp.result["info"].transform_keys(&:to_sym)
+          debot_info[:dabi_version] = debot_info.delete(:dabiVersion)
           yield NativeLibResponseResult.new(
-            # TODO: parse DebotInfo
-            result: ResultOfFetch.new(info: resp.result["info"])
+            result: ResultOfFetch.new(
+              info: DebotInfo.new(**debot_info)
+            )
           )
         else
           yield resp
