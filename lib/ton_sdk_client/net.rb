@@ -409,8 +409,8 @@ module TonSdk
       end
     end
 
-    def self.get_endpoints(ctx, params)
-      Interop::request_to_native_lib(ctx, "net.get_endpoints", params) do |resp|
+    def self.get_endpoints(ctx)
+      Interop::request_to_native_lib(ctx, "net.get_endpoints") do |resp|
         if resp.success?
           yield NativeLibResponseResult.new(
             result: ResultOfGetEndpoints.new(
