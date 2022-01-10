@@ -135,7 +135,7 @@ module TonSdk
 
       def to_h
         h = super
-        h[:fields] = self.fields.map(&:to_h)
+        h[:fields] = fields.map(&:to_h)
         h
       end
     end
@@ -222,7 +222,7 @@ module TonSdk
 
       def to_h
         h = super
-        h[:abi_registry] = self.abi_registry&.map(&:to_h)
+        h[:abi_registry] = abi_registry&.map(&:to_h)
         h
       end
     end
