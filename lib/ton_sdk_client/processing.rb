@@ -16,9 +16,9 @@ module TonSdk
 
       def to_h
         {
-          message: @message,
-          abi: @abi.nil? ? nil : @abi.to_h,
-          send_events: @send_events
+          message: message,
+          abi: abi&.to_h,
+          send_events: send_events
         }
       end
     end
@@ -37,10 +37,10 @@ module TonSdk
 
       def to_h
         {
-          abi: @abi.nil? ? nil : @abi.to_h,
-          message: @message,
-          shard_block_id: @shard_block_id,
-          send_events: @send_events
+          abi: abi&.to_h,
+          message: message,
+          shard_block_id: shard_block_id,
+          send_events: send_events
         }
       end
     end
@@ -57,10 +57,10 @@ module TonSdk
 
       def to_h
         {
-          transaction: @transaction,
-          out_messages: @out_messages,
-          decoded: @decoded,
-          fees: @fees
+          transaction: transaction,
+          out_messages: out_messages,
+          decoded: decoded,
+          fees: fees
         }
       end
     end
