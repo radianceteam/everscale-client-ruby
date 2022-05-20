@@ -792,6 +792,18 @@ module TonSdk
 
     ResultOfDecodeBoc = KwStruct.new(:data)
 
+    ParamsOfAbiEncodeBoc = KwStruct.new(:params, :data, :boc_cache) do
+      def to_h
+        {
+          params: params&.map(&:to_h),
+          data: data,
+          boc_cache: boc_cache&.to_h
+        }
+      end
+    end
+
+    ResultOfAbiEncodeBoc = KwStruct.new(:boc)
+
     #
     # functions
     #
@@ -971,6 +983,20 @@ module TonSdk
           yield NativeLibResponseResult.new(
             result: ResultOfDecodeBoc.new(
               data: resp.result["data"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.encode_boc(ctx, params)
+      Interop::request_to_native_lib(ctx, "abi.encode_boc", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: ResultOfAbiEncodeBoc.new(
+              boc: resp.result["boc"]
             )
           )
         else
