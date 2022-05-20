@@ -1,7 +1,7 @@
 # Ever SDK (formerly TON SDK) client in Ruby and for Ruby
 
 [![Gem Version](https://badge.fury.io/rb/ton_sdk_client.svg)](https://rubygems.org/gems/ton_sdk_client)
-[![TON SDK version](https://img.shields.io/badge/TON%20SDK%20version-1.28.0-green)](https://github.com/tonlabs/TON-SDK/tree/1.28.0)
+[![Ever SDK version](https://img.shields.io/badge/Ever%20SDK%20version-1.34.0-green)](https://github.com/tonlabs/ever-sdk/tree/1.34.0)
 
 Ruby gem-client bindings for [Ever SDK](https://github.com/tonlabs/ever-sdk) which allows one to communicate with [Everscale](https://everscale.network/) blockchain in Ruby.
 
