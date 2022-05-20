@@ -122,6 +122,23 @@ module TonSdk
       end
     end
 
+    def self.config(ctx)
+      Interop::request_to_native_lib(ctx, "client.config") do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: ClientConfig.new(
+              network: resp.result["network"],
+              crypto: resp.result["crypto"],
+              abi: resp.result["abi"],
+              boc: resp.result["boc"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
     def self.get_api_reference(ctx)
       Interop::request_to_native_lib(ctx, "client.get_api_reference") do |resp|
         if resp.success?

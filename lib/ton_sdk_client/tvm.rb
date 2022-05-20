@@ -162,7 +162,10 @@ module TonSdk
       :gas_fee,
       :out_msgs_fwd_fee,
       :total_account_fees,
-      :total_output
+      :total_output,
+      :ext_in_msg_fee,
+      :total_fwd_fees,
+      :account_fees
     ) do
       def initialize(
         in_msg_fwd_fee:,
@@ -170,7 +173,10 @@ module TonSdk
         gas_fee:,
         out_msgs_fwd_fee:,
         total_account_fees:,
-        total_output:
+        total_output:,
+        ext_in_msg_fee:,
+        total_fwd_fees:,
+        account_fees:
       )
         super
       end

@@ -130,6 +130,20 @@ module TonSdk
 
     ResultOfEncodeTvc = KwStruct.new(:tvc)
 
+    ParamsOfEncodeExternalInMessage = KwStruct.new(:src, :dst, :init, :body, :boc_cache) do
+      def to_h
+        {
+          src: src,
+          dst: dst,
+          init: init,
+          body: body,
+          boc_cache: boc_cache&.to_h
+        }
+      end
+    end
+
+    ResultOfEncodeExternalInMessage = KwStruct.new(:message, :message_id)
+
     ParamsOfGetCompilerVersion = KwStruct.new(:code)
 
     ResultOfGetCompilerVersion = KwStruct.new(:version)
@@ -362,6 +376,21 @@ module TonSdk
           yield NativeLibResponseResult.new(
             result: ResultOfEncodeTvc.new(
               tvc: resp.result["tvc"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.encode_external_in_message(ctx, params)
+      Interop::request_to_native_lib(ctx, "boc.encode_external_in_message", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: ResultOfEncodeExternalInMessage.new(
+              message: resp.result["message"],
+              message_id: resp.result["message_id"]
             )
           )
         else

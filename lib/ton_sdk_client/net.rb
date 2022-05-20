@@ -74,7 +74,10 @@ module TonSdk
       end
     end
 
+    ParamsOfSubscribe = KwStruct.new(:subscription, :variables)
+
     ResultOfSubscribeCollection = KwStruct.new(:handle)
+
     ParamsOfQuery = KwStruct.new(:query, :variables) do
       def initialize(query:, variables: nil)
         super
@@ -317,6 +320,24 @@ module TonSdk
       end
     end
 
+    def self.subscribe(ctx, params, client_callback: nil)
+      Interop::request_to_native_lib(
+        ctx,
+        "net.subscribe",
+        params,
+        client_callback: client_callback,
+        is_single_thread_only: false
+      ) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: ResultOfSubscribeCollection.new(handle: resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
     def self.query(ctx, params)
       Interop::request_to_native_lib(ctx, "net.query", params) do |resp|
         if resp.success?
@@ -526,6 +547,5 @@ module TonSdk
         end
       end
     end
-
   end
 end
