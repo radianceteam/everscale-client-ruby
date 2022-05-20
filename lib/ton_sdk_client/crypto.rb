@@ -32,6 +32,10 @@ module TonSdk
       ENCRYPT_DATA_ERROR = 127
       DECRYPT_DATA_ERROR = 128
       IV_REQUIRED = 129
+      CRYPTO_BOX_NOT_REGISTERED = 130
+      INVALID_CRYPTO_BOX_TYPE = 131
+      CRYPTO_BOX_SECRET_SERIALIZATION_ERROR = 132
+      CRYPTO_BOX_SECRET_DESERIALIZATION_ERROR = 133
     end
 
     ParamsOfFactorize = KwStruct.new(:composite)
@@ -178,7 +182,9 @@ module TonSdk
     ParamsOfSigningBoxSign = KwStruct.new(:signing_box, :unsigned)
 
     ResultOfSigningBoxSign = KwStruct.new(:signature)
+
     RegisteredSigningBox = KwStruct.new(:handle)
+
     ResultOfSigningBoxGetPublicKey = KwStruct.new(:pubkey)
 
     ParamsOfNaclSignDetachedVerify = KwStruct.new(:unsigned, :signature, :public_) do
@@ -194,10 +200,7 @@ module TonSdk
     ResultOfNaclSignDetachedVerify = KwStruct.new(:succeeded)
 
     class ParamsOfAppSigningBox
-      TYPES = [
-        :get_public_key,
-        :sign
-      ]
+      TYPES = [:get_public_key, :sign]
 
       attr_reader :type_, :unsigned
 
@@ -218,10 +221,149 @@ module TonSdk
     end
 
     EncryptionBoxInfo = KwStruct.new(:hdpath, :algorithm, :options, :public)
+
     ParamsOfEncryptionBoxGetInfo = KwStruct.new(:encryption_box)
+
     ResultOfEncryptionBoxGetInfo = KwStruct.new(:info)
+
+    ParamsOfEncryptionBoxEncrypt = KwStruct.new(:encryption_box, :data)
+
     RegisteredEncryptionBox = KwStruct.new(:handle)
+
+    ResultOfEncryptionBoxEncrypt = KwStruct.new(:data)
+
+    ParamsOfEncryptionBoxDecrypt = KwStruct.new(:encryption_box, :data)
+
+    ResultOfEncryptionBoxDecrypt = KwStruct.new(:data)
+
     ParamsOfCreateEncryptionBox = KwStruct.new(:algorithm)
+
+    class CryptoBoxSecret
+      TYPES = %i[random_seed_phrase predefined_seed_phrase encrypted_secret]
+      attr_reader :type, :args
+
+      def initialize(type:, **args)
+        unless TYPES.include?(type)
+          raise ArgumentError.new("type #{type} is unknown; known types: #{TYPES}")
+        end
+        @type = type
+        @args = args
+      end
+
+      def to_h
+        hash = case type
+               when :random_seed_phrase
+                 {
+                   dictionary: args[:dictionary],
+                   wordcount: args[:wordcount]
+                 }
+               when :predefined_seed_phrase
+                 {
+                   phrase: args[:phrase],
+                   dictionary: args[:dictionary],
+                   wordcount: args[:wordcount]
+                 }
+               when :encrypted_secret
+                 {
+                   encrypted_secret: args[:encrypted_secret]
+                 }
+               end
+        {
+          type: Helper.sym_to_capitalized_case_str(type)
+        }.merge(hash)
+      end
+    end
+
+    class BoxEncryptionAlgorithm
+      TYPES = %i[cha_cha20 nacl_box nacl_secret_box]
+      attr_reader :type, :args
+
+      def initialize(type:, **args)
+        unless TYPES.include?(type)
+          raise ArgumentError.new("type #{type} is unknown; known types: #{TYPES}")
+        end
+        @type = type
+        @args = args
+      end
+
+      def to_h
+        hash = case type
+               when :cha_cha20
+                 {
+                   nonce: args[:nonce]
+                 }
+               when :nacl_box
+                 {
+                   their_public: args[:their_public],
+                   nonce: args[:nonce]
+                 }
+               when :nacl_secret_box
+                 {
+                   nonce: args[:nonce]
+                 }
+               end
+        {
+          type: Helper.sym_to_capitalized_case_str(type)
+        }.merge(hash)
+      end
+    end
+
+    class ParamsOfAppEncryptionBox
+      TYPES = %i[get_info encrypt decrypt]
+      attr_reader :type, :args
+
+      def initialize(type:, **args)
+        unless TYPES.include?(type)
+          raise ArgumentError.new("type #{type} is unknown; known types: #{TYPES}")
+        end
+        @type = type
+        @args = args
+      end
+
+      def to_h
+        hash = case type
+               when :get_info
+                 {}
+               when :encrypt, :decrypt
+                 {
+                   data: args[:data]
+                 }
+               end
+        {
+          type: Helper.sym_to_capitalized_case_str(type)
+        }.merge(hash)
+      end
+    end
+
+    ParamsOfCreateCryptoBox = KwStruct.new(:secret_encryption_salt, :secret)
+
+    RegisteredCryptoBox = KwStruct.new(:handle)
+
+    ParamsOfAppPasswordProvider = KwStruct.new(:encryption_public_key) do
+      attr_reader :type, :encryption_public_key
+
+      def initialize(encryption_public_key:)
+        @type = "GetPassword"
+        @encryption_public_key = encryption_public_key
+      end
+
+      def to_h
+        {
+          type: type,
+          encryption_public_key: encryption_public_key
+        }
+      end
+    end
+
+    ResultOfAppPasswordProvider = KwStruct.new(:type, :encrypted_password, :app_encryption_pubkey)
+
+    ResultOfGetCryptoBoxInfo = KwStruct.new(:encrypted_secret)
+
+    ResultOfGetCryptoBoxSeedPhrase = KwStruct.new(:phrase, :dictionary, :wordcount)
+
+    ParamsOfGetSigningBoxFromCryptoBox = KwStruct.new(:handle, :hdpath, :secret_lifetime)
+
+    ParamsOfGetEncryptionBoxFromCryptoBox = KwStruct.new(:handle, :hdpath, :algorithm, :secret_lifetime)
 
     class EncryptionAlgorithm
       private_class_method :new
@@ -233,8 +375,6 @@ module TonSdk
         @aes_params = aes_params
       end
     end
-
-
 
     #
     # functions
@@ -654,34 +794,13 @@ module TonSdk
       end
     end
 
-    def self.register_signing_box(ctx, app_obj:, is_single_thread_only: false)
-      client_callback = Proc.new do |type_, x|
-        app_res = app_obj.request(x["request_data"])
-        app_req_result = case app_res
-        in [:success, result]
-          TonSdk::Client::AppRequestResult.new(
-            type_: :ok,
-            result: result
-          )
-        in [:error, text]
-          TonSdk::Client::AppRequestResult.new(
-            type_: :error,
-            text: text
-          )
-        end
-
-        params = TonSdk::Client::ParamsOfResolveAppRequest.new(
-          app_request_id: x["app_request_id"],
-          result: app_req_result
-        )
-        TonSdk::Client.resolve_app_request(ctx, params)
-      end
-
+    def self.register_signing_box(ctx, callback:)
       Interop::request_to_native_lib(
         ctx,
         "crypto.register_signing_box",
         nil,
-        is_single_thread_only: is_single_thread_only
+        client_callback: callback,
+        is_single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponseResult.new(
@@ -746,39 +865,29 @@ module TonSdk
       end
     end
 
-    def self.register_encryption_box(ctx, app_obj:)
-      client_callback = Proc.new do |type_, x|
-        app_res = app_obj.request(x["request_data"])
-        app_req_result = case app_res
-        in [:success, result]
-          TonSdk::Client::AppRequestResult.new(
-            type_: :ok,
-            result: result
-          )
-        in [:error, text]
-          TonSdk::Client::AppRequestResult.new(
-            type_: :error,
-            text: text
-          )
-        end
-
-        params = TonSdk::Client::ParamsOfResolveAppRequest.new(
-          app_request_id: x["app_request_id"],
-          result: app_req_result
-        )
-        TonSdk::Client.resolve_app_request(ctx, params)
-      end
-
+    def self.register_encryption_box(ctx, callback:)
       Interop::request_to_native_lib(
         ctx,
         "crypto.register_encryption_box",
         nil,
-        client_callback: client_callback,
+        client_callback: callback,
         is_single_thread_only: false
       ) do |resp|
         if resp.success?
           yield NativeLibResponseResult.new(
             result: RegisteredEncryptionBox.new(handle: resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.remove_encryption_box(ctx, params)
+      Interop::request_to_native_lib(ctx, "crypto.remove_encryption_box", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: nil
           )
         else
           yield resp
@@ -798,11 +907,135 @@ module TonSdk
       end
     end
 
+    def self.encryption_box_encrypt(ctx, params)
+      Interop::request_to_native_lib(ctx, "crypto.encryption_box_encrypt", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: ResultOfEncryptionBoxEncrypt.new(data: resp.result["data"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.encryption_box_decrypt(ctx, params)
+      Interop::request_to_native_lib(ctx, "crypto.encryption_box_decrypt", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: ResultOfEncryptionBoxDecrypt.new(data: resp.result["data"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
     def self.create_encryption_box(ctx, params)
       Interop::request_to_native_lib(ctx, "crypto.create_encryption_box", params) do |resp|
         if resp.success?
           yield NativeLibResponseResult.new(
             result: RegisteredEncryptionBox.new(handle: resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.create_crypto_box(ctx, params, callback:)
+      Interop::request_to_native_lib(
+        ctx,
+        "crypto.create_crypto_box",
+        params,
+        client_callback: callback,
+        is_single_thread_only: false
+      ) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: RegisteredCryptoBox.new(handle: resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.remove_crypto_box(ctx, params)
+      Interop::request_to_native_lib(ctx, "crypto.remove_crypto_box", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: nil
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.get_crypto_box_info(ctx, params)
+      Interop::request_to_native_lib(ctx, "crypto.get_crypto_box_info", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: ResultOfGetCryptoBoxInfo.new(
+              encrypted_secret: resp.result["encrypted_secret"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.get_crypto_box_seed_phrase(ctx, params)
+      Interop::request_to_native_lib(ctx, "crypto.get_crypto_box_seed_phrase", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: ResultOfGetCryptoBoxSeedPhrase.new(
+              phrase: resp.result["phrase"],
+              dictionary: resp.result["dictionary"],
+              wordcount: resp.result["wordcount"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.get_signing_box_from_crypto_box(ctx, params)
+      Interop::request_to_native_lib(ctx, "crypto.get_signing_box_from_crypto_box", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: RegisteredSigningBox.new(handle: resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.get_encryption_box_from_crypto_box(ctx, params)
+      Interop::request_to_native_lib(ctx, "crypto.get_encryption_box_from_crypto_box", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: RegisteredEncryptionBox.new(handle: resp.result["handle"])
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.clear_crypto_box_secret_cache(ctx, params)
+      Interop::request_to_native_lib(
+        ctx,
+        "crypto.clear_crypto_box_secret_cache",
+        params
+      ) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: nil
           )
         else
           yield resp

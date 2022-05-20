@@ -450,7 +450,7 @@ describe TonSdk::Crypto do
 
 
       # 4
-      TonSdk::Crypto.register_signing_box(@c_ctx.context, app_obj: nil) { |a| @res4 = a }
+      TonSdk::Crypto.register_signing_box(@c_ctx.context, callback: nil) { |a| @res4 = a }
       timeout_at = get_timeout_for_async_operation()
       sleep(0.1) until @res4 || (get_now_for_async_operation() >= timeout_at)
 
