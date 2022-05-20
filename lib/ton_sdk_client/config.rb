@@ -16,6 +16,8 @@ module TonSdk
     :max_latency,
     :query_timeout,
     :queries_protocol,
+    :first_remp_status_timeout,
+    :next_remp_status_timeout,
     :access_key
   ) do
     def initialize(
@@ -33,6 +35,8 @@ module TonSdk
       max_latency: 60000,
       query_timeout: 60000,
       queries_protocol: nil,
+      first_remp_status_timeout: nil,
+      next_remp_status_timeout: nil,
       access_key: nil
     )
       super

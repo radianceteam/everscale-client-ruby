@@ -1,9 +1,27 @@
 module TonSdk
   module Processing
-
     #
     # types
     #
+
+    module ErrorCode
+      MESSAGE_ALREADY_EXPIRED = 501
+      MESSAGE_HAS_NOT_DESTINATION_ADDRESS = 502
+      CAN_NOT_BUILD_MESSAGE_CELL = 503
+      FETCH_BLOCK_FAILED = 504
+      SEND_MESSAGE_FAILED = 505
+      INVALID_MESSAGE_BOC = 506
+      MESSAGE_EXPIRED = 507
+      TRANSACTION_WAIT_TIMEOUT = 508
+      INVALID_BLOCK_RECEIVED = 509
+      CAN_NOT_CHECK_BLOCK_SHARD = 510
+      BLOCK_NOT_FOUND = 511
+      INVALID_DATA = 512
+      EXTERNAL_SIGNER_MUST_NOT_BE_USED = 513
+      MESSAGE_REJECTED = 514
+      INVALID_REMP_STATUS = 515
+      NEXT_REMP_STATUS_TIMEOUT = 516
+    end
 
     class ParamsOfSendMessage
       attr_reader :message, :abi, :send_events
@@ -66,20 +84,25 @@ module TonSdk
     end
 
     class ProcessingEvent
-      TYPES = [
-        :will_fetch_first_block,
-        :fetch_first_block_failed,
-        :will_send,
-        :did_send,
-        :send_failed,
-        :will_fetch_next_block,
-        :fetch_next_block_failed,
-        :message_expired
+      TYPES = %i[
+        will_fetch_first_block
+        fetch_first_block_failed
+        will_send
+        did_send
+        send_failed
+        will_fetch_next_block
+        fetch_next_block_failed
+        message_expired
+        remp_sent_to_validators
+        remp_included_into_block
+        remp_included_into_accepted_block
+        remp_other
+        remp_error
       ]
 
-      attr_reader :type_, :error, :shard_block_id, :message_id, :message
+      attr_reader :type_, :error, :shard_block_id, :message_id, :message, :args
 
-      def initialize(type_:, error: nil, shard_block_id: nil, message_id: nil, message: nil)
+      def initialize(type_:, error: nil, shard_block_id: nil, message_id: nil, message: nil, **args)
         unless TYPES.include?(type_)
           raise ArgumentError.new("type #{type_} is unknown; known types: #{TYPES}")
         end
@@ -88,6 +111,7 @@ module TonSdk
         @shard_block_id = shard_block_id
         @message_id = message_id
         @message = message
+        @args = args
       end
 
       def to_h
@@ -96,34 +120,40 @@ module TonSdk
         }
 
         h2 = case @type_
-        when :will_fetch_first_block
-          { }
-        when :fetch_first_block_failed
-          { 
-            error: @error
-          }
-        when :will_send, :did_send, :will_fetch_next_block
-          {
-            shard_block_id: @shard_block_id,
-            message_id: @message_id,
-            message: @message
-          }
-        when :send_failed, :fetch_next_block_failed
-          {
-            shard_block_id: @shard_block_id,
-            message_id: @message_id,
-            message: @message,
-            error: @error
-          }
-        when :message_expired
-          {
-            message_id: @message_id,
-            message: @message,
-            error: @error
-          }
-        else
-          raise ArgumentError.new("unsupported type: #{@type_}")
-        end
+             when :will_fetch_first_block
+               { }
+             when :fetch_first_block_failed
+               {
+                 error: @error
+               }
+             when :will_send, :did_send, :will_fetch_next_block
+               {
+                 shard_block_id: @shard_block_id,
+                 message_id: @message_id,
+                 message: @message
+               }
+             when :send_failed, :fetch_next_block_failed
+               {
+                 shard_block_id: @shard_block_id,
+                 message_id: @message_id,
+                 message: @message,
+                 error: @error
+               }
+             when :message_expired
+               {
+                 message_id: @message_id,
+                 message: @message,
+                 error: @error
+               }
+             when :remp_sent_to_validators, :remp_included_into_block, :remp_included_into_accepted_block, :remp_other, :remp_error
+               {
+                 message_id: message_id,
+                 timestamp: args[:timestamp],
+                 json: args[:json]
+               }
+             else
+               raise ArgumentError.new("unsupported type: #{@type_}")
+             end
 
         h1.merge(h2)
       end

@@ -315,15 +315,16 @@ module TonSdk
       end
     end
 
-    ParamsOfDecodeMessage = KwStruct.new(:abi, :message) do
-      def initialize(abi:, message:)
+    ParamsOfDecodeMessage = KwStruct.new(:abi, :message, :allow_partial) do
+      def initialize(abi:, message:, allow_partial: false)
         super
       end
 
       def to_h
         {
           abi: abi&.to_h,
-          message: message
+          message: message,
+          allow_partial: allow_partial
         }
       end
     end
@@ -391,8 +392,8 @@ module TonSdk
       end
     end
 
-    ParamsOfDecodeMessageBody = KwStruct.new(:abi, :body, :is_internal) do
-      def initialize(abi:, body:, is_internal:)
+    ParamsOfDecodeMessageBody = KwStruct.new(:abi, :body, :is_internal, :allow_partial) do
+      def initialize(abi:, body:, is_internal:, allow_partial: false)
         super
       end
 
@@ -400,7 +401,8 @@ module TonSdk
         {
           abi: abi&.to_h,
           body: body,
-          is_internal: is_internal
+          is_internal: is_internal,
+          allow_partial: allow_partial
         }
       end
     end
@@ -725,11 +727,16 @@ module TonSdk
       end
     end
 
-    ParamsOfDecodeAccountData = KwStruct.new(:abi, :data) do
+    ParamsOfDecodeAccountData = KwStruct.new(:abi, :data, :allow_partial) do
+      def initialize(abi:, data:, allow_partial: false)
+        super
+      end
+
       def to_h
         {
           abi: abi&.to_h,
-          data: data
+          data: data,
+          allow_partial: allow_partial
         }
       end
     end
@@ -769,11 +776,16 @@ module TonSdk
 
     ResultOfEncodeInitialData = KwStruct.new(:data)
 
-    ParamsOfDecodeInitialData = KwStruct.new(:data, :abi) do
+    ParamsOfDecodeInitialData = KwStruct.new(:data, :abi, :allow_partial) do
+      def initialize(data:, abi:, allow_partial: false)
+        super
+      end
+
       def to_h
         {
           data: data,
-          abi: abi&.to_h
+          abi: abi&.to_h,
+          allow_partial: allow_partial
         }
       end
     end
