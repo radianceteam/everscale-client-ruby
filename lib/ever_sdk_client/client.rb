@@ -1,7 +1,7 @@
 require 'json'
 require_relative './interop.rb'
 
-module TonSdk
+module EverSdk
   module Client
 
     #
@@ -106,8 +106,6 @@ module TonSdk
     # functions
     #
 
-
-    # returns a version of TON
     # params:
     # +ctx+:: +ClientContext+ object
     def self.version(ctx)

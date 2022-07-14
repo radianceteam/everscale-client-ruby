@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TonSdk::Proofs do
+describe EverSdk::Proofs do
   def load_json(file_name)
     JSON.parse(File.read("#{TESTS_DATA_DIR}/proofs/#{file_name}.json"))
   end
@@ -8,7 +8,7 @@ describe TonSdk::Proofs do
   let(:test_client) do
     TestClient.new(
       config: {
-        network: TonSdk::NetworkConfig.new(
+        network: EverSdk::NetworkConfig.new(
           endpoints: ["main.ton.dev"]
         )
       }
@@ -19,7 +19,7 @@ describe TonSdk::Proofs do
     block_json = load_json("block")
     response = test_client.request(
       "proofs.proof_block_data",
-      TonSdk::Proofs::ParamsOfProofBlockData.new(
+      EverSdk::Proofs::ParamsOfProofBlockData.new(
         block: block_json
       )
     )
@@ -28,7 +28,7 @@ describe TonSdk::Proofs do
 
     response = test_client.request(
       "proofs.proof_block_data",
-      TonSdk::Proofs::ParamsOfProofBlockData.new(
+      EverSdk::Proofs::ParamsOfProofBlockData.new(
         block: nil
       )
     )
@@ -38,7 +38,7 @@ describe TonSdk::Proofs do
     block_json["id"] = "8ade590a572437332977e68bace66fa00f9cebac6baa57f6bf2d2f1276db2848"
     response = test_client.request(
       "proofs.proof_block_data",
-      TonSdk::Proofs::ParamsOfProofBlockData.new(
+      EverSdk::Proofs::ParamsOfProofBlockData.new(
         block: block_json
       )
     )
@@ -52,7 +52,7 @@ describe TonSdk::Proofs do
     transaction_json = load_json("transaction")
     response = test_client.request(
       "proofs.proof_transaction_data",
-      TonSdk::Proofs::ParamsOfProofTransactionData.new(
+      EverSdk::Proofs::ParamsOfProofTransactionData.new(
         transaction: transaction_json
       )
     )
@@ -61,7 +61,7 @@ describe TonSdk::Proofs do
 
     response = test_client.request(
       "proofs.proof_transaction_data",
-      TonSdk::Proofs::ParamsOfProofTransactionData.new(
+      EverSdk::Proofs::ParamsOfProofTransactionData.new(
         transaction: nil
       )
     )
@@ -71,7 +71,7 @@ describe TonSdk::Proofs do
     transaction_json["id"] = "1c7e395e8eb14c173d2dde7189200f28787a05df1fa188b19224f6e19a439dc6"
     response = test_client.request(
       "proofs.proof_transaction_data",
-      TonSdk::Proofs::ParamsOfProofTransactionData.new(
+      EverSdk::Proofs::ParamsOfProofTransactionData.new(
         transaction: transaction_json
       )
     )
@@ -83,7 +83,7 @@ describe TonSdk::Proofs do
     message = load_json("message")
     response = test_client.request(
       "proofs.proof_message_data",
-      TonSdk::Proofs::ParamsOfProofMessageData.new(
+      EverSdk::Proofs::ParamsOfProofMessageData.new(
         message: message
       )
     )
@@ -92,7 +92,7 @@ describe TonSdk::Proofs do
 
     response = test_client.request(
       "proofs.proof_message_data",
-      TonSdk::Proofs::ParamsOfProofMessageData.new(
+      EverSdk::Proofs::ParamsOfProofMessageData.new(
         message: nil
       )
     )
@@ -102,7 +102,7 @@ describe TonSdk::Proofs do
     message["id"] = "1a9389e2fa34a83db0c814674bc4c7569fd3e92042289e2b2d4802231ecabec9"
     response = test_client.request(
       "proofs.proof_message_data",
-      TonSdk::Proofs::ParamsOfProofMessageData.new(
+      EverSdk::Proofs::ParamsOfProofMessageData.new(
         message: message
       )
     )

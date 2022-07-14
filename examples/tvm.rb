@@ -2,12 +2,12 @@ require_relative './examples_helper.rb'
 
 # 1
 account = File.read(File.join(EXAMPLES_DATA_DIR, "tvm", "encoded_account.txt"))
-pr1 = TonSdk::Tvm::ParamsOfRunGet.new(
+pr1 = EverSdk::Tvm::ParamsOfRunGet.new(
   account: account,
   function_name: "participant_list"
 )
 
-TonSdk::Tvm.run_get(@c_ctx.context, pr1) do |res|
+EverSdk::Tvm.run_get(@c_ctx.context, pr1) do |res|
   if res.success?
     puts "success1 #{res.result}"
   else
@@ -19,13 +19,13 @@ end
 elector_address = "-1:3333333333333333333333333333333333333333333333333333333333333333"
 input = elector_address.split(':')[1]
 
-pr2 = TonSdk::Tvm::ParamsOfRunGet.new(
+pr2 = EverSdk::Tvm::ParamsOfRunGet.new(
   account: account,
   function_name: "compute_returned_stake",
   input:  "0x#{input}"
 )
 
-TonSdk::Tvm.run_get(@c_ctx.context, pr2) do |res|
+EverSdk::Tvm.run_get(@c_ctx.context, pr2) do |res|
   if res.success?
     puts "success2 #{res.result.output}"
   else
@@ -35,12 +35,12 @@ end
 
 
 # 3
-pr3 = TonSdk::Tvm::ParamsOfRunGet.new(
+pr3 = EverSdk::Tvm::ParamsOfRunGet.new(
   account: account,
   function_name: "past_elections"
 )
 
-TonSdk::Tvm.run_get(@c_ctx.context, pr3) do |res|
+EverSdk::Tvm.run_get(@c_ctx.context, pr3) do |res|
   if res.success?
 
     val = res.result.output[0][0][0]

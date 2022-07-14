@@ -1,4 +1,4 @@
-require './lib/ton_sdk_client.rb'
+require './lib/ever_sdk_client.rb'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -86,12 +86,12 @@ RSpec.configure do |config|
 
 
   config.before(:each) do
-    cfg = TonSdk::ClientConfig.new(
-      network: TonSdk::NetworkConfig.new(
+    cfg = EverSdk::ClientConfig.new(
+      network: EverSdk::NetworkConfig.new(
         endpoints: ["net.ton.dev"]
       )
     )
-    @c_ctx = TonSdk::ClientContext.new(cfg.to_h.to_json)
+    @c_ctx = EverSdk::ClientContext.new(cfg.to_h.to_json)
   end
 end
 

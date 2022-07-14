@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-describe TonSdk::Client do
+describe EverSdk::Client do
   context "methods of client" do
     it "#version" do
-      expect { |b| TonSdk::Client.version(@c_ctx.context, &b) }.to yield_control
-      expect { |b| TonSdk::Client.version(@c_ctx.context, &b) }.to yield_with_args(TonSdk::NativeLibResponseResult)
+      expect { |b| EverSdk::Client.version(@c_ctx.context, &b) }.to yield_control
+      expect { |b| EverSdk::Client.version(@c_ctx.context, &b) }.to yield_with_args(EverSdk::NativeLibResponseResult)
 
       # NOTE
       # rspec isn't capable of validating a result in a different thread
       # therefore, a new variable has to be utilized to take a result out
       # of a block and then validate it
 
-      TonSdk::Client.version(@c_ctx.context) { |a| @res = a }
+      EverSdk::Client.version(@c_ctx.context) { |a| @res = a }
       sleep(0.1) until @res
 
       expect(@res.success?).to eq true
@@ -19,7 +19,7 @@ describe TonSdk::Client do
     end
 
     it "#get_api_reference" do
-      TonSdk::Client.get_api_reference(@c_ctx.context) { |a| @res = a }
+      EverSdk::Client.get_api_reference(@c_ctx.context) { |a| @res = a }
 
       expect(@res.success?).to eq true
       expect(@res.failure?).to_not eq true
@@ -27,7 +27,7 @@ describe TonSdk::Client do
     end
 
     it "#build_info" do
-      TonSdk::Client.build_info(@c_ctx.context) { |a| @res = a }
+      EverSdk::Client.build_info(@c_ctx.context) { |a| @res = a }
 
       expect(@res.success?).to eq true
       expect(@res.failure?).to_not eq true

@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe TonSdk::Net do
+describe EverSdk::Net do
   context "methods of net" do
     it "query" do
-      pr1 = TonSdk::Net::ParamsOfQuery.new(
+      pr1 = EverSdk::Net::ParamsOfQuery.new(
         query: "query{info{version}}"
       )
-      TonSdk::Net.query(@c_ctx.context, pr1) { |a| @res = a }
+      EverSdk::Net.query(@c_ctx.context, pr1) { |a| @res = a }
       timeout_at = get_timeout_for_async_operation()
       is_next_iter = @res.nil?
       while is_next_iter
@@ -23,10 +23,10 @@ describe TonSdk::Net do
     end
 
     it "find_last_shard_block" do
-      pr1 = TonSdk::Net::ParamsOfFindLastShardBlock.new(
+      pr1 = EverSdk::Net::ParamsOfFindLastShardBlock.new(
         address: GIVER_ADDRESS
       )
-      TonSdk::Net.find_last_shard_block(@c_ctx.context, pr1) { |a| @res = a }
+      EverSdk::Net.find_last_shard_block(@c_ctx.context, pr1) { |a| @res = a }
       timeout_at = get_timeout_for_async_operation()
       is_next_iter = @res.nil?
       while is_next_iter
@@ -44,12 +44,12 @@ describe TonSdk::Net do
     it "query_collection" do
 
       # 1
-      pr1 = TonSdk::Net::ParamsOfQueryCollection.new(
+      pr1 = EverSdk::Net::ParamsOfQueryCollection.new(
         collection: "blocks_signatures",
         result: "id",
         limit: 1
       )
-      TonSdk::Net.query_collection(@c_ctx.context, pr1) { |a| @res1 = a }
+      EverSdk::Net.query_collection(@c_ctx.context, pr1) { |a| @res1 = a }
 
       timeout_at = get_timeout_for_async_operation()
       is_next_iter = @res1.nil?
@@ -65,11 +65,11 @@ describe TonSdk::Net do
 
 
       # 2
-      pr2 = TonSdk::Net::ParamsOfQueryCollection.new(
+      pr2 = EverSdk::Net::ParamsOfQueryCollection.new(
         collection: "accounts",
         result: "id balance",
       )
-      TonSdk::Net.query_collection(@c_ctx.context, pr2) { |a| @res2 = a }
+      EverSdk::Net.query_collection(@c_ctx.context, pr2) { |a| @res2 = a }
       timeout_at = get_timeout_for_async_operation()
       is_next_iter = @res2.nil?
       while is_next_iter
@@ -85,14 +85,14 @@ describe TonSdk::Net do
 
 
       # 3
-      pr3 = TonSdk::Net::ParamsOfQueryCollection.new(
+      pr3 = EverSdk::Net::ParamsOfQueryCollection.new(
         collection: "messages",
         filter: {
           "created_at": {"gt": 1562342740}
         },
         result: "body created_at"
       )
-      TonSdk::Net.query_collection(@c_ctx.context, pr3) { |a| @res3 = a }
+      EverSdk::Net.query_collection(@c_ctx.context, pr3) { |a| @res3 = a }
       timeout_at = get_timeout_for_async_operation()
       is_next_iter = @res3.nil?
       while is_next_iter
@@ -109,7 +109,7 @@ describe TonSdk::Net do
 
     it "wait_for_collection" do
       now = Time.now.utc.to_i
-      pr1 = TonSdk::Net::ParamsOfWaitForCollection.new(
+      pr1 = EverSdk::Net::ParamsOfWaitForCollection.new(
         collection: "transactions",
         filter: {
           "now": { "gt": now }
@@ -117,7 +117,7 @@ describe TonSdk::Net do
         result: "id now"
       )
 
-      TonSdk::Net.wait_for_collection(@c_ctx.context, pr1) { |a| @res = a }
+      EverSdk::Net.wait_for_collection(@c_ctx.context, pr1) { |a| @res = a }
       timeout_at = get_timeout_for_async_operation()
       is_next_iter = @res.nil?
       while is_next_iter
@@ -138,13 +138,13 @@ describe TonSdk::Net do
         puts "subscribe_collection callback: #{a}"
       end
 
-      pr1 = TonSdk::Net::ParamsOfSubscribeCollection.new(
+      pr1 = EverSdk::Net::ParamsOfSubscribeCollection.new(
         collection: "messages",
         filter: {"dst": { "eq": "1" }},
         result: "id"
       )
 
-      TonSdk::Net.subscribe_collection(@c_ctx.context, pr1, client_callback: cb) { |a| @res = a }
+      EverSdk::Net.subscribe_collection(@c_ctx.context, pr1, client_callback: cb) { |a| @res = a }
 
       timeout_at = get_timeout_for_async_operation()
       is_next_iter = @res.nil?
@@ -158,7 +158,7 @@ describe TonSdk::Net do
         expect(@res.success?).to eq true
       end
 
-      TonSdk::Net.unsubscribe(@c_ctx.context, @res.result) { |_| }
+      EverSdk::Net.unsubscribe(@c_ctx.context, @res.result) { |_| }
       sleep(1)
     end
   end

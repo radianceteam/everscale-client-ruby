@@ -2,18 +2,18 @@
 
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'ton_sdk_client/version'
+require 'ever_sdk_client/version'
 
 Gem::Specification.new do |gem|
-  gem.name = "ton_sdk_client"
+  gem.name = "ever_sdk_client"
   gem.authors = ["Alex Maslakov"]
-  gem.summary = "TON SDK client library, in Ruby and for Ruby"
-  gem.description = "TON SDK client library written in Ruby and to be used as a Ruby gem, for tonlabs.io"
+  gem.summary = "Everscale SDK client library, in Ruby and for Ruby"
+  gem.description = "Everscale SDK client library written in Ruby and to be used as a Ruby gem, for tonlabs.io"
   gem.email = "alex@serendipia.email"
   gem.license = "MIT"
-  gem.homepage = "https://github.com/radianceteam/ton-client-ruby"
+  gem.homepage = "https://github.com/radianceteam/everscale-client-ruby"
 
-  gem.version = TonSdk::VERSION
+  gem.version = EverSdk::VERSION
   gem.platform = Gem::Platform::RUBY
   gem.required_ruby_version = ">= 3.0"
   gem.extra_rdoc_files = ["README.md", "LICENSE"]

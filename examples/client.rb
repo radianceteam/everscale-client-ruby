@@ -1,7 +1,7 @@
 require_relative './examples_helper.rb'
 
 
-TonSdk::Client.version(@c_ctx.context) do |res|
+EverSdk::Client.version(@c_ctx.context) do |res|
   if res.success?
     puts "version: #{res.result.version}"
   else
@@ -9,7 +9,7 @@ TonSdk::Client.version(@c_ctx.context) do |res|
   end
 end
 
-TonSdk::Client.get_api_reference(@c_ctx.context) do |res|
+EverSdk::Client.get_api_reference(@c_ctx.context) do |res|
   if res.success?
     puts "\r\n"
     puts "get_api_reference (first #{PRINT_RESULT_MAX_LEN} chars):\r\n"
@@ -20,7 +20,7 @@ TonSdk::Client.get_api_reference(@c_ctx.context) do |res|
   end
 end
 
-TonSdk::Client.build_info(@c_ctx.context) do |res|
+EverSdk::Client.build_info(@c_ctx.context) do |res|
   if res.success?
     puts "build_info build_number: #{res.result.build_number}"
     puts "build_info dependencies:"

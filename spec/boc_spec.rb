@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TonSdk::Boc do
+describe EverSdk::Boc do
   context "methods of boc" do
     it "test_pinned_cache" do
       boc1 = load_tvc(name: "Hello")
@@ -11,9 +11,9 @@ describe TonSdk::Boc do
 
       ref1 = test_client.request(
         "boc.cache_set",
-        TonSdk::Boc::ParamsOfBocCacheSet.new(
+        EverSdk::Boc::ParamsOfBocCacheSet.new(
           boc: boc1,
-          cache_type: TonSdk::Boc::BocCacheType.new(type: :pinned, pin: pin1)
+          cache_type: EverSdk::Boc::BocCacheType.new(type: :pinned, pin: pin1)
         )
       ).boc_ref
 
@@ -22,16 +22,16 @@ describe TonSdk::Boc do
 
       boc = test_client.request(
         "boc.cache_get",
-        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
+        EverSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
       )
 
       expect(boc.boc).to eq(boc1)
 
       ref2 = test_client.request(
         "boc.cache_set",
-        TonSdk::Boc::ParamsOfBocCacheSet.new(
+        EverSdk::Boc::ParamsOfBocCacheSet.new(
           boc: boc2,
-          cache_type: TonSdk::Boc::BocCacheType.new(type: :pinned, pin: pin1)
+          cache_type: EverSdk::Boc::BocCacheType.new(type: :pinned, pin: pin1)
         )
       ).boc_ref
 
@@ -39,9 +39,9 @@ describe TonSdk::Boc do
 
       ref3 = test_client.request(
         "boc.cache_set",
-        TonSdk::Boc::ParamsOfBocCacheSet.new(
+        EverSdk::Boc::ParamsOfBocCacheSet.new(
           boc: boc1,
-          cache_type: TonSdk::Boc::BocCacheType.new(type: :pinned, pin: pin2)
+          cache_type: EverSdk::Boc::BocCacheType.new(type: :pinned, pin: pin2)
         )
       ).boc_ref
 
@@ -51,59 +51,59 @@ describe TonSdk::Boc do
       # had both pins is still in cache
       test_client.request(
         "boc.cache_unpin",
-        TonSdk::Boc::ParamsOfBocCacheUnpin.new(pin: pin1)
+        EverSdk::Boc::ParamsOfBocCacheUnpin.new(pin: pin1)
       )
 
       boc = test_client.request(
         "boc.cache_get",
-        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
+        EverSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
       )
 
       expect(boc.boc).to eq(boc1)
 
       boc = test_client.request(
         "boc.cache_get",
-        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref2)
+        EverSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref2)
       )
 
       expect(boc.boc).to eq(nil)
 
       ref4 = test_client.request(
         "boc.cache_set",
-        TonSdk::Boc::ParamsOfBocCacheSet.new(
+        EverSdk::Boc::ParamsOfBocCacheSet.new(
           boc: boc2,
-          cache_type: TonSdk::Boc::BocCacheType.new(type: :pinned, pin: pin2)
+          cache_type: EverSdk::Boc::BocCacheType.new(type: :pinned, pin: pin2)
         )
       ).boc_ref
 
       # unpin pin2 with particular ref and that only this ref is removed from cache
       test_client.request(
         "boc.cache_unpin",
-        TonSdk::Boc::ParamsOfBocCacheUnpin.new(boc_ref: ref4, pin: pin2)
+        EverSdk::Boc::ParamsOfBocCacheUnpin.new(boc_ref: ref4, pin: pin2)
       )
 
       boc = test_client.request(
         "boc.cache_get",
-        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
+        EverSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
       )
 
       expect(boc.boc).to eq(boc1)
 
       boc = test_client.request(
         "boc.cache_get",
-        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref4)
+        EverSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref4)
       )
 
       expect(boc.boc).to eq(nil)
 
       test_client.request(
         "boc.cache_unpin",
-        TonSdk::Boc::ParamsOfBocCacheUnpin.new(pin: pin2)
+        EverSdk::Boc::ParamsOfBocCacheUnpin.new(pin: pin2)
       )
 
       boc = test_client.request(
         "boc.cache_get",
-        TonSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
+        EverSdk::Boc::ParamsOfBocCacheGet.new(boc_ref: ref1)
       )
 
       expect(boc.boc).to eq(nil)
@@ -128,15 +128,15 @@ describe TonSdk::Boc do
 
       ref1 = test_client.request(
         "boc.cache_set",
-        TonSdk::Boc::ParamsOfBocCacheSet.new(
+        EverSdk::Boc::ParamsOfBocCacheSet.new(
           boc: boc1,
-          cache_type: TonSdk::Boc::BocCacheType.new(type: :unpinned)
+          cache_type: EverSdk::Boc::BocCacheType.new(type: :unpinned)
         )
       ).boc_ref
 
       boc = test_client.request(
         "boc.cache_get",
-        TonSdk::Boc::ParamsOfBocCacheGet.new(
+        EverSdk::Boc::ParamsOfBocCacheGet.new(
           boc_ref: ref1
         )
       )
@@ -146,15 +146,15 @@ describe TonSdk::Boc do
       # add second BOC to remove first BOC by insufficient cache size
       ref2 = test_client.request(
         "boc.cache_set",
-        TonSdk::Boc::ParamsOfBocCacheSet.new(
+        EverSdk::Boc::ParamsOfBocCacheSet.new(
           boc: boc2,
-          cache_type: TonSdk::Boc::BocCacheType.new(type: :unpinned)
+          cache_type: EverSdk::Boc::BocCacheType.new(type: :unpinned)
         )
       ).boc_ref
 
       boc = test_client.request(
         "boc.cache_get",
-        TonSdk::Boc::ParamsOfBocCacheGet.new(
+        EverSdk::Boc::ParamsOfBocCacheGet.new(
           boc_ref: ref1
         )
       )
@@ -163,7 +163,7 @@ describe TonSdk::Boc do
 
       boc = test_client.request(
         "boc.cache_get",
-        TonSdk::Boc::ParamsOfBocCacheGet.new(
+        EverSdk::Boc::ParamsOfBocCacheGet.new(
           boc_ref: ref2
         )
       )
@@ -174,7 +174,7 @@ describe TonSdk::Boc do
     it "#get_boc_hash" do
       result = test_client.request(
         "boc.get_boc_hash",
-        TonSdk::Boc::ParamsOfGetBocHash.new(
+        EverSdk::Boc::ParamsOfGetBocHash.new(
           boc: "te6ccgEBAQEAWAAAq2n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE/zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzSsG8DgAAAAAjuOu9NAL7BxYpA"
         )
       )
@@ -186,7 +186,7 @@ describe TonSdk::Boc do
       boc = load_boc(name: "account")
       result = test_client.request(
         "boc.get_boc_depth",
-        TonSdk::Boc::ParamsOfGetBocDepth.new(boc: boc)
+        EverSdk::Boc::ParamsOfGetBocDepth.new(boc: boc)
       )
 
       expect(result.depth).to eq(8)
@@ -195,7 +195,7 @@ describe TonSdk::Boc do
     it "#get_code_from_tvc" do
       result = test_client.request(
         "boc.get_code_from_tvc",
-        TonSdk::Boc::ParamsOfGetCodeFromTvc.new(
+        EverSdk::Boc::ParamsOfGetCodeFromTvc.new(
           tvc: "te6ccgECHAEABDkAAgE0BgEBAcACAgPPIAUDAQHeBAAD0CAAQdgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAIm/wD0pCAiwAGS9KDhiu1TWDD0oQkHAQr0pCD0oQgAAAIBIAwKAej/fyHTAAGOJoECANcYIPkBAXDtRND0BYBA9A7yitcL/wHtRyJvde1XAwH5EPKo3u1E0CDXScIBjhb0BNM/0wDtRwFvcQFvdgFvcwFvcu1Xjhj0Be1HAW9ycG9zcG92yIAgz0DJ0G9x7Vfi0z8B7UdvEyG5IAsAYJ8wIPgjgQPoqIIIG3dAoLneme1HIW9TIO1XMJSANPLw4jDTHwH4I7zyudMfAfFAAQIBIBgNAgEgEQ4BCbqLVfP4DwH67UdvYW6OO+1E0CDXScIBjhb0BNM/0wDtRwFvcQFvdgFvcwFvcu1Xjhj0Be1HAW9ycG9zcG92yIAgz0DJ0G9x7Vfi3u1HbxaS8jOX7Udxb1btV+IA+ADR+CO1H+1HIG8RMAHIyx/J0G9R7VftR28SyPQA7UdvE88LP+1HbxYQABzPCwDtR28RzxbJ7VRwagIBahUSAQm0ABrWwBMB/O1Hb2FujjvtRNAg10nCAY4W9ATTP9MA7UcBb3EBb3YBb3MBb3LtV44Y9AXtRwFvcnBvc3BvdsiAIM9AydBvce1X4t7tR29lIG6SMHDecO1HbxKAQPQO8orXC/+68uBk+AD6QNEgyMn7BIED6HCBAIDIcc8LASLPCgBxz0D4KBQAjs8WJM8WI/oCcc9AcPoCcPoCgEDPQPgjzwsfcs9AIMki+wBfBTDtR28SyPQA7UdvE88LP+1HbxbPCwDtR28RzxbJ7VRwatswAQm0ZfaLwBYB+O1Hb2FujjvtRNAg10nCAY4W9ATTP9MA7UcBb3EBb3YBb3MBb3LtV44Y9AXtRwFvcnBvc3BvdsiAIM9AydBvce1X4t7R7UdvEdcLH8iCEFDL7ReCEIAAAACxzwsfIc8LH8hzzwsB+CjPFnLPQPglzws/gCHPQCDPNSLPMbwXAHiWcc9AIc8XlXHPQSHN4iDJcfsAWyHA/44e7UdvEsj0AO1HbxPPCz/tR28WzwsA7UdvEc8Wye1U3nFq2zACASAbGQEJu3MS5FgaAPjtR29hbo477UTQINdJwgGOFvQE0z/TAO1HAW9xAW92AW9zAW9y7VeOGPQF7UcBb3Jwb3Nwb3bIgCDPQMnQb3HtV+Le+ADR+CO1H+1HIG8RMAHIyx/J0G9R7VftR28SyPQA7UdvE88LP+1HbxbPCwDtR28RzxbJ7VRwatswAMrdcCHXSSDBII4rIMAAjhwj0HPXIdcLACDAAZbbMF8H2zCW2zBfB9sw4wTZltswXwbbMOME2eAi0x80IHS7II4VMCCCEP////+6IJkwIIIQ/////rrf35bbMF8H2zDgIyHxQAFfBw=="
         )
       )
@@ -204,12 +204,12 @@ describe TonSdk::Boc do
     end
 
     it "#parse_message" do
-      pr1 = TonSdk::Boc::ParamsOfParse.new(boc: "te6ccgEBAQEAWAAAq2n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE/zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzSsG8DgAAAAAjuOu9NAL7BxYpA")
+      pr1 = EverSdk::Boc::ParamsOfParse.new(boc: "te6ccgEBAQEAWAAAq2n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE/zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzSsG8DgAAAAAjuOu9NAL7BxYpA")
 
-      expect { |b| TonSdk::Boc.parse_message(@c_ctx.context, pr1, &b) }.to yield_control
-      expect { |b| TonSdk::Boc.parse_message(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponseResult)
+      expect { |b| EverSdk::Boc.parse_message(@c_ctx.context, pr1, &b) }.to yield_control
+      expect { |b| EverSdk::Boc.parse_message(@c_ctx.context, pr1, &b) }.to yield_with_args(EverSdk::NativeLibResponseResult)
 
-      TonSdk::Boc.parse_message(@c_ctx.context, pr1) { |a| @res = a }
+      EverSdk::Boc.parse_message(@c_ctx.context, pr1) { |a| @res = a }
 
       expect(@res.success?).to eq true
       expect(@res.result.parsed["id"]).to eq "dfd47194f3058ee058bfbfad3ea40cbbd9ad17ca77cd0904d4d9f18a48c2fbca"
@@ -218,12 +218,12 @@ describe TonSdk::Boc do
     end
 
     it "#parse_account" do
-      pr1 = TonSdk::Boc::ParamsOfParse.new(boc: File.read("spec/data/boc/parse_account1.txt"))
+      pr1 = EverSdk::Boc::ParamsOfParse.new(boc: File.read("spec/data/boc/parse_account1.txt"))
 
-      expect { |b| TonSdk::Boc.parse_account(@c_ctx.context, pr1, &b) }.to yield_control
-      expect { |b| TonSdk::Boc.parse_account(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponseResult)
+      expect { |b| EverSdk::Boc.parse_account(@c_ctx.context, pr1, &b) }.to yield_control
+      expect { |b| EverSdk::Boc.parse_account(@c_ctx.context, pr1, &b) }.to yield_with_args(EverSdk::NativeLibResponseResult)
 
-      TonSdk::Boc.parse_account(@c_ctx.context, pr1) { |a| @res = a }
+      EverSdk::Boc.parse_account(@c_ctx.context, pr1) { |a| @res = a }
 
       expect(@res.success?).to eq true
       expect(@res.result.parsed["id"]).to eq "0:2bb4a0e8391e7ea8877f4825064924bd41ce110fce97e939d3323999e1efbb13"
@@ -232,12 +232,12 @@ describe TonSdk::Boc do
     end
 
     it "#parse_transaction" do
-      pr1 = TonSdk::Boc::ParamsOfParse.new(boc: "te6ccgECBwEAAZQAA7V75gA6WK5sEDTiHFGnH9ILOy2irjKLWTkWQMyMogsg40AAACDribjoE3gOAbYNpCaX4uLeXPQHt2Kw/Jp2OKkR2s+BASyeQM6wAAAg64IXyBX2DobAABRrMENIBQQBAhUEQojmJaAYazBCEQMCAFvAAAAAAAAAAAAAAAABLUUtpEnlC4z33SeGHxRhIq/htUa7i3D8ghbwxhQTn44EAJxC3UicQAAAAAAAAAAAdwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgnJAnYEvIQY6SnQKc3lXk6x1Z/lyplGFRbwAuNtVBi9EeceU3Ojl0F3EkRdylowY5x2qlgHNv4lNZUjhq0WqrLMNAQGgBgC3aADLL4ChL2HyLHwOLub5Mep87W3xdnMW8BpxKyVoGe3RPQAvmADpYrmwQNOIcUacf0gs7LaKuMotZORZAzIyiCyDjQ5iWgAGFFhgAAAEHXC9CwS+wdDGKTmMFkA=")
+      pr1 = EverSdk::Boc::ParamsOfParse.new(boc: "te6ccgECBwEAAZQAA7V75gA6WK5sEDTiHFGnH9ILOy2irjKLWTkWQMyMogsg40AAACDribjoE3gOAbYNpCaX4uLeXPQHt2Kw/Jp2OKkR2s+BASyeQM6wAAAg64IXyBX2DobAABRrMENIBQQBAhUEQojmJaAYazBCEQMCAFvAAAAAAAAAAAAAAAABLUUtpEnlC4z33SeGHxRhIq/htUa7i3D8ghbwxhQTn44EAJxC3UicQAAAAAAAAAAAdwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgnJAnYEvIQY6SnQKc3lXk6x1Z/lyplGFRbwAuNtVBi9EeceU3Ojl0F3EkRdylowY5x2qlgHNv4lNZUjhq0WqrLMNAQGgBgC3aADLL4ChL2HyLHwOLub5Mep87W3xdnMW8BpxKyVoGe3RPQAvmADpYrmwQNOIcUacf0gs7LaKuMotZORZAzIyiCyDjQ5iWgAGFFhgAAAEHXC9CwS+wdDGKTmMFkA=")
 
-      expect { |b| TonSdk::Boc.parse_transaction(@c_ctx.context, pr1, &b) }.to yield_control
-      expect { |b| TonSdk::Boc.parse_transaction(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponseResult)
+      expect { |b| EverSdk::Boc.parse_transaction(@c_ctx.context, pr1, &b) }.to yield_control
+      expect { |b| EverSdk::Boc.parse_transaction(@c_ctx.context, pr1, &b) }.to yield_with_args(EverSdk::NativeLibResponseResult)
 
-      TonSdk::Boc.parse_transaction(@c_ctx.context, pr1) { |a| @res = a }
+      EverSdk::Boc.parse_transaction(@c_ctx.context, pr1) { |a| @res = a }
 
       expect(@res.success?).to eq true
       expect(@res.result.parsed["id"]).to eq "d6315dbb2a741a2765da250bea4a186adf942469369c703c57c2050e2d6e9fe3"
@@ -246,12 +246,12 @@ describe TonSdk::Boc do
     end
 
     it "#parse_block" do
-      pr1 = TonSdk::Boc::ParamsOfParse.new(boc: File.read("spec/data/boc/parse_block1.txt"))
+      pr1 = EverSdk::Boc::ParamsOfParse.new(boc: File.read("spec/data/boc/parse_block1.txt"))
 
-      expect { |b| TonSdk::Boc.parse_block(@c_ctx.context, pr1, &b) }.to yield_control
-      expect { |b| TonSdk::Boc.parse_block(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponseResult)
+      expect { |b| EverSdk::Boc.parse_block(@c_ctx.context, pr1, &b) }.to yield_control
+      expect { |b| EverSdk::Boc.parse_block(@c_ctx.context, pr1, &b) }.to yield_with_args(EverSdk::NativeLibResponseResult)
 
-      TonSdk::Boc.parse_block(@c_ctx.context, pr1) { |a| @res = a }
+      EverSdk::Boc.parse_block(@c_ctx.context, pr1) { |a| @res = a }
 
       expect(@res.success?).to eq true
       expect(@res.result.parsed["id"]).to eq "048f59d5d652459939ea5c5e7b291155205696b71e0c556f641df69e70e1e725"
@@ -260,16 +260,16 @@ describe TonSdk::Boc do
     end
 
     it "#parse_shardstate" do
-      pr1 = TonSdk::Boc::ParamsOfParseShardstate.new(
+      pr1 = EverSdk::Boc::ParamsOfParseShardstate.new(
         id: "zerostate:-1",
         workchain_id: -1,
         boc: File.read("spec/data/boc/parse_shardstate1.txt")
       )
 
-      expect { |b| TonSdk::Boc.parse_shardstate(@c_ctx.context, pr1, &b) }.to yield_control
-      expect { |b| TonSdk::Boc.parse_shardstate(@c_ctx.context, pr1, &b) }.to yield_with_args(TonSdk::NativeLibResponseResult)
+      expect { |b| EverSdk::Boc.parse_shardstate(@c_ctx.context, pr1, &b) }.to yield_control
+      expect { |b| EverSdk::Boc.parse_shardstate(@c_ctx.context, pr1, &b) }.to yield_with_args(EverSdk::NativeLibResponseResult)
 
-      TonSdk::Boc.parse_shardstate(@c_ctx.context, pr1) { |a| @res = a }
+      EverSdk::Boc.parse_shardstate(@c_ctx.context, pr1) { |a| @res = a }
 
       expect(@res.success?).to eq true
       expect(@res.result.parsed["id"]).to eq "zerostate:-1"
@@ -280,7 +280,7 @@ describe TonSdk::Boc do
     it "#get_blockchain_config" do
       result = test_client.request(
         "boc.get_blockchain_config",
-        TonSdk::Boc::ParamsOfGetBlockchainConfig.new(
+        EverSdk::Boc::ParamsOfGetBlockchainConfig.new(
           block_boc: load_boc(name: "block")
         )
       )
@@ -289,7 +289,7 @@ describe TonSdk::Boc do
 
       result = test_client.request(
         "boc.get_blockchain_config",
-        TonSdk::Boc::ParamsOfGetBlockchainConfig.new(
+        EverSdk::Boc::ParamsOfGetBlockchainConfig.new(
           block_boc: load_boc(name: "zerostate")
         )
       )
@@ -302,24 +302,24 @@ describe TonSdk::Boc do
       let(:code_salt) { 'te6ccgEBAQEAJAAAQ4AGPqCXQ2drhdqhLLt3rJ80LxA65YMTwgWLLUmt9EbElFA=' }
 
       it "#get_code_salt" do
-        params = TonSdk::Boc::ParamsOfGetCodeSalt.new(code: code_no_salt)
-        TonSdk::Boc.get_code_salt(@c_ctx.context, params) { |r| @response = r }
+        params = EverSdk::Boc::ParamsOfGetCodeSalt.new(code: code_no_salt)
+        EverSdk::Boc.get_code_salt(@c_ctx.context, params) { |r| @response = r }
 
         expect(@response.success?).to eq(true)
         expect(@response.result.salt).to eq(nil)
       end
 
       it "#set_code_salt" do
-        params = TonSdk::Boc::ParamsOfSetCodeSalt.new(code: code_no_salt, salt: code_salt)
-        TonSdk::Boc.set_code_salt(@c_ctx.context, params) { |r| @response = r }
+        params = EverSdk::Boc::ParamsOfSetCodeSalt.new(code: code_no_salt, salt: code_salt)
+        EverSdk::Boc.set_code_salt(@c_ctx.context, params) { |r| @response = r }
         code_with_salt = @response.result.code
 
         expect(@response.success?).to eq(true)
         expect(code_with_salt).not_to eq(code_no_salt)
 
         #get_code_salt
-        params = TonSdk::Boc::ParamsOfGetCodeSalt.new(code: code_with_salt)
-        TonSdk::Boc.get_code_salt(@c_ctx.context, params) { |r| @response = r }
+        params = EverSdk::Boc::ParamsOfGetCodeSalt.new(code: code_with_salt)
+        EverSdk::Boc.get_code_salt(@c_ctx.context, params) { |r| @response = r }
 
         expect(@response.success?).to eq(true)
         expect(@response.result.salt).to eq(code_salt)
@@ -330,14 +330,14 @@ describe TonSdk::Boc do
       check_encode_tvc = Proc.new do |tvc, decoded|
         result = test_client.request(
           "boc.decode_tvc",
-          TonSdk::Boc::ParamsOfDecodeTvc.new(tvc: tvc)
+          EverSdk::Boc::ParamsOfDecodeTvc.new(tvc: tvc)
         )
 
         expect(result.to_json).to eq(decoded.to_json)
 
         result = test_client.request(
           "boc.encode_tvc",
-          TonSdk::Boc::ParamsOfEncodeTvc.new(
+          EverSdk::Boc::ParamsOfEncodeTvc.new(
             code: result.code,
             data: result.data,
             library: result.library,
@@ -351,7 +351,7 @@ describe TonSdk::Boc do
       end
 
       tvc = load_tvc(name: "t24_initdata")
-      decoded = TonSdk::Boc::ResultOfDecodeTvc.new(
+      decoded = EverSdk::Boc::ResultOfDecodeTvc.new(
         code: "te6ccgECEAEAAYkABCSK7VMg4wMgwP/jAiDA/uMC8gsNAgEPAoTtRNDXScMB+GYh2zzTAAGfgQIA1xgg+QFY+EL5EPKo3tM/AfhDIbnytCD4I4ED6KiCCBt3QKC58rT4Y9MfAds88jwFAwNK7UTQ10nDAfhmItDXCwOpOADcIccA4wIh1w0f8rwh4wMB2zzyPAwMAwIoIIIQBoFGw7rjAiCCEGi1Xz+64wIIBAIiMPhCbuMA+Ebyc9H4ANs88gAFCQIW7UTQ10nCAYqOgOILBgFccO1E0PQFcSGAQPQOk9cLB5Fw4vhqciGAQPQPjoDf+GuAQPQO8r3XC//4YnD4YwcBAogPA3Aw+Eby4Ez4Qm7jANHbPCKOICTQ0wH6QDAxyM+HIM6AYs9AXgHPkhoFGw7LB8zJcPsAkVvi4wDyAAsKCQAq+Ev4SvhD+ELIy//LP8+DywfMye1UAAj4SvhLACztRNDT/9M/0wAx0wfU0fhr+Gr4Y/hiAAr4RvLgTAIK9KQg9KEPDgAUc29sIDAuNTEuMAAA",
         code_depth: 7,
         code_hash: "0ad23f96d7b1c1ce78dae573ac8cdf71523dc30f36316b5aaa5eb3cc540df0e0",
@@ -368,7 +368,7 @@ describe TonSdk::Boc do
       check_encode_tvc.call(tvc, decoded)
 
       tvc = load_boc(name: "state_init_lib")
-      decoded = TonSdk::Boc::ResultOfDecodeTvc.new(
+      decoded = EverSdk::Boc::ResultOfDecodeTvc.new(
         code: "te6ccgEBBAEAhwABFP8A9KQT9LzyyAsBAgEgAwIA36X//3aiaGmP6f/o5CxSZ4WPkOeF/+T2qmRnxET/s2X/wQgC+vCAfQFANeegZLh9gEB354V/wQgD39JAfQFANeegZLhkZ82JA6Mrm6RBCAOt5or9AUA156BF6kMrY2N5YQO7e5NjIQxni2S4fYB9gEAAAtI=",
         code_depth: 2,
         code_hash: "45910e27fe37d8dcf1fac777ebb3bda38ae1ea8389f81bfb1bc0079f3f67ef5b",
@@ -389,12 +389,12 @@ describe TonSdk::Boc do
       tvc = load_tvc(name: "t24_initdata")
       code = test_client.request(
         "boc.decode_tvc",
-        TonSdk::Boc::ParamsOfDecodeTvc.new(tvc: tvc)
+        EverSdk::Boc::ParamsOfDecodeTvc.new(tvc: tvc)
       ).code
 
       result = test_client.request(
         "boc.get_compiler_version",
-        TonSdk::Boc::ParamsOfGetCompilerVersion.new(code: code)
+        EverSdk::Boc::ParamsOfGetCompilerVersion.new(code: code)
       )
 
       expect(result.version).to eq("sol 0.51.0")

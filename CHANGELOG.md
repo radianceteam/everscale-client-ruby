@@ -1,6 +1,6 @@
 # Changelog
 
-all the changes are always according to the ones of the main TON SDK library; and on top on that, there may be additional ones
+all the changes are always according to the ones of the main Ever SDK library; and on top on that, there may be additional ones
 
 1.34.0
 -----
@@ -30,7 +30,7 @@ all the changes are always according to the ones of the main TON SDK library; an
 
 1.20.x
 -----
-* NetworkConfig and AbiContract have been changed (not mentioned explicitly in Changelog of TON SDK )
+* NetworkConfig and AbiContract have been changed (not mentioned explicitly in Changelog of Ever SDK )
 
 
 1.15.x

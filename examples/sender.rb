@@ -7,45 +7,45 @@ GIVER_ADDRESS = "0:841288ed3b55d9cdafa806807f02a0ae0c169aa5edfe88a789a6482429756
 
 
 cont_json = File.read("#{EXAMPLES_DATA_DIR}/contracts/abi_v2/Transfer.abi.json")
-abi1 = TonSdk::Abi::Abi.new(
+abi1 = EverSdk::Abi::Abi.new(
   type_: :contract,
-  value: TonSdk::Abi::AbiContract.from_json(JSON.parse(cont_json))
+  value: EverSdk::Abi::AbiContract.from_json(JSON.parse(cont_json))
 )
 
-pr_s = TonSdk::Abi::ParamsOfEncodeMessageBody.new(
+pr_s = EverSdk::Abi::ParamsOfEncodeMessageBody.new(
   abi: abi1,
-  call_set: TonSdk::Abi::CallSet.new(
+  call_set: EverSdk::Abi::CallSet.new(
     function_name: "transfer",
     input: {
       "comment": "howdy!!!1".bytes.map { |x| '%02X' % (x & 0xFF) }.join
     }
   ),
   is_internal: true,
-  signer: TonSdk::Abi::Signer.new(type_: :none)
+  signer: EverSdk::Abi::Signer.new(type_: :none)
 )
 
-TonSdk::Abi::encode_message_body(@graphql_c_ctx.context, pr_s) do |res|
+EverSdk::Abi::encode_message_body(@graphql_c_ctx.context, pr_s) do |res|
   if res.success?
     cont_json2 = File.read("#{EXAMPLES_DATA_DIR}/contracts/abi_v2/SetcodeMultisigWallet.abi.json")
-    abi2 = TonSdk::Abi::Abi.new(
+    abi2 = EverSdk::Abi::Abi.new(
       type_: :contract,
-      value: TonSdk::Abi::AbiContract.from_json(JSON.parse(cont_json2))
+      value: EverSdk::Abi::AbiContract.from_json(JSON.parse(cont_json2))
     )
 
     keys = nil
-    TonSdk::Crypto::generate_random_sign_keys(@c_ctx.context) do |res|
+    EverSdk::Crypto::generate_random_sign_keys(@c_ctx.context) do |res|
       if res.success?
         keys = res.result
       end
     end
     sleep(0.1) until keys
 
-    enc_pr_s = TonSdk::Abi::ParamsOfEncodeMessage.new(
+    enc_pr_s = EverSdk::Abi::ParamsOfEncodeMessage.new(
       abi: abi2,
       address: GIVER_ADDRESS,
       # address: WALLET_ADDRESS,
 
-      call_set: TonSdk::Abi::CallSet.new(
+      call_set: EverSdk::Abi::CallSet.new(
         function_name: "sendTransaction",
         input: {
           "dest": WALLET_ADDRESS,
@@ -57,7 +57,7 @@ TonSdk::Abi::encode_message_body(@graphql_c_ctx.context, pr_s) do |res|
           "payload": res.result.body
         }
       ),
-      signer: TonSdk::Abi::Signer.new(type_: :keys, keys: keys)
+      signer: EverSdk::Abi::Signer.new(type_: :keys, keys: keys)
     )
 
     pr_s2 = ParamsOfProcessMessage.new(
@@ -69,7 +69,7 @@ TonSdk::Abi::encode_message_body(@graphql_c_ctx.context, pr_s) do |res|
       puts "message: #{a}"
     end
 
-    TonSdk::Processing::process_message(@graphql_c_ctx.context, pr_s2, cb) do |res2|
+    EverSdk::Processing::process_message(@graphql_c_ctx.context, pr_s2, cb) do |res2|
       if res2.success?
         puts "process_message result: #{res2.result}"
       else

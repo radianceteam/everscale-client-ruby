@@ -1,4 +1,4 @@
-module TonSdk
+module EverSdk
   module Boc
 
     #

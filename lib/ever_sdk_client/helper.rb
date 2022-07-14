@@ -1,4 +1,4 @@
-module TonSdk
+module EverSdk
   class Helper
 
     # converts a symbol which may contain _, into a capital-case string

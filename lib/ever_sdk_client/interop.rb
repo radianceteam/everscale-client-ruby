@@ -3,7 +3,7 @@ require 'rbconfig'
 require 'concurrent'
 require 'logger'
 
-module TonSdk
+module EverSdk
   module Interop
     extend FFI::Library
 
