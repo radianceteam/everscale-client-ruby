@@ -1,5 +1,23 @@
-module TonSdk
+module EverSdk
   module Abi
+
+    module ErrorCode
+      REQUIRED_ADDRESS_MISSING_FOR_ENCODE_MESSAGE = 301
+      REQUIRED_CALL_SET_MISSING_FOR_ENCODE_MESSAGE = 302
+      INVALID_JSON = 303
+      INVALID_MESSAGE = 304
+      ENCODE_DEPLOY_MESSAGE_FAILED = 305
+      ENCODE_RUN_MESSAGE_FAILED = 306
+      ATTACH_SIGNATURE_FAILED = 307
+      INVALID_TVC_IMAGE = 308
+      REQUIRED_PUBLIC_KEY_MISSING_FOR_FUNCTION_HEADER = 309
+      INVALID_SIGNER = 310
+      INVALID_ABI = 311
+      INVALID_FUNCTION_ID = 312
+      INVALID_DATA = 313
+      ENCODE_INITIAL_DATA_FAILED = 314
+      INVALID_FUNCTION_NAME = 315
+    end
 
     #
     # types
@@ -225,7 +243,8 @@ module TonSdk
       :call_set,
       :is_internal,
       :signer,
-      :processing_try_index
+      :processing_try_index,
+      :address
     ) do
       def to_h
         {
@@ -233,7 +252,8 @@ module TonSdk
           call_set: call_set.to_h,
           is_internal: is_internal,
           signer: signer.to_h,
-          processing_try_index: processing_try_index
+          processing_try_index: processing_try_index,
+          address: address
         }
       end
     end
@@ -816,6 +836,22 @@ module TonSdk
 
     ResultOfAbiEncodeBoc = KwStruct.new(:boc)
 
+    ParamsOfCalcFunctionId = KwStruct.new(:abi, :function_name, :output) do
+      def initialize(abi:, function_name:, output: false)
+        super
+      end
+
+      def to_h
+        {
+          abi: abi&.to_h,
+          function_name: function_name,
+          output: output
+        }
+      end
+    end
+
+    ResultOfCalcFunctionId = KwStruct.new(:function_id)
+
     #
     # functions
     #
@@ -1009,6 +1045,20 @@ module TonSdk
           yield NativeLibResponseResult.new(
             result: ResultOfAbiEncodeBoc.new(
               boc: resp.result["boc"]
+            )
+          )
+        else
+          yield resp
+        end
+      end
+    end
+
+    def self.calc_function_id(ctx, params)
+      Interop::request_to_native_lib(ctx, "abi.calc_function_id", params) do |resp|
+        if resp.success?
+          yield NativeLibResponseResult.new(
+            result: ResultOfCalcFunctionId.new(
+              function_id: resp.result["function_id"]
             )
           )
         else

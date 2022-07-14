@@ -1,4 +1,4 @@
-module TonSdk
+module EverSdk
   CryptoConfig = KwStruct.new(:mnemonic_dictionary, :mnemonic_word_count, :hdkey_derivation_path)
   BocConfig = KwStruct.new(:cache_max_size)
   NetworkConfig = KwStruct.new(

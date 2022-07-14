@@ -1,13 +1,13 @@
 # Ever SDK (formerly TON SDK) client in Ruby and for Ruby
 
 [![Gem Version](https://badge.fury.io/rb/ton_sdk_client.svg)](https://rubygems.org/gems/ton_sdk_client)
-[![Ever SDK version](https://img.shields.io/badge/Ever%20SDK%20version-1.34.0-green)](https://github.com/tonlabs/ever-sdk/tree/1.34.0)
+[![Ever SDK version](https://img.shields.io/badge/Ever%20SDK%20version-1.36.0-green)](https://github.com/tonlabs/ever-sdk/tree/1.36.0)
 
 Ruby gem-client bindings for [Ever SDK](https://github.com/tonlabs/ever-sdk) which allows one to communicate with [Everscale](https://everscale.network/) blockchain in Ruby.
 
 Note that there are 2 types of versions:
-  * `TonSdk::VERSION` - the version of the gem
-  * `TonSdk::NATIVE_SDK_VERSION` - the version of the original SDK
+  * `EverSdk::VERSION` - the version of the gem
+  * `EverSdk::NATIVE_SDK_VERSION` - the version of the original SDK
 
 and they may not always match each other.
 
@@ -16,14 +16,14 @@ and they may not always match each other.
 Add this to the `Gemfile` of a project:
 
 ```ruby
-gem "ton_sdk_client"
+gem "ever_sdk_client"
 ```
 and run `bundle install`
 
 Alternatively install it directly
 
 ```shell
-gem install ton_sdk_client
+gem install ever_sdk_client
 ```
 
 ## Requirements
@@ -41,21 +41,21 @@ The examples are located in the `examples` directory, and they cover most the mo
 And here's a simple minimalistic one:
 
 ```ruby
-require "ton_sdk_client"
+require "ever_sdk_client"
 
-cfg = TonSdk::ClientConfig.new(
-  network: TonSdk::NetworkConfig.new(
-    endpoints: ["net.ton.dev"]
-  )
+cfg = EverSdk::ClientConfig.new(
+        network: EverSdk::NetworkConfig.new(
+                endpoints: ["net.ton.dev"]
+        )
 )
 
 # first, create a context
-c_ctx = TonSdk::ClientContext.new(cfg.to_h.to_json)
+c_ctx = EverSdk::ClientContext.new(cfg.to_h.to_json)
 
 # next, call a method of a module you want passing a context to it
-TonSdk::Client.version(c_ctx.context) do |res|
+EverSdk::Client.version(c_ctx.context) do |res|
 
-  # 'res' is of type TonSdk::NativeLibResponseResult
+  # 'res' is of type EverSdk::NativeLibResponseResult
   # holds either 'result' or 'error'
   # to check which one it is, use boolean methods:
   # res.success? or res.failure?
@@ -79,12 +79,12 @@ Note that some methods, such some of the `Processing`, `Net`, `Tvm` modules, wil
     puts "callback fired: #{a}"
   end
 
-  pr1 = TonSdk::Processing::ParamsOfProcessMessage.new(
+  pr1 = EverSdk::Processing::ParamsOfProcessMessage.new(
     message_encode_params: encode_params,
     send_events: true
   )
 
-  TonSdk::Processing.process_message(@c_ctx.context, pr1, my_callback) do |a|
+  EverSdk::Processing.process_message(@c_ctx.context, pr1, my_callback) do |a|
     # [.......]
   end
 ```
@@ -104,8 +104,8 @@ Mind the current version of SDK when reading documentation and examples at https
 Clone the repository
 
 ```
-git clone git@github.com:radianceteam/ton-client-ruby.git
-cd ton-client-ruby
+git clone git@github.com:radianceteam/everscale-client-ruby.git
+cd everscale-client-ruby
 ```
 
 ### Install the dependencies

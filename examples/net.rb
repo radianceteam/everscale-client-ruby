@@ -1,19 +1,19 @@
 require_relative './examples_helper.rb'
 
 
-p1 = TonSdk::Net::ParamsOfQueryCollection.new(
+p1 = EverSdk::Net::ParamsOfQueryCollection.new(
   collection: "blocks_signatures", 
   result: "id",
   limit: 1
 )
-TonSdk::Net.query_collection(@c_ctx.context, p1) do |res|
+EverSdk::Net.query_collection(@c_ctx.context, p1) do |res|
   if res.success?
     puts "net_query_collection#1: #{res.result.result}\r\n\r\n"
   end
 end
 
 
-p2 = TonSdk::Net::ParamsOfQueryCollection.new(
+p2 = EverSdk::Net::ParamsOfQueryCollection.new(
   collection: "accounts",
   filter: {
     id: {
@@ -27,7 +27,7 @@ p2 = TonSdk::Net::ParamsOfQueryCollection.new(
   result: "id balance"
 )
 
-TonSdk::Net.query_collection(@c_ctx.context, p2) do |res|
+EverSdk::Net.query_collection(@c_ctx.context, p2) do |res|
   if res.success?
     puts "net_query_collection#2: #{res.result.result}\r\n\r\n"
   else
@@ -36,30 +36,30 @@ TonSdk::Net.query_collection(@c_ctx.context, p2) do |res|
 end
 
 
-p3 = TonSdk::Net::ParamsOfQueryCollection.new(
+p3 = EverSdk::Net::ParamsOfQueryCollection.new(
   collection: "accounts", 
   result: "id balance",
 )
-TonSdk::Net.query_collection(@c_ctx.context, p3) do |res|
+EverSdk::Net.query_collection(@c_ctx.context, p3) do |res|
   if res.success?
     puts "net_query_collection#3: #{res.result.result}\r\n\r\n"
   end
 end
 
 
-p4 = TonSdk::Net::ParamsOfWaitForCollection.new(
+p4 = EverSdk::Net::ParamsOfWaitForCollection.new(
   collection: "transactions",
   result: "id now",
 )
 
-TonSdk::Net.wait_for_collection(@c_ctx.context, p4) do |res|
+EverSdk::Net.wait_for_collection(@c_ctx.context, p4) do |res|
   if res.success?
     puts "net_wait_for_collection: #{res.result.result}\r\n\r\n"
   end
 end
 
 
-p5 = TonSdk::Net::ParamsOfSubscribeCollection.new(
+p5 = EverSdk::Net::ParamsOfSubscribeCollection.new(
   collection: "transactions",
   result: "id account_addr",
 )
@@ -69,7 +69,7 @@ response_callback = Proc.new do |a|
 end
 
 Thread.new do
-  TonSdk::Net.subscribe_collection(@c_ctx.context, p5, client_callback: response_callback) do |res|
+  EverSdk::Net.subscribe_collection(@c_ctx.context, p5, client_callback: response_callback) do |res|
     if res.success?
       puts "net_subscribe_collection: #{res.result.handle}"
     else

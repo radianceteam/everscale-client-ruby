@@ -12,7 +12,7 @@ class RegisterSigningBoxParamsMock
     t = req["type"]
     case t
     when "GetPublicKey"
-      res = TonSdk::Crypto::ResultOfAppSigningBox.new(
+      res = EverSdk::Crypto::ResultOfAppSigningBox.new(
         type_: :get_public_key,
         public_key: @public_
       )
@@ -34,7 +34,7 @@ class RegisterSigningBoxParamsMock
 end
 
 
-TonSdk::Crypto.generate_random_sign_keys(@c_ctx.context) do |res|
+EverSdk::Crypto.generate_random_sign_keys(@c_ctx.context) do |res|
   if res.success?
     puts "random sign keys:"
     puts "  public: #{res.result.public_}"
@@ -53,14 +53,14 @@ reg_sb_mock = RegisterSigningBoxParamsMock.new(
   private_: @res.result.secret
 )
 
-TonSdk::Crypto.register_signing_box(@c_ctx.context, app_obj: reg_sb_mock) do |res|
+EverSdk::Crypto.register_signing_box(@c_ctx.context, app_obj: reg_sb_mock) do |res|
   if res.success?
     sb_handle = res.result.handle
     puts "signinx box handle: #{sb_handle}"
 
-    TonSdk::Crypto.signing_box_get_public_key(
+    EverSdk::Crypto.signing_box_get_public_key(
       @c_ctx.context,
-      TonSdk::Crypto::RegisteredSigningBox.new(handle: sb_handle)
+      EverSdk::Crypto::RegisteredSigningBox.new(handle: sb_handle)
     ) do |res2|
       if res2.success?
         puts "signing_box_get_public_key: #{res2.result}"

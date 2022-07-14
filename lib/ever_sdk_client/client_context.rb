@@ -18,7 +18,7 @@ require_relative './processing.rb'
 require_relative './debot.rb'
 
 
-module TonSdk
+module EverSdk
   class ClientContext
     attr_reader :context
 

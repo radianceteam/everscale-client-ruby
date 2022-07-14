@@ -1,4 +1,4 @@
-module TonSdk
+module EverSdk
   class ResultOfConvertAddress
     attr_reader :address
 
