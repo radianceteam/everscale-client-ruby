@@ -22,8 +22,8 @@ module EverSdk
       CONTRACT_EXECUTION_ERROR = 414
     end
 
-    ExecutionOptions = KwStruct.new(:blockchain_config, :block_time, :block_lt, :transaction_lt) do
-      def initialize(blockchain_config: nil, block_time: nil, block_lt: nil, transaction_lt: nil)
+    ExecutionOptions = KwStruct.new(:blockchain_config, :block_time, :block_lt, :transaction_lt, :chksig_always_succeed) do
+      def initialize(blockchain_config: nil, block_time: nil, block_lt: nil, transaction_lt: nil, chksig_always_succeed: false)
         super
       end
     end
