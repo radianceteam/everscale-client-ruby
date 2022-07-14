@@ -243,7 +243,8 @@ module EverSdk
       :call_set,
       :is_internal,
       :signer,
-      :processing_try_index
+      :processing_try_index,
+      :address
     ) do
       def to_h
         {
@@ -251,7 +252,8 @@ module EverSdk
           call_set: call_set.to_h,
           is_internal: is_internal,
           signer: signer.to_h,
-          processing_try_index: processing_try_index
+          processing_try_index: processing_try_index,
+          address: address
         }
       end
     end
