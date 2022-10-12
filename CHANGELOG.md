@@ -2,6 +2,10 @@
 
 all the changes are always according to the ones of the main Ever SDK library; and on top on that, there may be additional ones
 
+1.37.2
+-----
+* Changes https://github.com/tonlabs/ever-sdk/blob/master/CHANGELOG.md
+*
 1.37.1
 -----
 * Changes https://github.com/tonlabs/ever-sdk/blob/master/CHANGELOG.md
